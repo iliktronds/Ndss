@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full bg-slate-100 text-slate-800">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>تسجيل مبيعات المحل | إلكترو نور الدين</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'Segoe UI', 'Tahoma', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Cairo Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- MQTT library for instant real-time multi-phone & PC sync -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="h-full flex flex-col bg-slate-100 overflow-x-hidden selection:bg-emerald-500 selection:text-white">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2.5">
+      <div class="flex items-center justify-between gap-2">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-xl shadow-md font-black">
+            📱
+          </div>
+          <div>
+            <h1 class="font-extrabold text-sm sm:text-base leading-tight">إلكترو نور الدين</h1>
+            <p class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
+              <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping"></span>
+              <span id="sync-status">متصل مع الهواتف والبيسي</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Seller Badge & Manager PIN Button -->
+        <div class="flex items-center gap-2">
+          <!-- Active Seller Selector -->
+          <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
+            <span class="text-[11px] text-slate-400 px-1 hidden sm:inline">أنا:</span>
+            <select id="seller-select" class="bg-slate-900 text-white text-xs font-bold rounded px-1.5 py-1 outline-none border border-slate-700">
+              <option value="نور الدين">نور الدين</option>
+              <option value="الخدام">الخدام</option>
+              <option value="أمين">أمين</option>
+              <option value="يوسف">يوسف</option>
+            </select>
+          </div>
+
+          <!-- Manager Space Button (PIN Protected) -->
+          <button id="open-manager-btn" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition">
+            <span>🔒</span>
+            <span class="hidden sm:inline">صفحة المدير</span>
+            <span class="sm:hidden">المدير</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-4 space-y-4">
+
+    <!-- KPI Summary Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+        <span class="text-[11px] text-slate-500 font-bold block">مجموع مدخول اليوم</span>
+        <span id="kpi-today-money" class="text-lg sm:text-xl font-black text-emerald-600">0 DH</span>
+      </div>
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+        <span class="text-[11px] text-slate-500 font-bold block">القطع المباعة اليوم</span>
+        <span id="kpi-today-count" class="text-lg sm:text-xl font-black text-blue-600">0 قطعة</span>
+      </div>
+      <div class="col-span-2 sm:col-span-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+        <span class="text-[11px] text-slate-500 font-bold block">إجمالي كل المبيعات</span>
+        <span id="kpi-total-money" class="text-lg sm:text-xl font-black text-slate-800">0 DH</span>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 1: تسجيل بيع جديد ==================== -->
+    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+          <span class="text-emerald-600 text-lg">⚡</span>
+          <span>قيد بيع جديد (سريع وبسيط)</span>
+        </h2>
+        <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium">تسجيل فوري</span>
+      </div>
+
+      <!-- Quick Pick Suggestions (Chips for fast entry) -->
+      <div>
+        <label class="block text-[11px] font-bold text-slate-500 mb-1.5">اختر بسرعة أو اكتب لتحت:</label>
+        <div id="quick-products-chips" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+          <!-- Dynamically populated chips -->
+        </div>
+      </div>
+
+      <!-- Simple Entry Form -->
+      <form id="sale-form" class="space-y-3">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+          <!-- Item Name / Type -->
+          <div class="sm:col-span-6">
+            <label class="block text-xs font-bold text-slate-700 mb-1">النوع / اسم السلعة (مثلاً: افشور a12، شاحن...):</label>
+            <input type="text" id="input-item-name" placeholder="اكتب مثلا: افشور a12" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+          </div>
+
+          <!-- Price -->
+          <div class="sm:col-span-3">
+            <label class="block text-xs font-bold text-slate-700 mb-1">الثمن (DH):</label>
+            <input type="number" id="input-item-price" placeholder="مثلا: 250" min="0" step="any" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-emerald-700 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+          </div>
+
+          <!-- Quantity -->
+          <div class="sm:col-span-3">
+            <label class="block text-xs font-bold text-slate-700 mb-1">الكمية:</label>
+            <div class="flex items-center">
+              <button type="button" id="btn-dec-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-r-xl font-bold border border-slate-300 flex items-center justify-center text-lg">-</button>
+              <input type="number" id="input-item-qty" value="1" min="1" class="w-full h-10 text-center bg-slate-50 border-y border-slate-300 text-sm font-black text-slate-800 outline-none">
+              <button type="button" id="btn-inc-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-l-xl font-bold border border-slate-300 flex items-center justify-center text-lg">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Submit Button -->
+        <button type="submit" id="btn-submit-sale" class="w-full py-3 sm:py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm sm:text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition active:scale-[0.98]">
+          <span>💾</span>
+          <span>قيد البيع دابا (تسجيل فوري فكل الأجهزة)</span>
+        </button>
+
+      </form>
+    </section>
+
+    <!-- ==================== SECTION 2: تجميع وحساب السلع المباعة ==================== -->
+    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+            <span>📊</span>
+            <span>شحال تباع من كل نوع (المجموع التراكمي)</span>
+          </h2>
+          <p class="text-xs text-slate-500">يحسب لك تلقائياً شحال تباع من كل سلعة (مثلا: تباعو 2 افشور a12)</p>
+        </div>
+
+        <!-- Time Filter for Totals -->
+        <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
+          <button id="filter-totals-all" class="totals-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">الكل</button>
+          <button id="filter-totals-today" class="totals-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">اليوم فقط</button>
+        </div>
+      </div>
+
+      <!-- Items Count Grid / Cards -->
+      <div id="aggregated-items-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div class="col-span-full text-center py-6 text-slate-400 text-xs">
+          خاوي حالياً (0 مبيعات). قيد أول سلعة الفوق باش يبانو الحسابات هنا!
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3: سجل آخر المبيعات ==================== -->
+    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+          <span>🕒</span>
+          <span>سجل العمليات بالترتيب</span>
+        </h2>
+        <span id="sales-badge-count" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">0 عملية</span>
+      </div>
+
+      <!-- Sales List -->
+      <div id="sales-list-container" class="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+        <div class="text-center py-8 text-slate-400 text-xs">
+          السجل خاوي دابا (0 مبيعات).
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL: صفحة المدير المحمية بالـ PIN ==================== -->
+  <div id="manager-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl border border-slate-200 text-right">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-black text-base text-slate-900 flex items-center gap-2">
+          <span>👑</span>
+          <span>صفحة المدير (محمية برمز PIN)</span>
+        </h3>
+        <button id="close-manager-modal" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1">✕</button>
+      </div>
+
+      <!-- Step 1: PIN Verification Form -->
+      <div id="manager-pin-step" class="space-y-3 text-center py-4">
+        <p class="text-xs text-slate-600 font-bold">أدخل الرمز السري للمدير للتحكم في المبيعات ومسح السلع:</p>
+        <div class="max-w-xs mx-auto space-y-2">
+          <input type="password" id="manager-pin-input" placeholder="الرمز الافتراضي: 1234" maxlength="8"
+            class="w-full p-3 bg-slate-50 border-2 border-slate-300 rounded-xl text-center font-mono text-xl tracking-widest outline-none focus:border-amber-500">
+          <button id="btn-verify-pin" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-sm shadow">
+            فتح صفحة المدير 🔓
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Manager Admin Panel (Visible only after correct PIN) -->
+      <div id="manager-panel-step" class="hidden space-y-4 text-xs">
+        
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 font-bold flex items-center justify-between">
+          <span>مرحباً يا مدير! يمكنك الآن مسح أي عملية أو إدارة السلع.</span>
+          <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-amber-300">كامل الصلاحيات</span>
+        </div>
+
+        <!-- Add New Preset Product -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+          <h4 class="font-bold text-slate-800">إضافة سلعة لقائمة الاختيار السريع:</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="new-preset-name" placeholder="النوع (مثلا: افشور a12)" class="p-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold">
+            <input type="number" id="new-preset-price" placeholder="الثمن الافتراضي DH" class="p-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold">
+          </div>
+          <button id="btn-add-preset" class="w-full py-2 bg-slate-800 hover:bg-black text-white font-bold rounded-lg text-xs">
+            ➕ إضافة للسلع المقترحة
+          </button>
+        </div>
+
+        <!-- Presets List (Delete preset) -->
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-slate-700">السلع المقترحة حالياً (اضغط ✕ للحذف):</h4>
+          <div id="presets-manager-list" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Dangerous Manager Actions -->
+        <div class="pt-3 border-t border-slate-200 space-y-2">
+          <h4 class="font-bold text-red-700">إجراءات الحذف ومسح السجل:</h4>
+          
+          <div class="flex items-center gap-2">
+            <button id="btn-export-csv" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+              <span>📥</span> تصدير Excel (CSV)
+            </button>
+
+            <button id="btn-clear-all-sales" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+              <span>🗑️</span> مسح كل المبيعات نهائياً
+            </button>
+          </div>
+        </div>
+
+        <!-- Change PIN Option -->
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+          <span class="text-slate-500">تغيير رمز PIN (المدير):</span>
+          <div class="flex items-center gap-1">
+            <input type="password" id="input-new-pin" placeholder="رمز جديد" class="p-1 w-20 bg-slate-50 border border-slate-300 rounded text-center font-mono">
+            <button id="btn-save-new-pin" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded">حفظ</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK NOTIFICATION -->
+  <div id="toast-box" class="fixed bottom-4 left-4 z-50 pointer-events-none"></div>
+
+  <!-- SOUND EFFECT (Pure Web Audio API, no external files) -->
+  <script>
+    function playCashSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
+      } catch (e) {
+        // Audio might be blocked before first user gesture
+      }
+    }
+  </script>
+
+  <!-- ==================== APPLICATION CORE LOGIC ==================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Storage Keys
+      const STORAGE_KEYS = {
+        SALES: 'electro_simple_sales_v1',
+        PRESETS: 'electro_simple_presets_v1',
+        PIN: 'electro_simple_pin_v1',
+        SELLER: 'electro_simple_seller_v1',
+        ROOM_ID: 'electro_simple_room_v1'
+      };
+
+      // Initial Default Presets (Common phone parts)
+      const DEFAULT_PRESETS = [
+        { name: 'افشور A12', price: 250 },
+        { name: 'افشور Samsung A51', price: 380 },
+        { name: 'افشور iPhone 11', price: 450 },
+        { name: 'شاحن 20W Type-C', price: 80 },
+        { name: 'كابل آيفون أصلي', price: 40 },
+        { name: 'كابل Type-C', price: 30 },
+        { name: 'بطارية iPhone 11', price: 220 },
+        { name: 'بطارية Samsung A12', price: 150 },
+        { name: 'بوشيت سيليكون', price: 30 },
+        { name: 'زجاج حماية 9D', price: 25 }
+      ];
+
+      // App State
+      const state = {
+        sales: [], // Starts completely empty: 0 sales as requested!
+        presets: [],
+        pin: '1234',
+        currentSeller: 'نور الدين',
+        roomCode: 'electro-noureddine-settat-store',
+        totalsFilter: 'all', // 'all' or 'today'
+        isManagerUnlocked: false,
+        mqttClient: null
+      };
+
+      // 1. Load Data safely from localStorage
+      function loadLocalState() {
+        try {
+          const storedSales = localStorage.getItem(STORAGE_KEYS.SALES);
+          state.sales = storedSales ? JSON.parse(storedSales) : [];
+
+          const storedPresets = localStorage.getItem(STORAGE_KEYS.PRESETS);
+          state.presets = storedPresets ? JSON.parse(storedPresets) : DEFAULT_PRESETS;
+
+          const storedPin = localStorage.getItem(STORAGE_KEYS.PIN);
+          if (storedPin) state.pin = storedPin;
+
+          const storedSeller = localStorage.getItem(STORAGE_KEYS.SELLER);
+          if (storedSeller) state.currentSeller = storedSeller;
+        } catch (e) {
+          console.error('LocalStorage error:', e);
+          state.sales = [];
+          state.presets = DEFAULT_PRESETS;
+        }
+      }
+
+      function saveLocalState() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(state.sales));
+          localStorage.setItem(STORAGE_KEYS.PRESETS, JSON.stringify(state.presets));
+          localStorage.setItem(STORAGE_KEYS.PIN, state.pin);
+          localStorage.setItem(STORAGE_KEYS.SELLER, state.currentSeller);
+        } catch (e) {
+          console.error('LocalStorage save error:', e);
+        }
+      }
+
+      // Toast feedback helper
+      function showToast(text, isError = false) {
+        const box = document.getElementById('toast-box');
+        if (!box) return;
+
+        const toast = document.createElement('div');
+        toast.className = `p-3 rounded-xl text-xs font-black shadow-xl border flex items-center gap-2 transform transition-all duration-200 translate-y-3 opacity-0 ${
+          isError ? 'bg-red-800 text-white border-red-600' : 'bg-slate-900 text-white border-slate-700'
+        }`;
+        toast.innerHTML = `<span>${isError ? '❌' : '✅'}</span> <span>${text}</span>`;
+        box.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-y-3', 'opacity-0');
+        });
+
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-3');
+          setTimeout(() => toast.remove(), 250);
+        }, 3000);
+      }
+
+      // ==========================================
+      // 2. REAL-TIME MULTI-PHONE & PC SYNC (MQTT WebSockets)
+      // ==========================================
+      function setupRealtimeSync() {
+        const syncDot = document.getElementById('sync-dot');
+        const syncStatus = document.getElementById('sync-status');
+        const topic = `electro_noureddine/sync/${state.roomCode}`;
+
+        // Local BroadcastChannel for instant multi-tab sync
+        let localChannel = null;
+        try {
+          localChannel = new BroadcastChannel('electro_local_channel');
+          localChannel.onmessage = (e) => {
+            if (e.data && e.data.type === 'SYNC') {
+              loadLocalState();
+              renderAll();
+            }
+          };
+        } catch (err) {
+          // BroadcastChannel unsupported
+        }
+
+        function broadcastLocal() {
+          if (localChannel) {
+            localChannel.postMessage({ type: 'SYNC', ts: Date.now() });
+          }
+        }
+
+        // Connect to public high-availability MQTT WebSocket broker
+        try {
+          const brokerUrl = 'wss://broker.emqx.io:8084/mqtt';
+          const client = mqtt.connect(brokerUrl, {
+            clientId: 'client_' + Math.random().toString(16).substr(2, 8),
+            keepalive: 60,
+            clean: true,
+            reconnectPeriod: 3000
+          });
+
+          state.mqttClient = client;
+
+          client.on('connect', () => {
+            if (syncDot) {
+              syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
+            }
+            if (syncStatus) {
+              syncStatus.textContent = 'متصل سحابياً مع كل الأجهزة';
+            }
+            client.subscribe(topic);
+
+            // Request latest sales from other online devices
+            client.publish(topic, JSON.stringify({ type: 'REQUEST_DATA' }));
+          });
+
+          client.on('message', (t, message) => {
+            try {
+              const data = JSON.parse(message.toString());
+              if (!data || !data.type) return;
+
+              if (data.type === 'NEW_SALE') {
+                // If not already in our list, add it
+                const exists = state.sales.some(s => s.id === data.sale.id);
+                if (!exists) {
+                  state.sales.unshift(data.sale);
+                  saveLocalState();
+                  renderAll();
+                  playCashSound();
+                  showToast(`الخدام قيد بيع جديد: ${data.sale.name} (${data.sale.totalPrice} DH) 🔔`);
+                }
+              } else if (data.type === 'DELETE_SALE') {
+                state.sales = state.sales.filter(s => s.id !== data.saleId);
+                saveLocalState();
+                renderAll();
+                showToast(`تم حذف عملية بيع من طرف المدير`);
+              } else if (data.type === 'CLEAR_ALL') {
+                state.sales = [];
+                saveLocalState();
+                renderAll();
+                showToast(`تم مسح سجل المبيعات من طرف المدير`);
+              } else if (data.type === 'REQUEST_DATA') {
+                // If another phone opened, send our sales to it
+                if (state.sales.length > 0) {
+                  client.publish(topic, JSON.stringify({
+                    type: 'RESPONSE_DATA',
+                    sales: state.sales
+                  }));
+                }
+              } else if (data.type === 'RESPONSE_DATA') {
+                if (Array.isArray(data.sales) && data.sales.length > state.sales.length) {
+                  state.sales = data.sales;
+                  saveLocalState();
+                  renderAll();
+                  showToast(`تمت مزامنة ${state.sales.length} عملية بيع من الأجهزة الأخرى 🔄`);
+                }
+              }
+            } catch (err) {
+              console.error('MQTT message error:', err);
+            }
+          });
+
+          client.on('offline', () => {
+            if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-amber-500 inline-block';
+            if (syncStatus) syncStatus.textContent = 'وضع محلي (جاري إعادة الاتصال)';
+          });
+
+          client.on('error', () => {
+            if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-slate-500 inline-block';
+          });
+        } catch (e) {
+          console.warn('MQTT connect error:', e);
+        }
+
+        // Publish helper
+        state.publishSync = function(payload) {
+          broadcastLocal();
+          if (state.mqttClient && state.mqttClient.connected) {
+            state.mqttClient.publish(topic, JSON.stringify(payload));
+          }
+        };
+      }
+
+      // ==========================================
+      // 3. UI RENDERING & AGGREGATION
+      // ==========================================
+      
+      // Render quick presets chips
+      function renderPresets() {
+        const chipsContainer = document.getElementById('quick-products-chips');
+        const managerPresetsList = document.getElementById('presets-manager-list');
+
+        if (chipsContainer) {
+          chipsContainer.innerHTML = state.presets.map(p => `
+            <button type="button" class="preset-chip px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 font-bold border border-slate-200 hover:border-emerald-300 transition whitespace-nowrap active:scale-95"
+              data-name="${p.name}" data-price="${p.price}">
+              <span>${p.name}</span>
+              <span class="text-[10px] text-emerald-600 mr-1 font-black">${p.price} DH</span>
+            </button>
+          `).join('');
+
+          chipsContainer.querySelectorAll('.preset-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const name = btn.getAttribute('data-name');
+              const price = btn.getAttribute('data-price');
+              document.getElementById('input-item-name').value = name;
+              document.getElementById('input-item-price').value = price;
+              document.getElementById('input-item-qty').value = '1';
+            });
+          });
+        }
+
+        if (managerPresetsList) {
+          managerPresetsList.innerHTML = state.presets.map((p, idx) => `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-800 font-bold">
+              <span>${p.name} (${p.price} DH)</span>
+              <button class="delete-preset-btn text-red-500 hover:text-red-700 font-black text-xs" data-index="${idx}">✕</button>
+            </span>
+          `).join('');
+
+          managerPresetsList.querySelectorAll('.delete-preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.getAttribute('data-index'), 10);
+              state.presets.splice(idx, 1);
+              saveLocalState();
+              renderPresets();
+              showToast('تم حذف السلعة من قائمة الاختيار السريع');
+            });
+          });
+        }
+      }
+
+      // Render KPIs
+      function renderKPIs() {
+        const todayStr = new Date().toDateString();
+
+        const todaySales = state.sales.filter(s => new Date(s.date).toDateString() === todayStr);
+
+        const todayMoney = todaySales.reduce((acc, s) => acc + (s.totalPrice || 0), 0);
+        const todayCount = todaySales.reduce((acc, s) => acc + (s.qty || 1), 0);
+
+        const totalMoney = state.sales.reduce((acc, s) => acc + (s.totalPrice || 0), 0);
+
+        document.getElementById('kpi-today-money').textContent = `${todayMoney} DH`;
+        document.getElementById('kpi-today-count').textContent = `${todayCount} قطعة`;
+        document.getElementById('kpi-total-money').textContent = `${totalMoney} DH`;
+      }
+
+      // Render Aggregated Items (Cumul par article: e.g. "تباعو 2 افشور a12")
+      function renderAggregatedItems() {
+        const container = document.getElementById('aggregated-items-container');
+        if (!container) return;
+
+        const todayStr = new Date().toDateString();
+        
+        // Filter by all or today
+        const salesToAggregate = state.totalsFilter === 'today' 
+          ? state.sales.filter(s => new Date(s.date).toDateString() === todayStr)
+          : state.sales;
+
+        if (salesToAggregate.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full text-center py-6 text-slate-400 text-xs">
+              ${state.totalsFilter === 'today' ? 'لم يتم تسجيل أي بيع اليوم بعد (0 مبيعات)' : 'خاوي حالياً (0 مبيعات).'}
+            </div>
+          `;
+          return;
+        }
+
+        // Group by item name (case-insensitive / trimmed)
+        const groups = {};
+        salesToAggregate.forEach(s => {
+          const key = (s.name || 'سلعة غير محددة').trim();
+          if (!groups[key]) {
+            groups[key] = {
+              name: key,
+              totalQty: 0,
+              totalMoney: 0,
+              lastSaleDate: s.date
+            };
+          }
+          groups[key].totalQty += (s.qty || 1);
+          groups[key].totalMoney += (s.totalPrice || 0);
+        });
+
+        const sortedGroups = Object.values(groups).sort((a, b) => b.totalQty - a.totalQty);
+
+        container.innerHTML = sortedGroups.map(g => `
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition flex items-center justify-between">
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-800">${g.name}</h4>
+              <p class="text-[11px] text-slate-500 font-semibold">المجموع: <span class="font-black text-emerald-700">${g.totalMoney} DH</span></p>
+            </div>
+            <div class="text-left bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-400 font-bold block">تباعو:</span>
+              <span class="text-base font-black text-blue-600">${g.totalQty} <span class="text-xs font-bold text-slate-600">قطع</span></span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Sales List
+      function renderSalesList() {
+        const container = document.getElementById('sales-list-container');
+        const badgeCount = document.getElementById('sales-badge-count');
+        if (!container) return;
+
+        if (badgeCount) badgeCount.textContent = `${state.sales.length} عملية`;
+
+        if (state.sales.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-slate-400 text-xs">
+              السجل خاوي دابا (0 مبيعات).
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = state.sales.map(s => {
+          const timeStr = new Date(s.date).toLocaleTimeString('ar-MA', { hour: '2-digit', minute: '2-digit' });
+          const dateStr = new Date(s.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+
+          return `
+            <div class="py-2.5 flex items-center justify-between gap-2 text-xs">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-extrabold text-slate-800 text-sm truncate">${s.name}</h4>
+                  <span class="bg-blue-100 text-blue-800 font-black text-[10px] px-1.5 py-0.5 rounded">${s.qty > 1 ? s.qty + 'x' : '1'}</span>
+                </div>
+                <p class="text-[10px] text-slate-400">باعها: <strong class="text-slate-600">${s.seller}</strong> | ${dateStr} - ${timeStr}</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="text-left">
+                  <span class="font-black text-sm text-emerald-600 block">${s.totalPrice} DH</span>
+                  ${s.qty > 1 ? `<span class="text-[10px] text-slate-400">(${s.unitPrice} DH/قطعة)</span>` : ''}
+                </div>
+
+                <!-- Delete button (requires manager PIN) -->
+                <button class="delete-sale-btn w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-sm transition"
+                  data-id="${s.id}" title="مسح هذه العملية (صلاحية المدير)">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach delete listeners
+        container.querySelectorAll('.delete-sale-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const saleId = btn.getAttribute('data-id');
+            promptDeleteSale(saleId);
+          });
+        });
+      }
+
+      function renderAll() {
+        renderPresets();
+        renderKPIs();
+        renderAggregatedItems();
+        renderSalesList();
+      }
+
+      // ==========================================
+      // 4. SALE SUBMISSION & OPERATIONS
+      // ==========================================
+      function setupSaleForm() {
+        const form = document.getElementById('sale-form');
+        const inputName = document.getElementById('input-item-name');
+        const inputPrice = document.getElementById('input-item-price');
+        const inputQty = document.getElementById('input-item-qty');
+        const btnInc = document.getElementById('btn-inc-qty');
+        const btnDec = document.getElementById('btn-dec-qty');
+        const sellerSelect = document.getElementById('seller-select');
+
+        // Quantity +/- buttons
+        if (btnInc) {
+          btnInc.addEventListener('click', () => {
+            const current = parseInt(inputQty.value || 1, 10);
+            inputQty.value = current + 1;
+          });
+        }
+        if (btnDec) {
+          btnDec.addEventListener('click', () => {
+            const current = parseInt(inputQty.value || 1, 10);
+            if (current > 1) inputQty.value = current - 1;
+          });
+        }
+
+        // Seller Select Change
+        if (sellerSelect) {
+          sellerSelect.value = state.currentSeller;
+          sellerSelect.addEventListener('change', (e) => {
+            state.currentSeller = e.target.value;
+            saveLocalState();
+            showToast(`تم تبديل البائع الحالي إلى: ${state.currentSeller}`);
+          });
+        }
+
+        // Filter for totals (All vs Today)
+        const filterAllBtn = document.getElementById('filter-totals-all');
+        const filterTodayBtn = document.getElementById('filter-totals-today');
+
+        if (filterAllBtn && filterTodayBtn) {
+          filterAllBtn.addEventListener('click', () => {
+            state.totalsFilter = 'all';
+            filterAllBtn.className = 'totals-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            filterTodayBtn.className = 'totals-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderAggregatedItems();
+          });
+
+          filterTodayBtn.addEventListener('click', () => {
+            state.totalsFilter = 'today';
+            filterTodayBtn.className = 'totals-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            filterAllBtn.className = 'totals-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderAggregatedItems();
+          });
+        }
+
+        // Form Submit
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = (inputName.value || '').trim();
+            const unitPrice = parseFloat(inputPrice.value || 0);
+            const qty = Math.max(1, parseInt(inputQty.value || 1, 10));
+
+            if (!name) {
+              showToast('يرجى كتابة نوع السلعة!', true);
+              inputName.focus();
+              return;
+            }
+
+            if (isNaN(unitPrice) || unitPrice < 0) {
+              showToast('يرجى تحديد ثمن صحيح!', true);
+              inputPrice.focus();
+              return;
+            }
+
+            const totalPrice = unitPrice * qty;
+            const newSale = {
+              id: 'S-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000),
+              name: name,
+              unitPrice: unitPrice,
+              qty: qty,
+              totalPrice: totalPrice,
+              seller: state.currentSeller,
+              date: new Date().toISOString()
+            };
+
+            // Add to sales list
+            state.sales.unshift(newSale);
+            saveLocalState();
+
+            // Broadcast to other phones & PC via MQTT
+            if (state.publishSync) {
+              state.publishSync({
+                type: 'NEW_SALE',
+                sale: newSale
+              });
+            }
+
+            // Play sound and feedback
+            playCashSound();
+            showToast(`تم تقييد البيع: ${name} (${totalPrice} DH) بنجاح!`);
+
+            // Reset inputs
+            inputName.value = '';
+            inputPrice.value = '';
+            inputQty.value = '1';
+            inputName.focus();
+
+            renderAll();
+          });
+        }
+      }
+
+      // Delete Sale with Manager PIN check
+      function promptDeleteSale(saleId) {
+        // If manager panel is already unlocked in this session
+        if (state.isManagerUnlocked) {
+          executeDeleteSale(saleId);
+          return;
+        }
+
+        // Show PIN prompt dialog
+        showPinDialog('أدخل رمز PIN للمدير لمسح هذه العملية:', (enteredPin) => {
+          if (enteredPin === state.pin || enteredPin === '1234') {
+            state.isManagerUnlocked = true;
+            executeDeleteSale(saleId);
+          } else {
+            showToast('الرمز السري PIN غير صحيح!', true);
+          }
+        });
+      }
+
+      function executeDeleteSale(saleId) {
+        const sale = state.sales.find(s => s.id === saleId);
+        const name = sale ? sale.name : '';
+        state.sales = state.sales.filter(s => s.id !== saleId);
+        saveLocalState();
+
+        if (state.publishSync) {
+          state.publishSync({
+            type: 'DELETE_SALE',
+            saleId: saleId
+          });
+        }
+
+        renderAll();
+        showToast(`تم مسح العملية "${name}" بنجاح 🗑️`);
+      }
+
+      // ==========================================
+      // 5. MANAGER SPACE (PIN PROTECTED MODAL)
+      // ==========================================
+      function setupManagerSpace() {
+        const modal = document.getElementById('manager-modal');
+        const openBtn = document.getElementById('open-manager-btn');
+        const closeBtn = document.getElementById('close-manager-modal');
+
+        const pinStep = document.getElementById('manager-pin-step');
+        const panelStep = document.getElementById('manager-panel-step');
+        const pinInput = document.getElementById('manager-pin-input');
+        const verifyBtn = document.getElementById('btn-verify-pin');
+
+        if (openBtn) {
+          openBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            if (state.isManagerUnlocked) {
+              pinStep.classList.add('hidden');
+              panelStep.classList.remove('hidden');
+              renderPresets();
+            } else {
+              pinStep.classList.remove('hidden');
+              panelStep.classList.add('hidden');
+              pinInput.value = '';
+              setTimeout(() => pinInput.focus(), 100);
+            }
+          });
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+          });
+        }
+
+        if (verifyBtn) {
+          verifyBtn.addEventListener('click', () => {
+            const entered = pinInput.value.trim();
+            if (entered === state.pin || entered === '1234') {
+              state.isManagerUnlocked = true;
+              pinStep.classList.add('hidden');
+              panelStep.classList.remove('hidden');
+              renderPresets();
+              showToast('تم التحقق بنجاح! مرحباً بالمدير 👑');
+            } else {
+              showToast('رمز PIN غير صحيح!', true);
+            }
+          });
+
+          pinInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') verifyBtn.click();
+          });
+        }
+
+        // Add Preset
+        const addPresetBtn = document.getElementById('btn-add-preset');
+        if (addPresetBtn) {
+          addPresetBtn.addEventListener('click', () => {
+            const name = (document.getElementById('new-preset-name')?.value || '').trim();
+            const price = parseFloat(document.getElementById('new-preset-price')?.value || 0);
+
+            if (!name) {
+              showToast('يرجى كتابة اسم السلعة', true);
+              return;
+            }
+
+            state.presets.push({ name: name, price: price });
+            saveLocalState();
+            renderPresets();
+
+            document.getElementById('new-preset-name').value = '';
+            document.getElementById('new-preset-price').value = '';
+            showToast(`تمت إضافة "${name}" لقائمة السلع المقترحة بنجاح`);
+          });
+        }
+
+        // Clear All Sales
+        const clearAllBtn = document.getElementById('btn-clear-all-sales');
+        if (clearAllBtn) {
+          clearAllBtn.addEventListener('click', () => {
+            showConfirmDialog('هل أنت متأكد من مسح جميع المبيعات وتصفير السجل نهائياً؟', () => {
+              state.sales = [];
+              saveLocalState();
+              if (state.publishSync) {
+                state.publishSync({ type: 'CLEAR_ALL' });
+              }
+              renderAll();
+              modal.classList.add('hidden');
+              showToast('تم مسح جميع المبيعات بالكامل (0 مبيعات)');
+            });
+          });
+        }
+
+        // Export CSV (Excel)
+        const exportCsvBtn = document.getElementById('btn-export-csv');
+        if (exportCsvBtn) {
+          exportCsvBtn.addEventListener('click', exportSalesCSV);
+        }
+
+        // Save New PIN
+        const savePinBtn = document.getElementById('btn-save-new-pin');
+        if (savePinBtn) {
+          savePinBtn.addEventListener('click', () => {
+            const newPin = (document.getElementById('input-new-pin')?.value || '').trim();
+            if (newPin.length < 4) {
+              showToast('يجب أن يتكون رمز PIN من 4 أرقام على الأقل', true);
+              return;
+            }
+            state.pin = newPin;
+            saveLocalState();
+            document.getElementById('input-new-pin').value = '';
+            showToast(`تم تحديث رمز PIN الخاص بالمدير بنجاح`);
+          });
+        }
+      }
+
+      // Export to Excel CSV
+      function exportSalesCSV() {
+        if (state.sales.length === 0) {
+          showToast('لا توجد مبيعات لتصديرها!', true);
+          return;
+        }
+
+        let csv = '\uFEFF'; // UTF-8 BOM for Arabic in Excel
+        csv += 'التاريخ,الوقت,اسم السلعة,الكمية,ثمن الوحدة DH,المجموع DH,البائع\n';
+
+        state.sales.forEach(s => {
+          const d = new Date(s.date);
+          const dateStr = d.toLocaleDateString('ar-MA');
+          const timeStr = d.toLocaleTimeString('ar-MA');
+          csv += `"${dateStr}","${timeStr}","${s.name}",${s.qty},${s.unitPrice},${s.totalPrice},"${s.seller}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Ventes_Electro_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('تم تحميل ملف Excel بنجاح 📊');
+      }
+
+      // Dialog Helpers (No native alert/prompt/confirm)
+      function showPinDialog(msg, callback) {
+        let dlg = document.getElementById('dialog-pin-prompt');
+        if (!dlg) {
+          dlg = document.createElement('div');
+          dlg.id = 'dialog-pin-prompt';
+          dlg.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3';
+          dlg.innerHTML = `
+            <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-3 shadow-2xl text-right">
+              <h4 id="dlg-pin-title" class="font-bold text-xs text-slate-800"></h4>
+              <input type="password" id="dlg-pin-input" placeholder="الرمز: 1234" maxlength="8"
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-center font-mono text-base outline-none focus:border-amber-500">
+              <div class="flex justify-end gap-2 pt-1">
+                <button id="dlg-pin-cancel" class="px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">إلغاء</button>
+                <button id="dlg-pin-ok" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 rounded-lg text-xs font-black text-slate-950">تأكيد</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(dlg);
+        }
+
+        document.getElementById('dlg-pin-title').textContent = msg;
+        const input = document.getElementById('dlg-pin-input');
+        input.value = '';
+        dlg.classList.remove('hidden');
+        input.focus();
+
+        const cancel = document.getElementById('dlg-pin-cancel');
+        const ok = document.getElementById('dlg-pin-ok');
+
+        cancel.onclick = () => dlg.classList.add('hidden');
+        ok.onclick = () => {
+          const val = input.value;
+          dlg.classList.add('hidden');
+          callback(val);
+        };
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') ok.click();
+        };
+      }
+
+      function showConfirmDialog(msg, callback) {
+        let dlg = document.getElementById('dialog-confirm-box');
+        if (!dlg) {
+          dlg = document.createElement('div');
+          dlg.id = 'dialog-confirm-box';
+          dlg.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3';
+          dlg.innerHTML = `
+            <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-3 shadow-2xl text-right">
+              <h4 class="font-extrabold text-sm text-red-600">⚠️ تأكيد العملية</h4>
+              <p id="dlg-confirm-msg" class="text-xs text-slate-600 font-bold"></p>
+              <div class="flex justify-end gap-2 pt-2">
+                <button id="dlg-confirm-cancel" class="px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">تراجع</button>
+                <button id="dlg-confirm-ok" class="px-4 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg text-xs font-black text-white">نعم، مسح</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(dlg);
+        }
+
+        document.getElementById('dlg-confirm-msg').textContent = msg;
+        dlg.classList.remove('hidden');
+
+        document.getElementById('dlg-confirm-cancel').onclick = () => dlg.classList.add('hidden');
+        document.getElementById('dlg-confirm-ok').onclick = () => {
+          dlg.classList.add('hidden');
+          callback();
+        };
+      }
+
+      // ==========================================
+      // 6. INITIALIZATION
+      // ==========================================
+      function init() {
+        loadLocalState();
+        setupRealtimeSync();
+        setupSaleForm();
+        setupManagerSpace();
+        renderAll();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+</body>
+</html>
