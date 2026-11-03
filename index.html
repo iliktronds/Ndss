@@ -46,6 +46,15 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .mic-pulse {
+      animation: pulse-ring 1.5s infinite ease-in-out;
+    }
   </style>
 </head>
 <body class="h-full flex flex-col bg-slate-100 overflow-x-hidden selection:bg-emerald-500 selection:text-white">
@@ -113,11 +122,19 @@
         <!-- Right: Background Music, User Badge & Manager PIN Button -->
         <div class="flex items-center gap-2">
           
-          <!-- Background Music Button (Play / Mute Ambient Music) -->
-          <button id="btn-toggle-music" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-xs font-bold transition shadow-sm" title="تشغيل / كتم موسيقى المحل الهادئة">
-            <span id="music-icon" class="text-sm">🎵</span>
-            <span id="music-text" class="hidden sm:inline">موسيقى هادئة</span>
-          </button>
+          <!-- Music Track Selector & Toggle -->
+          <div class="flex items-center bg-slate-800 border border-slate-700 rounded-xl p-1 gap-1">
+            <button id="btn-toggle-music" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-sm transition" title="تشغيل / كتم الموسيقى">
+              <span id="music-icon">🎵</span>
+            </button>
+            <select id="music-track-select" class="bg-slate-900 text-emerald-400 text-xs font-bold rounded-lg px-2 py-1 outline-none border border-slate-700 cursor-pointer">
+              <option value="optimism">صباح التفاؤل والنشاط 🌅</option>
+              <option value="hope">أمل وطاقة إيجابية 🌟</option>
+              <option value="success">عزيمة ونجاح 🚀</option>
+              <option value="calm">هدوء وتركيز للمحل ☕</option>
+              <option value="boutique">أجواء المتجر الهادئ 🛍️</option>
+            </select>
+          </div>
 
           <!-- User Identity Badge (Locked strictly to the logged-in user!) -->
           <div id="current-user-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black shadow-sm">
@@ -318,51 +335,85 @@
     <!-- ======================================================== -->
     <div id="view-stock-page" class="space-y-4 hidden">
 
-      <!-- Stock Header Card -->
+      <!-- Stock Header Card & Voice AI Button -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
               <span class="text-amber-500 text-xl">📦</span>
-              <span>لائحة السلعة لي خاصانا (المخزون وقطع الغيار)</span>
+              <span>لائحة السلعة لي خاصانا (مقسّمة حسب الفروع)</span>
             </h2>
             <p class="text-xs text-slate-500">
-              قيد أي سلعة تقاضات أو خاصا المحل هنا؛ كتبان فالحين عند المدير فالبيسي وتليفونات الخدامة!
+              قيد أي سلعة تقاضات، وغادي تطلع فـ الفرع الخاص بيها (شاشات، بطاريات، 5D، بوشيطات...)
             </p>
           </div>
 
-          <!-- Copy to WhatsApp Button -->
-          <button id="copy-whatsapp-stock-btn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
-            <span>📋</span>
-            <span>نسخ اللائحة للواتساب</span>
-          </button>
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Voice Recognition AI Button -->
+            <button id="btn-voice-ai-stock" class="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black flex items-center gap-1.5 shadow-md transition active:scale-95" title="تقييد السلعة بالصوت عبر الذكاء الاصطناعي">
+              <span id="mic-icon-anim" class="text-sm">🎙️</span>
+              <span>قيد بالصوت (AI)</span>
+            </button>
+
+            <!-- Copy to WhatsApp Button -->
+            <button id="copy-whatsapp-stock-btn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
+              <span>📋</span>
+              <span>نسخ اللائحة للواتساب</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Form: Note down missing item -->
+        <!-- Voice AI Live Status Banner (hidden by default) -->
+        <div id="voice-status-box" class="hidden p-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-600 inline-block animate-ping"></span>
+            <span id="voice-status-text">جاري الاستماع... تكلم بالدارجة (مثال: خاصنا 3 افشورات a12 مستعجل)</span>
+          </div>
+          <button id="btn-cancel-voice" class="text-purple-600 hover:text-purple-900 font-black text-xs px-2">إلغاء</button>
+        </div>
+
+        <!-- Form: Note down missing item with Category Selection -->
         <form id="stock-form" class="space-y-3 pt-2 border-t border-slate-100">
+          
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
             
+            <!-- Category Selection (9 options requested by user) -->
+            <div class="sm:col-span-4">
+              <label class="block text-xs font-bold text-slate-700 mb-1">الصنف / الفرع:</label>
+              <select id="input-stock-category" class="w-full p-2.5 bg-amber-50/70 border-2 border-amber-300 rounded-xl text-xs font-black text-slate-900 outline-none focus:bg-white focus:border-amber-500">
+                <option value="افشور">📱 افشور (Écran / Afficheur)</option>
+                <option value="5D">🛡️ 5D (زجاج 5D/9D Incassable)</option>
+                <option value="زاج عادي">🔲 زاج عادي (Verre standard)</option>
+                <option value="بوشيط">💼 بوشيط (Pochette / Étui)</option>
+                <option value="باتري">🔋 باتري (Batterie)</option>
+                <option value="شارجورات">🔌 شارجورات وكابلات (Chargeurs)</option>
+                <option value="اكسسوارات">🎧 اكسسوارات وسماعات (Accessoires)</option>
+                <option value="هواتف">📲 هواتف (Téléphones)</option>
+                <option value="اصلاح الهاتف">🔧 اصلاح الهاتف وقطع الغيار</option>
+              </select>
+            </div>
+
             <!-- Missing Item Name -->
-            <div class="sm:col-span-6">
-              <label class="block text-xs font-bold text-slate-700 mb-1">السلعة أو القطعة لي خاصانا:</label>
-              <input type="text" id="input-stock-name" placeholder="مثلا: شاشات A12، بطاريات iPhone 11، شواحن 20W..." required
+            <div class="sm:col-span-4">
+              <label class="block text-xs font-bold text-slate-700 mb-1">اسم السلعة والموديل:</label>
+              <input type="text" id="input-stock-name" placeholder="مثلا: Samsung A12، iPhone 11..." required
                 class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition">
             </div>
 
             <!-- Quantity Needed -->
-            <div class="sm:col-span-3">
-              <label class="block text-xs font-bold text-slate-700 mb-1">شحال خاصنا (الكمية):</label>
-              <input type="number" id="input-stock-qty" value="1" min="1" placeholder="مثلا: 3" required
-                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-amber-700 outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">الكمية:</label>
+              <input type="number" id="input-stock-qty" value="1" min="1" placeholder="1" required
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-amber-700 outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition text-center">
             </div>
 
             <!-- Priority / Urgency -->
-            <div class="sm:col-span-3">
-              <label class="block text-xs font-bold text-slate-700 mb-1">درجة الأهمية:</label>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">الأهمية:</label>
               <select id="input-stock-priority" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none focus:bg-white">
                 <option value="عادي">عادي 🟢</option>
-                <option value="مستعجل بزاف">مستعجل بزاف 🔴</option>
-                <option value="طلب زبون">طلب خاص لزبون 🟡</option>
+                <option value="مستعجل بزاف">مستعجل 🔴</option>
+                <option value="طلب زبون">طلب زبون 🟡</option>
               </select>
             </div>
 
@@ -371,17 +422,32 @@
           <!-- Submit Button -->
           <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]">
             <span>➕</span>
-            <span>قيد فهاد اللائحة (باسم <span id="stock-seller-label">--</span>)</span>
+            <span>قيد فالفرع المخصص (باسم <span id="stock-seller-label">--</span>)</span>
           </button>
         </form>
 
       </div>
 
-      <!-- Missing Stock List -->
-      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex items-center justify-between flex-wrap gap-2">
+      <!-- Category Filter Pills Bar for Stock -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs font-bold" id="stock-category-filter-bar">
+        <button data-cat="all" class="stock-cat-pill active px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 whitespace-nowrap shadow-xs">الكل</button>
+        <button data-cat="افشور" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">📱 افشورات</button>
+        <button data-cat="5D" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🛡️ 5D</button>
+        <button data-cat="زاج عادي" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔲 زاج عادي</button>
+        <button data-cat="بوشيط" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">💼 بوشيطات</button>
+        <button data-cat="باتري" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔋 باتريات</button>
+        <button data-cat="شارجورات" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔌 شارجورات</button>
+        <button data-cat="اكسسوارات" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🎧 اكسسوارات</button>
+        <button data-cat="هواتف" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">📲 هواتف</button>
+        <button data-cat="اصلاح الهاتف" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔧 قطع اصلاح</button>
+      </div>
+
+      <!-- Missing Stock List (Organized into Branches / Categories!) -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-4">
+        
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 pb-2.5">
           <div class="flex items-center gap-2">
-            <h3 class="font-extrabold text-base text-slate-800">السلع المطلوبة حالياً:</h3>
+            <h3 class="font-extrabold text-base text-slate-800">السلع المقيدة حسب الفروع:</h3>
             <span id="stock-list-counter" class="text-xs bg-amber-100 text-amber-900 font-black px-2 py-0.5 rounded-full">0 سلعة</span>
           </div>
 
@@ -392,11 +458,13 @@
           </div>
         </div>
 
-        <div id="stock-items-container" class="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+        <!-- Branches / Categorized Stock Items Container -->
+        <div id="stock-branches-container" class="space-y-4">
           <div class="text-center py-8 text-slate-400 text-xs">
             ما كاينا حتى سلعة مقيدة بلي خاصانا حالياً. المخزون واجد!
           </div>
         </div>
+
       </section>
 
     </div>
@@ -515,14 +583,15 @@
   <!-- TOAST FEEDBACK NOTIFICATION -->
   <div id="toast-box" class="fixed bottom-4 left-4 z-50 pointer-events-none"></div>
 
-  <!-- ==================== WEB AUDIO BACKGROUND MUSIC & SOUNDS ==================== -->
+  <!-- ==================== WEB AUDIO OPTIMISTIC AMBIENT SYNTHESIZER ==================== -->
   <script>
-    // Pure Web Audio ambient synthesizer (Relaxing Lo-Fi boutique ambient chords)
+    // Sophisticated Web Audio Synthesizer with 5 Optimistic / Uplifting Ambient Tracks
     const ShopAudio = (function() {
       let audioCtx = null;
       let isPlaying = false;
       let timerId = null;
       let masterGain = null;
+      let currentTrack = 'optimism';
 
       function getContext() {
         if (!audioCtx) {
@@ -530,7 +599,7 @@
           if (AudioContext) {
             audioCtx = new AudioContext();
             masterGain = audioCtx.createGain();
-            masterGain.gain.setValueAtTime(0.18, audioCtx.currentTime); // Gentle ambient volume (18%)
+            masterGain.gain.setValueAtTime(0.18, audioCtx.currentTime);
             masterGain.connect(audioCtx.destination);
           }
         }
@@ -540,58 +609,126 @@
         return audioCtx;
       }
 
-      // Calm Lo-Fi Rhodes chord progression (Cmaj7 -> Am7 -> Fmaj7 -> G7sus4)
-      const chords = [
-        [261.63, 329.63, 392.00, 493.88], // Cmaj7: C4, E4, G4, B4
-        [220.00, 261.63, 329.63, 392.00], // Am7:   A3, C4, E4, G4
-        [174.61, 220.00, 261.63, 329.63], // Fmaj7: F3, A3, C4, E4
-        [196.00, 261.63, 293.66, 349.23]  // G7sus: G3, C4, D4, F4
-      ];
-      let chordIndex = 0;
+      // Track Chord Definitions (Optimistic, Cheerful, Peaceful Chords)
+      const TRACK_DEFINITIONS = {
+        // 1. صباح التفاؤل والنشاط (Bright C-major / F-major uplifting bells & pads)
+        optimism: {
+          interval: 3200,
+          filterFreq: 850,
+          waveform: 'triangle',
+          chords: [
+            [261.63, 329.63, 392.00, 523.25], // C Major
+            [349.23, 440.00, 523.25, 659.25], // F Major7
+            [220.00, 329.63, 440.00, 523.25], // Am7
+            [196.00, 246.94, 293.66, 392.00]  // G Major
+          ]
+        },
+        // 2. أمل وطاقة إيجابية (G Major / D Major bright hope)
+        hope: {
+          interval: 3600,
+          filterFreq: 750,
+          waveform: 'sine',
+          chords: [
+            [196.00, 293.66, 392.00, 493.88], // G Major
+            [293.66, 369.99, 440.00, 587.33], // D Major
+            [220.00, 261.63, 329.63, 440.00], // Am
+            [174.61, 261.63, 349.23, 440.00]  // F Major
+          ]
+        },
+        // 3. عزيمة ونجاح (Uplifting cadence with rich harmonics)
+        success: {
+          interval: 3000,
+          filterFreq: 950,
+          waveform: 'triangle',
+          chords: [
+            [261.63, 392.00, 493.88, 659.25], // Cmaj9
+            [293.66, 440.00, 587.33, 739.99], // Dadd9
+            [329.63, 392.00, 493.88, 587.33], // Em7
+            [349.23, 440.00, 523.25, 659.25]  // Fmaj7
+          ]
+        },
+        // 4. هدوء وتركيز للمحل (Warm relaxing Lo-Fi Rhodes)
+        calm: {
+          interval: 4000,
+          filterFreq: 550,
+          waveform: 'triangle',
+          chords: [
+            [220.00, 261.63, 329.63, 392.00], // Am7
+            [174.61, 220.00, 261.63, 329.63], // Fmaj7
+            [261.63, 329.63, 392.00, 493.88], // Cmaj7
+            [196.00, 261.63, 293.66, 349.23]  // G7sus
+          ]
+        },
+        // 5. أجواء المتجر الهادئ (Boutique jazz pads)
+        boutique: {
+          interval: 3800,
+          filterFreq: 680,
+          waveform: 'sine',
+          chords: [
+            [261.63, 329.63, 392.00, 493.88], // Cmaj7
+            [246.94, 329.63, 392.00, 493.88], // Em/B
+            [220.00, 261.63, 329.63, 392.00], // Am7
+            [174.61, 220.00, 261.63, 349.23]  // Fmaj7
+          ]
+        }
+      };
 
-      function playAmbientChord() {
+      let stepIndex = 0;
+
+      function playNextChord() {
         if (!isPlaying) return;
         const ctx = getContext();
         if (!ctx) return;
 
-        const now = ctx.currentTime;
-        const currentNotes = chords[chordIndex];
-        chordIndex = (chordIndex + 1) % chords.length;
+        const track = TRACK_DEFINITIONS[currentTrack] || TRACK_DEFINITIONS.optimism;
+        const chordNotes = track.chords[stepIndex % track.chords.length];
+        stepIndex++;
 
-        // Play gentle soft pad notes with low-pass filter
-        currentNotes.forEach((freq, i) => {
+        const now = ctx.currentTime;
+
+        chordNotes.forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const noteGain = ctx.createGain();
           const filter = ctx.createBiquadFilter();
 
-          osc.type = 'triangle';
+          osc.type = track.waveform;
           osc.frequency.setValueAtTime(freq, now);
 
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(650, now); // Soft warm tone
+          filter.frequency.setValueAtTime(track.filterFreq, now);
 
-          // Slow soft attack and lingering decay
           noteGain.gain.setValueAtTime(0.001, now);
-          noteGain.gain.linearRampToValueAtTime(0.06, now + 0.8 + (i * 0.15));
-          noteGain.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
+          noteGain.gain.linearRampToValueAtTime(0.05, now + 0.6 + (i * 0.12));
+          noteGain.gain.exponentialRampToValueAtTime(0.001, now + (track.interval / 1000) - 0.2);
 
           osc.connect(filter);
           filter.connect(noteGain);
           noteGain.connect(masterGain);
 
-          osc.start(now + (i * 0.08));
-          osc.stop(now + 4.0);
+          osc.start(now + (i * 0.06));
+          osc.stop(now + (track.interval / 1000));
         });
 
-        // Schedule next chord every 3.8 seconds
-        timerId = setTimeout(playAmbientChord, 3800);
+        timerId = setTimeout(playNextChord, track.interval);
+      }
+
+      function setTrack(trackKey) {
+        if (TRACK_DEFINITIONS[trackKey]) {
+          currentTrack = trackKey;
+          if (isPlaying) {
+            if (timerId) clearTimeout(timerId);
+            stepIndex = 0;
+            playNextChord();
+          }
+        }
       }
 
       function start() {
         if (isPlaying) return;
         getContext();
         isPlaying = true;
-        playAmbientChord();
+        stepIndex = 0;
+        playNextChord();
         updateMusicButtonUI(true);
       }
 
@@ -628,16 +765,13 @@
       function updateMusicButtonUI(active) {
         const btn = document.getElementById('btn-toggle-music');
         const icon = document.getElementById('music-icon');
-        const text = document.getElementById('music-text');
         if (btn) {
           if (active) {
-            btn.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-600 text-white border border-emerald-500 text-xs font-black transition shadow-sm animate-pulse';
+            btn.className = 'w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm transition shadow-sm animate-pulse';
             if (icon) icon.textContent = '🔊';
-            if (text) text.textContent = 'الموسيقى مشغلة';
           } else {
-            btn.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold transition shadow-sm';
+            btn.className = 'w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center text-sm transition';
             if (icon) icon.textContent = '🔇';
-            if (text) text.textContent = 'تشغيل الموسيقى';
           }
         }
       }
@@ -646,6 +780,8 @@
         start: start,
         stop: stop,
         toggle: toggle,
+        setTrack: setTrack,
+        getTrack: () => currentTrack,
         playBeep: playBeep,
         isPlaying: () => isPlaying
       };
@@ -663,13 +799,14 @@
 
       // Storage Keys
       const STORAGE_KEYS = {
-        SALES: 'electro_simple_sales_v5',
-        STOCK_NEEDS: 'electro_simple_stock_needs_v5',
-        PRESETS: 'electro_simple_presets_v5',
-        USER_PINS: 'electro_user_pins_v5',
-        ACTIVE_SESSION: 'electro_active_user_v5',
-        LAST_SYNC_TS: 'electro_simple_last_sync_v5',
-        MUSIC_MUTED: 'electro_music_muted_pref'
+        SALES: 'electro_simple_sales_v6',
+        STOCK_NEEDS: 'electro_simple_stock_needs_v6',
+        PRESETS: 'electro_simple_presets_v6',
+        USER_PINS: 'electro_user_pins_v6',
+        ACTIVE_SESSION: 'electro_active_user_v6',
+        LAST_SYNC_TS: 'electro_simple_last_sync_v6',
+        MUSIC_MUTED: 'electro_music_muted_pref_v6',
+        MUSIC_TRACK: 'electro_music_track_pref_v6'
       };
 
       // Initial Default Presets
@@ -686,10 +823,7 @@
         { name: 'زجاج حماية 9D', price: 25 }
       ];
 
-      // Default Individual PINs:
-      // Noureddine (Manager): 1234
-      // Ayoub (Employee): 2222
-      // Abdellah (Employee): 3333
+      // Default Individual PINs
       const DEFAULT_USER_PINS = {
         'نورالدين': '1234',
         'ايوب': '2222',
@@ -699,16 +833,17 @@
       // App State
       const state = {
         currentView: 'sales', // 'sales' or 'stock'
-        activeUser: null, // Logged in user: 'نورالدين', 'ايوب', or 'عبد الله'
-        isManager: false, // True strictly if activeUser is 'نورالدين'
+        activeUser: null, // 'نورالدين', 'ايوب', or 'عبد الله'
+        isManager: false,
         userPins: Object.assign({}, DEFAULT_USER_PINS),
         sales: [],
         stockNeeds: [],
         presets: DEFAULT_PRESETS,
         lastUpdated: 0,
-        roomCode: 'iliktronds_shop_cloud_v5',
+        roomCode: 'iliktronds_shop_cloud_v6',
         totalsFilter: 'all',
         stockFilter: 'pending',
+        stockCatFilter: 'all', // Category filter in stock view
         mqttClient: null
       };
 
@@ -732,9 +867,16 @@
             } catch(e) {}
           }
 
+          const storedTrack = localStorage.getItem(STORAGE_KEYS.MUSIC_TRACK);
+          if (storedTrack) {
+            ShopAudio.setTrack(storedTrack);
+            const select = document.getElementById('music-track-select');
+            if (select) select.value = storedTrack;
+          }
+
           const storedSession = sessionStorage.getItem(STORAGE_KEYS.ACTIVE_SESSION) || localStorage.getItem(STORAGE_KEYS.ACTIVE_SESSION);
           if (storedSession && ['نورالدين', 'ايوب', 'عبد الله'].includes(storedSession)) {
-            setUserSession(storedSession, false); // Don't auto-start music on passive reload unless user interacted
+            setUserSession(storedSession, false);
           }
 
           const storedTs = localStorage.getItem(STORAGE_KEYS.LAST_SYNC_TS);
@@ -778,7 +920,6 @@
         }, 3200);
       }
 
-      // Set active user session
       function setUserSession(userName, startMusic = true) {
         state.activeUser = userName;
         state.isManager = (userName === 'نورالدين');
@@ -794,7 +935,6 @@
         updateUserHeader();
         renderAll();
 
-        // Autoplay background music upon login interaction
         if (startMusic) {
           const isMuted = localStorage.getItem(STORAGE_KEYS.MUSIC_MUTED) === 'true';
           if (!isMuted) {
@@ -855,9 +995,13 @@
         }
       }
 
-      // Setup Music Toggle Button
+      // ==========================================
+      // 2. MUSIC PLAYER & TRACK SELECTOR
+      // ==========================================
       function setupMusicPlayer() {
         const btnToggleMusic = document.getElementById('btn-toggle-music');
+        const trackSelect = document.getElementById('music-track-select');
+
         if (btnToggleMusic) {
           btnToggleMusic.addEventListener('click', () => {
             const active = ShopAudio.toggle();
@@ -871,10 +1015,181 @@
             }
           });
         }
+
+        if (trackSelect) {
+          trackSelect.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            ShopAudio.setTrack(selected);
+            try {
+              localStorage.setItem(STORAGE_KEYS.MUSIC_TRACK, selected);
+            } catch(e) {}
+            if (!ShopAudio.isPlaying()) {
+              ShopAudio.start();
+            }
+            showToast(`تم تبديل الموسيقى إلى: ${trackSelect.options[trackSelect.selectedIndex].text} 🎶`);
+          });
+        }
       }
 
       // ==========================================
-      // 2. PIN AUTHENTICATION GATE
+      // 3. VOICE AI INPUT FOR STOCK (تسجيل السلع بالصوت)
+      // ==========================================
+      function setupVoiceStockAI() {
+        const btnVoice = document.getElementById('btn-voice-ai-stock');
+        const statusBox = document.getElementById('voice-status-box');
+        const statusText = document.getElementById('voice-status-text');
+        const cancelBtn = document.getElementById('btn-cancel-voice');
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!btnVoice) return;
+
+        let recognition = null;
+        if (SpeechRec) {
+          recognition = new SpeechRec();
+          recognition.lang = 'ar-MA'; // Moroccan Arabic
+          recognition.continuous = false;
+          recognition.interimResults = false;
+        }
+
+        function stopListening() {
+          if (recognition) {
+            try { recognition.stop(); } catch(e) {}
+          }
+          if (statusBox) statusBox.classList.add('hidden');
+        }
+
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', stopListening);
+        }
+
+        btnVoice.addEventListener('click', () => {
+          if (!SpeechRec) {
+            showToast('الإدخال الصوتي غير مدعوم في متصفحك. يرجى استخدام Google Chrome أو Safari.', true);
+            return;
+          }
+
+          statusBox.classList.remove('hidden');
+          statusText.textContent = '🔴 جاري الاستماع... تكلم بالدارجة (مثال: خاصنا 3 افشورات a12 مستعجل)';
+
+          try {
+            recognition.start();
+          } catch(e) {
+            // Might already be active
+          }
+        });
+
+        if (recognition) {
+          recognition.onresult = (event) => {
+            const spoken = (event.results[0][0].transcript || '').trim();
+            statusBox.classList.add('hidden');
+            showToast(`سمعت: "${spoken}" 🎙️`);
+            parseSpokenStockAI(spoken);
+          };
+
+          recognition.onerror = (event) => {
+            statusBox.classList.add('hidden');
+            showToast(`خطأ في الصوت: ${event.error}`, true);
+          };
+
+          recognition.onend = () => {
+            statusBox.classList.add('hidden');
+          };
+        }
+      }
+
+      // AI-like Darija Parsing for Voice Input
+      function parseSpokenStockAI(spokenText) {
+        const text = spokenText.toLowerCase();
+
+        // 1. Detect Quantity
+        let qty = 1;
+        const numberMatches = text.match(/\d+/);
+        if (numberMatches) {
+          qty = parseInt(numberMatches[0], 10);
+        } else if (/جوج|زوج|إثنين|اثنين/i.test(text)) {
+          qty = 2;
+        } else if (/تلاتة|ثلاثة|تلات/i.test(text)) {
+          qty = 3;
+        } else if (/ربعة|أربعة|اربعة/i.test(text)) {
+          qty = 4;
+        } else if (/خمسة|خمس/i.test(text)) {
+          qty = 5;
+        } else if (/ستة|ست/i.test(text)) {
+          qty = 6;
+        } else if (/سبعة|سبع/i.test(text)) {
+          qty = 7;
+        } else if (/تمانية|ثمانية/i.test(text)) {
+          qty = 8;
+        } else if (/تسعود|تسعة/i.test(text)) {
+          qty = 9;
+        } else if (/عشرة|عشر/i.test(text)) {
+          qty = 10;
+        }
+
+        // 2. Detect Category
+        let category = 'افشور';
+        if (/5d|9d|انكاسابل|إنكاسابل|incassable/i.test(text)) {
+          category = '5D';
+        } else if (/زاج عادي|زجاج عادي|زاج|زجاج/i.test(text)) {
+          category = 'زاج عادي';
+        } else if (/بوشيط|بوشيت|كفر|غطاء|pochette/i.test(text)) {
+          category = 'بوشيط';
+        } else if (/باتري|بطارية|بيل|batterie/i.test(text)) {
+          category = 'باتري';
+        } else if (/شارجور|شاحن|كابل|خيط|chargeur|cable/i.test(text)) {
+          category = 'شارجورات';
+        } else if (/سماعات|ايربودز|سماعة|اكسسوار|accessoire|ecouteur/i.test(text)) {
+          category = 'اكسسوارات';
+        } else if (/هاتف|تليفون|بورطابل|telephone/i.test(text)) {
+          category = 'هواتف';
+        } else if (/اصلاح|كونكتور|كاميرا|نابا|كونيكتور/i.test(text)) {
+          category = 'اصلاح الهاتف';
+        } else if (/افشور|شاشة|أفشور|afficheur|ecran/i.test(text)) {
+          category = 'افشور';
+        }
+
+        // 3. Detect Priority
+        let priority = 'عادي';
+        if (/مستعجل|ضروري|سربينا|عاجل|دغيا/i.test(text)) {
+          priority = 'مستعجل بزاف';
+        } else if (/كليان|زبون|خاص بالكليان/i.test(text)) {
+          priority = 'طلب زبون';
+        }
+
+        // 4. Clean Item Name
+        let cleanedName = spokenText
+          .replace(/خاصنا|قيد|لينا|بغيت|سجل|جيبلنا|شري|ديال|سلعة/gi, '')
+          .replace(/\b(1|2|3|4|5|6|7|8|9|10)\b/g, '')
+          .replace(/جوج|زوج|تلاتة|ربعة|خمسة|عشرة/gi, '')
+          .replace(/مستعجل|ضروري|دغيا|سربينا|طلب زبون/gi, '')
+          .trim();
+
+        if (!cleanedName || cleanedName.length < 2) {
+          cleanedName = spokenText;
+        }
+
+        // Auto-fill into input fields
+        const inputName = document.getElementById('input-stock-name');
+        const inputQty = document.getElementById('input-stock-qty');
+        const inputCat = document.getElementById('input-stock-category');
+        const inputPriority = document.getElementById('input-stock-priority');
+
+        if (inputName) inputName.value = cleanedName;
+        if (inputQty) inputQty.value = qty;
+        if (inputCat) inputCat.value = category;
+        if (inputPriority) inputPriority.value = priority;
+
+        // Auto submit directly!
+        const stockForm = document.getElementById('stock-form');
+        if (stockForm) {
+          const submitEvent = new Event('submit', { cancelable: true });
+          stockForm.dispatchEvent(submitEvent);
+        }
+      }
+
+      // ==========================================
+      // 4. PIN AUTHENTICATION GATE
       // ==========================================
       function setupLoginGate() {
         const pinInput = document.getElementById('login-pin-input');
@@ -898,7 +1213,7 @@
           }
 
           if (matchedUser) {
-            setUserSession(matchedUser, true); // Starts music automatically upon successful PIN login!
+            setUserSession(matchedUser, true);
             if (matchedUser === 'نورالدين') {
               showToast('مرحباً بك يا نورالدين (المدير 👑)! فتحت كامل الصلاحيات والمداخيل.');
             } else {
@@ -927,7 +1242,7 @@
       }
 
       // ==========================================
-      // 3. PERMANENT CLOUD RETAIN SYNC
+      // 5. PERMANENT CLOUD RETAIN SYNC
       // ==========================================
       function setupRealtimeSync() {
         const syncDot = document.getElementById('sync-dot');
@@ -936,15 +1251,13 @@
 
         let localChannel = null;
         try {
-          localChannel = new BroadcastChannel('electro_local_channel_v5');
+          localChannel = new BroadcastChannel('electro_local_channel_v6');
           localChannel.onmessage = (e) => {
             if (e.data && e.data.type === 'FULL_SYNC') {
               applyIncomingState(e.data.payload, false);
             }
           };
-        } catch (err) {
-          // Unsupported
-        }
+        } catch (err) {}
 
         function applyIncomingState(payload, fromNetwork = true) {
           if (!payload) return;
@@ -1054,7 +1367,7 @@
       }
 
       // ==========================================
-      // 4. PAGE NAVIGATION (SALES vs STOCK)
+      // 6. PAGE NAVIGATION (SALES vs STOCK)
       // ==========================================
       function setupPageNavigation() {
         const btnSales = document.getElementById('nav-btn-sales');
@@ -1083,21 +1396,47 @@
       }
 
       // ==========================================
-      // 5. INVENTORY / MISSING STOCK SECTION
+      // 7. INVENTORY / MISSING STOCK SECTION (BY CATEGORY BRANCHES)
       // ==========================================
+      const STOCK_CATEGORIES_INFO = {
+        'افشور': { name: 'شاشات وافشورات (Écrans)', icon: '📱', color: 'blue' },
+        '5D': { name: 'زجاج حماية 5D / 9D Incassable', icon: '🛡️', color: 'emerald' },
+        'زاج عادي': { name: 'زاج حماية عادي', icon: '🔲', color: 'slate' },
+        'بوشيط': { name: 'بوشيطات وأغطية (Pochettes)', icon: '💼', color: 'purple' },
+        'باتري': { name: 'بطاريات (Batteries)', icon: '🔋', color: 'amber' },
+        'شارجورات': { name: 'شواحن وكابلات (Chargeurs)', icon: '🔌', color: 'orange' },
+        'اكسسوارات': { name: 'إكسسوارات وسماعات (Accessoires)', icon: '🎧', color: 'indigo' },
+        'هواتف': { name: 'هواتف ذكية (Téléphones)', icon: '📲', color: 'teal' },
+        'اصلاح الهاتف': { name: 'قطع غيار وإصلاح الهاتف (Réparation)', icon: '🔧', color: 'rose' }
+      };
+
       function setupStockSection() {
         const form = document.getElementById('stock-form');
         const inputName = document.getElementById('input-stock-name');
+        const inputCat = document.getElementById('input-stock-category');
         const inputQty = document.getElementById('input-stock-qty');
         const inputPriority = document.getElementById('input-stock-priority');
         const filterPending = document.getElementById('filter-stock-pending');
         const filterBought = document.getElementById('filter-stock-bought');
         const copyWhatsappBtn = document.getElementById('copy-whatsapp-stock-btn');
 
+        // Category filter pills
+        document.querySelectorAll('.stock-cat-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            document.querySelectorAll('.stock-cat-pill').forEach(p => {
+              p.className = 'stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap';
+            });
+            pill.className = 'stock-cat-pill active px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 whitespace-nowrap shadow-xs font-black';
+            state.stockCatFilter = pill.getAttribute('data-cat');
+            renderStockSection();
+          });
+        });
+
         if (form) {
           form.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = (inputName.value || '').trim();
+            const cat = inputCat.value || 'افشور';
             const qty = Math.max(1, parseInt(inputQty.value || 1, 10));
             const priority = inputPriority.value || 'عادي';
 
@@ -1110,6 +1449,7 @@
             const newStockItem = {
               id: 'STK-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 100),
               name: name,
+              category: cat,
               qty: qty,
               priority: priority,
               addedBy: state.activeUser || 'المحل',
@@ -1121,7 +1461,8 @@
             saveLocalState();
             if (state.syncToCloud) state.syncToCloud();
 
-            showToast(`تم تقييد "${name}" فلائحة السلعة لي خاصانا بنجاح! 📦`);
+            playCashSound();
+            showToast(`تم تقييد "${name}" فـ فرع (${cat}) بنجاح! 📦`);
             inputName.value = '';
             inputQty.value = '1';
             inputName.focus();
@@ -1145,6 +1486,7 @@
           });
         }
 
+        // WhatsApp Copy Formatted by Categories
         if (copyWhatsappBtn) {
           copyWhatsappBtn.addEventListener('click', () => {
             const pending = state.stockNeeds.filter(item => item.status !== 'bought');
@@ -1156,16 +1498,29 @@
             let msg = `📦 *لائحة السلعة لي خاصا محل إلكترو نور الدين:*\n`;
             msg += `📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')}\n\n`;
 
-            pending.forEach((item, idx) => {
-              const pMark = item.priority === 'مستعجل بزاف' ? '🔴' : item.priority === 'طلب زبون' ? '🟡' : '🔹';
-              msg += `${idx + 1}. ${pMark} *${item.name}* (الكمية: ${item.qty}) - قيدها: ${item.addedBy}\n`;
+            // Group by category for WhatsApp
+            const groups = {};
+            pending.forEach(item => {
+              const c = item.category || 'افشور';
+              if (!groups[c]) groups[c] = [];
+              groups[c].push(item);
             });
 
-            msg += `\n_تم إرسالها من تطبيق إلكترو نور الدين_`;
+            for (const catKey in groups) {
+              const catInfo = STOCK_CATEGORIES_INFO[catKey] || { name: catKey, icon: '🔹' };
+              msg += `${catInfo.icon} *${catInfo.name}:*\n`;
+              groups[catKey].forEach(item => {
+                const pMark = item.priority === 'مستعجل بزاف' ? '🔴' : item.priority === 'طلب زبون' ? '🟡' : '▫️';
+                msg += `  ${pMark} ${item.name} (خاصنا: ${item.qty})\n`;
+              });
+              msg += `\n`;
+            }
+
+            msg += `_تم إرسالها من تطبيق إلكترو نور الدين_`;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
               navigator.clipboard.writeText(msg).then(() => {
-                showToast('تم نسخ لائحة السلعة بنجاح! دير ليها Coller فالواتساب 📋');
+                showToast('تم نسخ لائحة السلعة مقسمة حسب الفروع بنجاح للواتساب 📋');
               }).catch(() => {
                 fallbackCopy(msg);
               });
@@ -1190,8 +1545,9 @@
         document.body.removeChild(temp);
       }
 
+      // Render Categorized Stock Branches
       function renderStockSection() {
-        const container = document.getElementById('stock-items-container');
+        const container = document.getElementById('stock-branches-container');
         const counter = document.getElementById('stock-list-counter');
         const badgeCount = document.getElementById('badge-needed-stock-count');
         if (!container) return;
@@ -1199,71 +1555,108 @@
         const pendingItems = state.stockNeeds.filter(item => item.status !== 'bought');
         if (badgeCount) badgeCount.textContent = pendingItems.length;
 
-        const displayedItems = state.stockNeeds.filter(item => {
+        let filteredItems = state.stockNeeds.filter(item => {
           if (state.stockFilter === 'bought') return item.status === 'bought';
           return item.status !== 'bought';
         });
 
-        if (counter) {
-          counter.textContent = `${displayedItems.length} سلعة`;
+        // Apply category filter if not 'all'
+        if (state.stockCatFilter !== 'all') {
+          filteredItems = filteredItems.filter(item => (item.category || 'افشور') === state.stockCatFilter);
         }
 
-        if (displayedItems.length === 0) {
+        if (counter) {
+          counter.textContent = `${filteredItems.length} سلعة`;
+        }
+
+        if (filteredItems.length === 0) {
           container.innerHTML = `
             <div class="text-center py-8 text-slate-400 text-xs">
-              ${state.stockFilter === 'bought' ? 'لا توجد سلع مشتراة في الأرشيف.' : 'ما كاينا حتى سلعة مقيدة بلي خاصانا حالياً. المخزون واجد!'}
+              ${state.stockFilter === 'bought' ? 'لا توجد سلع مشتراة في الأرشيف.' : 'ما كاينا حتى سلعة مقيدة فهاد الفرع حالياً. المخزون واجد!'}
             </div>
           `;
           return;
         }
 
-        container.innerHTML = displayedItems.map(item => {
-          const isBought = item.status === 'bought';
-          const pBadge = item.priority === 'مستعجل بزاف' 
-            ? '<span class="bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded text-[10px]">مستعجل 🔴</span>'
-            : item.priority === 'طلب زبون'
-            ? '<span class="bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded text-[10px]">طلب زبون 🟡</span>'
-            : '<span class="bg-slate-100 text-slate-600 font-semibold px-1.5 py-0.5 rounded text-[10px]">عادي</span>';
+        // Group filtered items by category
+        const groups = {};
+        filteredItems.forEach(item => {
+          const c = item.category || 'افشور';
+          if (!groups[c]) groups[c] = [];
+          groups[c].push(item);
+        });
 
-          const dateStr = new Date(item.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+        // Build HTML grouped by category branches
+        container.innerHTML = Object.keys(groups).map(catKey => {
+          const catInfo = STOCK_CATEGORIES_INFO[catKey] || { name: catKey, icon: '📦', color: 'slate' };
+          const itemsInCat = groups[catKey];
 
-          const deleteBtnHtml = state.isManager ? `
-            <button class="delete-stock-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
-              data-id="${item.id}" title="حذف (المدير فقط)">
-              ✕
-            </button>
-          ` : '';
+          const itemsHtml = itemsInCat.map(item => {
+            const isBought = item.status === 'bought';
+            const pBadge = item.priority === 'مستعجل بزاف' 
+              ? '<span class="bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded text-[10px]">مستعجل 🔴</span>'
+              : item.priority === 'طلب زبون'
+              ? '<span class="bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded text-[10px]">طلب زبون 🟡</span>'
+              : '<span class="bg-slate-100 text-slate-600 font-semibold px-1.5 py-0.5 rounded text-[10px]">عادي</span>';
+
+            const dateStr = new Date(item.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+
+            const deleteBtnHtml = state.isManager ? `
+              <button class="delete-stock-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
+                data-id="${item.id}" title="حذف (المدير فقط)">
+                ✕
+              </button>
+            ` : '';
+
+            return `
+              <div class="py-2.5 px-3 flex items-center justify-between gap-2 text-xs bg-white rounded-xl border border-slate-100 hover:border-slate-200 transition ${isBought ? 'opacity-60 bg-slate-50/50' : ''}">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <h5 class="font-extrabold text-slate-800 text-sm truncate ${isBought ? 'line-through text-slate-500' : ''}">${item.name}</h5>
+                    <span class="bg-amber-100 text-amber-900 font-black text-xs px-2 py-0.5 rounded-lg">خاصنا: ${item.qty} قطع</span>
+                    ${pBadge}
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-0.5">قيدها: <strong class="text-slate-600">${item.addedBy || 'المحل'}</strong> | ${dateStr}</p>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  ${!isBought ? `
+                    <button class="mark-bought-btn px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg text-xs transition flex items-center gap-1"
+                      data-id="${item.id}" title="تم الشراء وإدخالها للمحل">
+                      <span>✅</span> <span>تشراَت</span>
+                    </button>
+                  ` : `
+                    <button class="unmark-bought-btn px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px]"
+                      data-id="${item.id}" title="إرجاع إلى قائمة السلع المطلوبة">
+                      <span>↩️</span> إرجاع
+                    </button>
+                  `}
+
+                  ${deleteBtnHtml}
+                </div>
+              </div>
+            `;
+          }).join('');
 
           return `
-            <div class="py-2.5 flex items-center justify-between gap-2 text-xs ${isBought ? 'opacity-60 bg-slate-50/50' : ''}">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <h4 class="font-extrabold text-slate-800 text-sm truncate ${isBought ? 'line-through text-slate-500' : ''}">${item.name}</h4>
-                  <span class="bg-amber-100 text-amber-900 font-black text-xs px-2 py-0.5 rounded-lg">خاصنا: ${item.qty} قطع</span>
-                  ${pBadge}
-                </div>
-                <p class="text-[10px] text-slate-400 mt-0.5">قيدها: <strong class="text-slate-600">${item.addedBy || 'المحل'}</strong> | ${dateStr}</p>
+            <div class="p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
+              <div class="flex items-center justify-between px-1">
+                <h4 class="font-black text-xs text-slate-800 flex items-center gap-1.5">
+                  <span>${catInfo.icon}</span>
+                  <span>${catInfo.name}</span>
+                </h4>
+                <span class="text-[10px] font-black bg-white px-2 py-0.5 rounded-full border border-slate-200 text-slate-600">
+                  ${itemsInCat.length} قطع
+                </span>
               </div>
-
-              <div class="flex items-center gap-1.5">
-                ${!isBought ? `
-                  <button class="mark-bought-btn px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg text-xs transition flex items-center gap-1"
-                    data-id="${item.id}" title="تم الشراء وإدخالها للمحل">
-                    <span>✅</span> <span>تشراَت</span>
-                  </button>
-                ` : `
-                  <button class="unmark-bought-btn px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px]"
-                    data-id="${item.id}" title="إرجاع إلى قائمة السلع المطلوبة">
-                    <span>↩️</span> إرجاع
-                  </button>
-                `}
-
-                ${deleteBtnHtml}
+              <div class="space-y-1.5">
+                ${itemsHtml}
               </div>
             </div>
           `;
         }).join('');
 
+        // Attach listeners
         container.querySelectorAll('.mark-bought-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
@@ -1304,7 +1697,7 @@
       }
 
       // ==========================================
-      // 6. SALES UI RENDERING & AGGREGATION
+      // 8. SALES UI RENDERING & AGGREGATION
       // ==========================================
       function renderPresets() {
         const chipsContainer = document.getElementById('quick-products-chips');
@@ -1512,7 +1905,7 @@
       }
 
       // ==========================================
-      // 7. SALE SUBMISSION & OPERATIONS
+      // 9. SALE SUBMISSION & OPERATIONS
       // ==========================================
       function setupSaleForm() {
         const form = document.getElementById('sale-form');
@@ -1639,7 +2032,7 @@
       }
 
       // ==========================================
-      // 8. MANAGER SPACE (FOR NOUREDDINE ONLY)
+      // 10. MANAGER SPACE (FOR NOUREDDINE ONLY)
       // ==========================================
       function setupManagerSpace() {
         const modal = document.getElementById('manager-modal');
@@ -1802,6 +2195,7 @@
         loadLocalState();
         setupRealtimeSync();
         setupMusicPlayer();
+        setupVoiceStockAI();
         setupLoginGate();
         setupPageNavigation();
         setupSaleForm();
