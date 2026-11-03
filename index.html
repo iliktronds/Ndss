@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>تسجيل مبيعات المحل | إلكترو نور الدين</title>
+  <title>تسجيل مبيعات ومخزون المحل | إلكترو نور الدين</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -50,6 +50,47 @@
 </head>
 <body class="h-full flex flex-col bg-slate-100 overflow-x-hidden selection:bg-emerald-500 selection:text-white">
 
+  <!-- ==================== LOGIN SCREEN / PIN GATE ==================== -->
+  <div id="login-overlay" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-3">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl border border-slate-200 text-center relative overflow-hidden">
+      
+      <!-- Top Decorative Accent -->
+      <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/30 text-white font-black">
+        ⚡
+      </div>
+
+      <div>
+        <h2 class="font-black text-xl text-slate-900 tracking-tight">إلكترو نور الدين</h2>
+        <p class="text-xs text-slate-500 font-semibold mt-1">أدخل رمز PIN الخاص بك لتسجيل الدخول:</p>
+      </div>
+
+      <!-- PIN Input -->
+      <div class="space-y-3">
+        <div class="relative max-w-[240px] mx-auto">
+          <input type="password" id="login-pin-input" placeholder="••••" maxlength="8"
+            class="w-full py-3 px-4 bg-slate-100 border-2 border-slate-300 rounded-2xl text-center font-mono text-2xl tracking-[0.5em] text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100 transition shadow-inner">
+        </div>
+
+        <button id="btn-login-submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-xl shadow-lg shadow-emerald-600/30 transition active:scale-95 flex items-center justify-center gap-2">
+          <span>دخول للنظام</span>
+          <span>🔓</span>
+        </button>
+      </div>
+
+      <!-- Help hint for shop members -->
+      <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-500 space-y-1">
+        <p class="font-bold text-slate-700">الأعضاء المصرح لهم:</p>
+        <div class="flex items-center justify-center gap-2 text-[10px] text-slate-600">
+          <span class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-black">نورالدين (المدير)</span>
+          <span class="bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded font-bold">ايوب</span>
+          <span class="bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded font-bold">عبد الله</span>
+        </div>
+        <p class="text-[10px] text-slate-400">كل عضو عندو كود PIN خاص بيه كيحميه</p>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ==================== HEADER ==================== -->
   <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 border-b border-slate-800">
     <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2.5">
@@ -69,28 +110,50 @@
           </div>
         </div>
 
-        <!-- Right: Seller Badge & Manager PIN Button -->
+        <!-- Right: Background Music, User Badge & Manager PIN Button -->
         <div class="flex items-center gap-2">
-          <!-- Active Seller Selector -->
-          <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
-            <span class="text-[11px] text-slate-400 px-1 hidden sm:inline">أنا:</span>
-            <select id="seller-select" class="bg-slate-900 text-white text-xs font-bold rounded px-1.5 py-1 outline-none border border-slate-700">
-              <option value="نور الدين">نور الدين</option>
-              <option value="الخدام">الخدام</option>
-              <option value="أمين">أمين</option>
-              <option value="يوسف">يوسف</option>
-            </select>
+          
+          <!-- Background Music Button (Play / Mute Ambient Music) -->
+          <button id="btn-toggle-music" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-xs font-bold transition shadow-sm" title="تشغيل / كتم موسيقى المحل الهادئة">
+            <span id="music-icon" class="text-sm">🎵</span>
+            <span id="music-text" class="hidden sm:inline">موسيقى هادئة</span>
+          </button>
+
+          <!-- User Identity Badge (Locked strictly to the logged-in user!) -->
+          <div id="current-user-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black shadow-sm">
+            <span id="user-role-icon">👤</span>
+            <span id="user-display-name" class="text-white">--</span>
           </div>
 
-          <!-- Manager Space Button (PIN Protected) -->
-          <button id="open-manager-btn" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition">
-            <span>🔒</span>
-            <span class="hidden sm:inline">صفحة المدير</span>
+          <!-- Manager Space Button (Visible only to Manager!) -->
+          <button id="open-manager-btn" class="hidden flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition">
+            <span>👑</span>
+            <span class="hidden sm:inline">لوحة المدير</span>
             <span class="sm:hidden">المدير</span>
+          </button>
+
+          <!-- Logout / Lock Button -->
+          <button id="btn-logout" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-700/60 font-bold text-xs shadow transition" title="تسجيل الخروج وقفل الشاشة">
+            <span>🔒</span>
+            <span class="hidden sm:inline">قفل</span>
           </button>
         </div>
 
       </div>
+
+      <!-- Navigation Bar between Pages: 1. المبيعات | 2. السلعة لي خاصانا (المخزون) -->
+      <nav class="flex items-center gap-2 pt-2.5 mt-2 border-t border-slate-800 text-xs font-black">
+        <button id="nav-btn-sales" class="page-nav-btn active flex-1 py-1.5 rounded-lg bg-emerald-600 text-white flex items-center justify-center gap-1.5 shadow-sm transition">
+          <span>🛍️</span>
+          <span>تسجيل المبيعات (Ventes)</span>
+        </button>
+        <button id="nav-btn-stock" class="page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition">
+          <span>📦</span>
+          <span>السلعة لي خاصانا (المخزون)</span>
+          <span id="badge-needed-stock-count" class="bg-amber-500 text-slate-950 text-[10px] px-1.5 py-0.2 rounded-full font-black">0</span>
+        </button>
+      </nav>
+
     </div>
   </header>
 
@@ -106,125 +169,241 @@
   <!-- ==================== MAIN CONTENT ==================== -->
   <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-4 space-y-4">
 
-    <!-- KPI Summary Bar -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-        <span class="text-[11px] text-slate-500 font-bold block">مجموع مدخول اليوم</span>
-        <span id="kpi-today-money" class="text-lg sm:text-xl font-black text-emerald-600">0 DH</span>
-      </div>
-      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-        <span class="text-[11px] text-slate-500 font-bold block">القطع المباعة اليوم</span>
-        <span id="kpi-today-count" class="text-lg sm:text-xl font-black text-blue-600">0 قطعة</span>
-      </div>
-      <div class="col-span-2 sm:col-span-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-        <span class="text-[11px] text-slate-500 font-bold block">إجمالي كل المبيعات</span>
-        <span id="kpi-total-money" class="text-lg sm:text-xl font-black text-slate-800">0 DH</span>
-      </div>
-    </div>
+    <!-- ======================================================== -->
+    <!-- VIEW 1: صفحة تسجيل المبيعات (SALES PAGE) -->
+    <!-- ======================================================== -->
+    <div id="view-sales-page" class="space-y-4 block">
 
-    <!-- ==================== SECTION 1: تسجيل بيع جديد ==================== -->
-    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3.5">
-      <div class="flex items-center justify-between">
-        <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
-          <span class="text-emerald-600 text-lg">⚡</span>
-          <span>قيد بيع جديد (سريع وبسيط)</span>
-        </h2>
-        <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium">تسجيل وحفظ سحابي فوري</span>
-      </div>
-
-      <!-- Quick Pick Suggestions (Chips for fast entry) -->
-      <div>
-        <label class="block text-[11px] font-bold text-slate-500 mb-1.5">اختر بسرعة أو اكتب لتحت:</label>
-        <div id="quick-products-chips" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
-          <!-- Dynamically populated chips -->
-        </div>
-      </div>
-
-      <!-- Simple Entry Form -->
-      <form id="sale-form" class="space-y-3">
+      <!-- KPI Summary Bar (مبيعات ومداخيل اليوم تظهر للمدير فقط) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-          <!-- Item Name / Type -->
-          <div class="sm:col-span-6">
-            <label class="block text-xs font-bold text-slate-700 mb-1">النوع / اسم السلعة (مثلاً: افشور a12، شاحن...):</label>
-            <input type="text" id="input-item-name" placeholder="اكتب مثلا: افشور a12" required
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+        <!-- مدخول اليوم (خاص بنورالدين المدير فقط) -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center relative overflow-hidden">
+          <div class="flex items-center justify-center gap-1 text-[11px] text-slate-500 font-bold mb-0.5">
+            <span>مجموع مدخول اليوم</span>
+            <span class="text-[9px] bg-amber-100 text-amber-800 px-1 py-0.2 rounded font-black">خاص بالمدير</span>
           </div>
-
-          <!-- Price -->
-          <div class="sm:col-span-3">
-            <label class="block text-xs font-bold text-slate-700 mb-1">الثمن (DH):</label>
-            <input type="number" id="input-item-price" placeholder="مثلا: 250" min="0" step="any" required
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-emerald-700 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+          <div id="kpi-today-money-wrap">
+            <span id="kpi-today-money" class="text-lg sm:text-xl font-black text-emerald-600 hidden">0 DH</span>
+            <span id="kpi-today-money-locked" class="text-xs font-black text-slate-400 block mt-1">🔒 مخفي عن الموظفين</span>
           </div>
+        </div>
 
-          <!-- Quantity -->
-          <div class="sm:col-span-3">
-            <label class="block text-xs font-bold text-slate-700 mb-1">الكمية:</label>
-            <div class="flex items-center">
-              <button type="button" id="btn-dec-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-r-xl font-bold border border-slate-300 flex items-center justify-center text-lg">-</button>
-              <input type="number" id="input-item-qty" value="1" min="1" class="w-full h-10 text-center bg-slate-50 border-y border-slate-300 text-sm font-black text-slate-800 outline-none">
-              <button type="button" id="btn-inc-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-l-xl font-bold border border-slate-300 flex items-center justify-center text-lg">+</button>
+        <!-- القطع المباعة اليوم (ظاهرة للجميع) -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+          <span class="text-[11px] text-slate-500 font-bold block">القطع المباعة اليوم</span>
+          <span id="kpi-today-count" class="text-lg sm:text-xl font-black text-blue-600">0 قطعة</span>
+        </div>
+
+        <!-- إجمالي كل المبيعات (خاص بالمدير) -->
+        <div class="col-span-2 sm:col-span-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+          <div class="flex items-center justify-center gap-1 text-[11px] text-slate-500 font-bold mb-0.5">
+            <span>إجمالي المداخيل</span>
+            <span class="text-[9px] bg-amber-100 text-amber-800 px-1 py-0.2 rounded font-black">خاص بالمدير</span>
+          </div>
+          <div id="kpi-total-money-wrap">
+            <span id="kpi-total-money" class="text-lg sm:text-xl font-black text-slate-800 hidden">0 DH</span>
+            <span id="kpi-total-money-locked" class="text-xs font-black text-slate-400 block mt-1">🔒 مخفي عن الموظفين</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- تسجيل بيع جديد -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3.5">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+            <span class="text-emerald-600 text-lg">⚡</span>
+            <span>قيد بيع جديد (سريع وبسيط)</span>
+          </h2>
+          <span class="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-bold">
+            البائع المسجل: <strong id="form-seller-name" class="text-emerald-700 font-black">--</strong>
+          </span>
+        </div>
+
+        <!-- Quick Pick Suggestions (Chips for fast entry) -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-500 mb-1.5">اختر بسرعة أو اكتب لتحت:</label>
+          <div id="quick-products-chips" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+            <!-- Dynamically populated chips -->
+          </div>
+        </div>
+
+        <!-- Simple Entry Form -->
+        <form id="sale-form" class="space-y-3">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+            <!-- Item Name / Type -->
+            <div class="sm:col-span-6">
+              <label class="block text-xs font-bold text-slate-700 mb-1">النوع / اسم السلعة (مثلاً: افشور a12، شاحن...):</label>
+              <input type="text" id="input-item-name" placeholder="اكتب مثلا: افشور a12" required
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+            </div>
+
+            <!-- Price -->
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">الثمن (DH):</label>
+              <input type="number" id="input-item-price" placeholder="مثلا: 250" min="0" step="any" required
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-emerald-700 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition">
+            </div>
+
+            <!-- Quantity -->
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">الكمية:</label>
+              <div class="flex items-center">
+                <button type="button" id="btn-dec-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-r-xl font-bold border border-slate-300 flex items-center justify-center text-lg">-</button>
+                <input type="number" id="input-item-qty" value="1" min="1" class="w-full h-10 text-center bg-slate-50 border-y border-slate-300 text-sm font-black text-slate-800 outline-none">
+                <button type="button" id="btn-inc-qty" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-l-xl font-bold border border-slate-300 flex items-center justify-center text-lg">+</button>
+              </div>
             </div>
           </div>
+
+          <!-- Big Submit Button -->
+          <button type="submit" id="btn-submit-sale" class="w-full py-3 sm:py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm sm:text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition active:scale-[0.98]">
+            <span>💾</span>
+            <span>قيد البيع دابا (باسم <span id="submit-seller-label">--</span>)</span>
+          </button>
+
+        </form>
+      </section>
+
+      <!-- تجميع وحساب السلع المباعة -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+              <span>📊</span>
+              <span>شحال تباع من كل نوع (المجموع التراكمي)</span>
+            </h2>
+            <p class="text-xs text-slate-500">يحسب لك تلقائياً شحال تباع من كل سلعة (مثلا: تباعو 2 افشور a12)</p>
+          </div>
+
+          <!-- Time Filter for Totals -->
+          <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
+            <button id="filter-totals-all" class="totals-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">الكل</button>
+            <button id="filter-totals-today" class="totals-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">اليوم فقط</button>
+          </div>
         </div>
 
-        <!-- Big Submit Button -->
-        <button type="submit" id="btn-submit-sale" class="w-full py-3 sm:py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm sm:text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition active:scale-[0.98]">
-          <span>💾</span>
-          <span>قيد البيع دابا (حفظ فوري فالسحابة وكل الهواتف)</span>
-        </button>
+        <!-- Items Count Grid / Cards -->
+        <div id="aggregated-items-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="col-span-full text-center py-6 text-slate-400 text-xs">
+            خاوي حالياً (0 مبيعات). قيد أول سلعة الفوق باش يبانو الحسابات هنا!
+          </div>
+        </div>
+      </section>
 
-      </form>
-    </section>
-
-    <!-- ==================== SECTION 2: تجميع وحساب السلع المباعة ==================== -->
-    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
-      <div class="flex items-center justify-between flex-wrap gap-2">
-        <div>
+      <!-- سجل آخر المبيعات -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between">
           <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
-            <span>📊</span>
-            <span>شحال تباع من كل نوع (المجموع التراكمي)</span>
+            <span>🕒</span>
+            <span>سجل العمليات بالترتيب</span>
           </h2>
-          <p class="text-xs text-slate-500">يحسب لك تلقائياً شحال تباع من كل سلعة (مثلا: تباعو 2 افشور a12)</p>
+          <span id="sales-badge-count" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">0 عملية</span>
         </div>
 
-        <!-- Time Filter for Totals -->
-        <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
-          <button id="filter-totals-all" class="totals-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">الكل</button>
-          <button id="filter-totals-today" class="totals-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">اليوم فقط</button>
+        <!-- Sales List -->
+        <div id="sales-list-container" class="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+          <div class="text-center py-8 text-slate-400 text-xs">
+            السجل خاوي دابا (0 مبيعات).
+          </div>
         </div>
+      </section>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: صفحة إدارة المخزون / السلعة لي خاصانا (STOCK PAGE) -->
+    <!-- ======================================================== -->
+    <div id="view-stock-page" class="space-y-4 hidden">
+
+      <!-- Stock Header Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+              <span class="text-amber-500 text-xl">📦</span>
+              <span>لائحة السلعة لي خاصانا (المخزون وقطع الغيار)</span>
+            </h2>
+            <p class="text-xs text-slate-500">
+              قيد أي سلعة تقاضات أو خاصا المحل هنا؛ كتبان فالحين عند المدير فالبيسي وتليفونات الخدامة!
+            </p>
+          </div>
+
+          <!-- Copy to WhatsApp Button -->
+          <button id="copy-whatsapp-stock-btn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
+            <span>📋</span>
+            <span>نسخ اللائحة للواتساب</span>
+          </button>
+        </div>
+
+        <!-- Form: Note down missing item -->
+        <form id="stock-form" class="space-y-3 pt-2 border-t border-slate-100">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+            
+            <!-- Missing Item Name -->
+            <div class="sm:col-span-6">
+              <label class="block text-xs font-bold text-slate-700 mb-1">السلعة أو القطعة لي خاصانا:</label>
+              <input type="text" id="input-stock-name" placeholder="مثلا: شاشات A12، بطاريات iPhone 11، شواحن 20W..." required
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition">
+            </div>
+
+            <!-- Quantity Needed -->
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">شحال خاصنا (الكمية):</label>
+              <input type="number" id="input-stock-qty" value="1" min="1" placeholder="مثلا: 3" required
+                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-amber-700 outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition">
+            </div>
+
+            <!-- Priority / Urgency -->
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1">درجة الأهمية:</label>
+              <select id="input-stock-priority" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none focus:bg-white">
+                <option value="عادي">عادي 🟢</option>
+                <option value="مستعجل بزاف">مستعجل بزاف 🔴</option>
+                <option value="طلب زبون">طلب خاص لزبون 🟡</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]">
+            <span>➕</span>
+            <span>قيد فهاد اللائحة (باسم <span id="stock-seller-label">--</span>)</span>
+          </button>
+        </form>
+
       </div>
 
-      <!-- Items Count Grid / Cards -->
-      <div id="aggregated-items-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div class="col-span-full text-center py-6 text-slate-400 text-xs">
-          خاوي حالياً (0 مبيعات). قيد أول سلعة الفوق باش يبانو الحسابات هنا!
-        </div>
-      </div>
-    </section>
+      <!-- Missing Stock List -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <h3 class="font-extrabold text-base text-slate-800">السلع المطلوبة حالياً:</h3>
+            <span id="stock-list-counter" class="text-xs bg-amber-100 text-amber-900 font-black px-2 py-0.5 rounded-full">0 سلعة</span>
+          </div>
 
-    <!-- ==================== SECTION 3: سجل آخر المبيعات ==================== -->
-    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
-          <span>🕒</span>
-          <span>سجل العمليات بالترتيب</span>
-        </h2>
-        <span id="sales-badge-count" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">0 عملية</span>
-      </div>
-
-      <!-- Sales List -->
-      <div id="sales-list-container" class="divide-y divide-slate-100 max-h-96 overflow-y-auto">
-        <div class="text-center py-8 text-slate-400 text-xs">
-          السجل خاوي دابا (0 مبيعات).
+          <!-- Filter: Pending vs Purchased -->
+          <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
+            <button id="filter-stock-pending" class="stock-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">مازال خاصة ⏳</button>
+            <button id="filter-stock-bought" class="stock-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">تشراَت ✅</button>
+          </div>
         </div>
-      </div>
-    </section>
+
+        <div id="stock-items-container" class="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+          <div class="text-center py-8 text-slate-400 text-xs">
+            ما كاينا حتى سلعة مقيدة بلي خاصانا حالياً. المخزون واجد!
+          </div>
+        </div>
+      </section>
+
+    </div>
 
   </main>
 
-  <!-- ==================== MODAL: صفحة المدير المحمية بالـ PIN ==================== -->
+  <!-- ==================== MODAL: لوحة المدير (خاصة بنورالدين فقط) ==================== -->
   <div id="manager-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
     <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl border border-slate-200 text-right">
       
@@ -232,29 +411,65 @@
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h3 class="font-black text-base text-slate-900 flex items-center gap-2">
           <span>👑</span>
-          <span>صفحة المدير (محمية برمز PIN)</span>
+          <span>لوحة تحكم المدير (نورالدين)</span>
         </h3>
         <button id="close-manager-modal" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1">✕</button>
       </div>
 
-      <!-- Step 1: PIN Verification Form -->
-      <div id="manager-pin-step" class="space-y-3 text-center py-4">
-        <p class="text-xs text-slate-600 font-bold">أدخل الرمز السري للمدير للتحكم في المبيعات ومسح السلع:</p>
-        <div class="max-w-xs mx-auto space-y-2">
-          <input type="password" id="manager-pin-input" placeholder="الرمز: 1234" maxlength="8"
-            class="w-full p-3 bg-slate-50 border-2 border-slate-300 rounded-xl text-center font-mono text-xl tracking-widest outline-none focus:border-amber-500">
-          <button id="btn-verify-pin" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-sm shadow">
-            فتح صفحة المدير 🔓
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 2: Manager Admin Panel (Visible only after correct PIN) -->
-      <div id="manager-panel-step" class="hidden space-y-4 text-xs">
+      <!-- Manager Admin Panel -->
+      <div class="space-y-4 text-xs">
         
         <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 font-bold flex items-center justify-between">
-          <span>مرحباً يا مدير! يمكنك الآن مسح أي عملية أو إدارة السلع.</span>
-          <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-amber-300">كامل الصلاحيات</span>
+          <span>مرحباً يا نورالدين! هنا يمكنك التحكم في أكواد PIN للأعضاء والسلع.</span>
+          <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-amber-300 font-black">المدير العام</span>
+        </div>
+
+        <!-- User PINs Management Box -->
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-800 flex items-center gap-1.5">
+              <span>🔐</span>
+              <span>تعديل أكواد PIN الخاصة بالأعضاء:</span>
+            </h4>
+            <span class="text-[10px] text-slate-400">تحديث فوري وسحابي</span>
+          </div>
+
+          <!-- Noureddine PIN -->
+          <div class="flex items-center justify-between gap-2 p-2 bg-white rounded-lg border border-slate-200">
+            <div>
+              <span class="font-black text-slate-800 block">نورالدين (المدير 👑)</span>
+              <span class="text-[10px] text-slate-400">الكود الحالي: <strong id="display-pin-noureddine" class="text-slate-700 font-mono">••••</strong></span>
+            </div>
+            <div class="flex items-center gap-1">
+              <input type="password" id="input-pin-noureddine" placeholder="كود جديد" maxlength="8" class="p-1 w-20 bg-slate-50 border border-slate-300 rounded text-center font-mono text-xs">
+              <button class="save-user-pin-btn px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded text-[11px]" data-user="نورالدين">حفظ</button>
+            </div>
+          </div>
+
+          <!-- Ayoub PIN -->
+          <div class="flex items-center justify-between gap-2 p-2 bg-white rounded-lg border border-slate-200">
+            <div>
+              <span class="font-bold text-slate-800 block">ايوب (موظف 👤)</span>
+              <span class="text-[10px] text-slate-400">الكود الحالي: <strong id="display-pin-ayoub" class="text-slate-700 font-mono">••••</strong></span>
+            </div>
+            <div class="flex items-center gap-1">
+              <input type="password" id="input-pin-ayoub" placeholder="كود جديد" maxlength="8" class="p-1 w-20 bg-slate-50 border border-slate-300 rounded text-center font-mono text-xs">
+              <button class="save-user-pin-btn px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-[11px]" data-user="ايوب">حفظ</button>
+            </div>
+          </div>
+
+          <!-- Abdellah PIN -->
+          <div class="flex items-center justify-between gap-2 p-2 bg-white rounded-lg border border-slate-200">
+            <div>
+              <span class="font-bold text-slate-800 block">عبد الله (موظف 👤)</span>
+              <span class="text-[10px] text-slate-400">الكود الحالي: <strong id="display-pin-abdellah" class="text-slate-700 font-mono">••••</strong></span>
+            </div>
+            <div class="flex items-center gap-1">
+              <input type="password" id="input-pin-abdellah" placeholder="كود جديد" maxlength="8" class="p-1 w-20 bg-slate-50 border border-slate-300 rounded text-center font-mono text-xs">
+              <button class="save-user-pin-btn px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-[11px]" data-user="عبد الله">حفظ</button>
+            </div>
+          </div>
+
         </div>
 
         <!-- Add New Preset Product -->
@@ -292,15 +507,6 @@
           </div>
         </div>
 
-        <!-- Change PIN Option -->
-        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-          <span class="text-slate-500">تغيير رمز PIN (المدير):</span>
-          <div class="flex items-center gap-1">
-            <input type="password" id="input-new-pin" placeholder="رمز جديد" class="p-1 w-20 bg-slate-50 border border-slate-300 rounded text-center font-mono">
-            <button id="btn-save-new-pin" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded">حفظ</button>
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -309,27 +515,144 @@
   <!-- TOAST FEEDBACK NOTIFICATION -->
   <div id="toast-box" class="fixed bottom-4 left-4 z-50 pointer-events-none"></div>
 
-  <!-- SOUND EFFECT (Pure Web Audio API, no external files) -->
+  <!-- ==================== WEB AUDIO BACKGROUND MUSIC & SOUNDS ==================== -->
   <script>
-    function playCashSound() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.2);
-      } catch (e) {
-        // Audio handled
+    // Pure Web Audio ambient synthesizer (Relaxing Lo-Fi boutique ambient chords)
+    const ShopAudio = (function() {
+      let audioCtx = null;
+      let isPlaying = false;
+      let timerId = null;
+      let masterGain = null;
+
+      function getContext() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            audioCtx = new AudioContext();
+            masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0.18, audioCtx.currentTime); // Gentle ambient volume (18%)
+            masterGain.connect(audioCtx.destination);
+          }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
       }
+
+      // Calm Lo-Fi Rhodes chord progression (Cmaj7 -> Am7 -> Fmaj7 -> G7sus4)
+      const chords = [
+        [261.63, 329.63, 392.00, 493.88], // Cmaj7: C4, E4, G4, B4
+        [220.00, 261.63, 329.63, 392.00], // Am7:   A3, C4, E4, G4
+        [174.61, 220.00, 261.63, 329.63], // Fmaj7: F3, A3, C4, E4
+        [196.00, 261.63, 293.66, 349.23]  // G7sus: G3, C4, D4, F4
+      ];
+      let chordIndex = 0;
+
+      function playAmbientChord() {
+        if (!isPlaying) return;
+        const ctx = getContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+        const currentNotes = chords[chordIndex];
+        chordIndex = (chordIndex + 1) % chords.length;
+
+        // Play gentle soft pad notes with low-pass filter
+        currentNotes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const noteGain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(650, now); // Soft warm tone
+
+          // Slow soft attack and lingering decay
+          noteGain.gain.setValueAtTime(0.001, now);
+          noteGain.gain.linearRampToValueAtTime(0.06, now + 0.8 + (i * 0.15));
+          noteGain.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
+
+          osc.connect(filter);
+          filter.connect(noteGain);
+          noteGain.connect(masterGain);
+
+          osc.start(now + (i * 0.08));
+          osc.stop(now + 4.0);
+        });
+
+        // Schedule next chord every 3.8 seconds
+        timerId = setTimeout(playAmbientChord, 3800);
+      }
+
+      function start() {
+        if (isPlaying) return;
+        getContext();
+        isPlaying = true;
+        playAmbientChord();
+        updateMusicButtonUI(true);
+      }
+
+      function stop() {
+        isPlaying = false;
+        if (timerId) clearTimeout(timerId);
+        updateMusicButtonUI(false);
+      }
+
+      function toggle() {
+        if (isPlaying) stop();
+        else start();
+        return isPlaying;
+      }
+
+      function playBeep() {
+        try {
+          const ctx = getContext();
+          if (!ctx) return;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.2);
+        } catch(e) {}
+      }
+
+      function updateMusicButtonUI(active) {
+        const btn = document.getElementById('btn-toggle-music');
+        const icon = document.getElementById('music-icon');
+        const text = document.getElementById('music-text');
+        if (btn) {
+          if (active) {
+            btn.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-600 text-white border border-emerald-500 text-xs font-black transition shadow-sm animate-pulse';
+            if (icon) icon.textContent = '🔊';
+            if (text) text.textContent = 'الموسيقى مشغلة';
+          } else {
+            btn.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold transition shadow-sm';
+            if (icon) icon.textContent = '🔇';
+            if (text) text.textContent = 'تشغيل الموسيقى';
+          }
+        }
+      }
+
+      return {
+        start: start,
+        stop: stop,
+        toggle: toggle,
+        playBeep: playBeep,
+        isPlaying: () => isPlaying
+      };
+    })();
+
+    function playCashSound() {
+      ShopAudio.playBeep();
     }
   </script>
 
@@ -340,11 +663,13 @@
 
       // Storage Keys
       const STORAGE_KEYS = {
-        SALES: 'electro_simple_sales_v2',
-        PRESETS: 'electro_simple_presets_v2',
-        PIN: 'electro_simple_pin_v2',
-        SELLER: 'electro_simple_seller_v2',
-        LAST_SYNC_TS: 'electro_simple_last_sync_v2'
+        SALES: 'electro_simple_sales_v5',
+        STOCK_NEEDS: 'electro_simple_stock_needs_v5',
+        PRESETS: 'electro_simple_presets_v5',
+        USER_PINS: 'electro_user_pins_v5',
+        ACTIVE_SESSION: 'electro_active_user_v5',
+        LAST_SYNC_TS: 'electro_simple_last_sync_v5',
+        MUSIC_MUTED: 'electro_music_muted_pref'
       };
 
       // Initial Default Presets
@@ -361,46 +686,59 @@
         { name: 'زجاج حماية 9D', price: 25 }
       ];
 
+      // Default Individual PINs:
+      // Noureddine (Manager): 1234
+      // Ayoub (Employee): 2222
+      // Abdellah (Employee): 3333
+      const DEFAULT_USER_PINS = {
+        'نورالدين': '1234',
+        'ايوب': '2222',
+        'عبد الله': '3333'
+      };
+
       // App State
       const state = {
+        currentView: 'sales', // 'sales' or 'stock'
+        activeUser: null, // Logged in user: 'نورالدين', 'ايوب', or 'عبد الله'
+        isManager: false, // True strictly if activeUser is 'نورالدين'
+        userPins: Object.assign({}, DEFAULT_USER_PINS),
         sales: [],
+        stockNeeds: [],
         presets: DEFAULT_PRESETS,
-        pin: '1234',
-        currentSeller: 'نور الدين',
         lastUpdated: 0,
-        roomCode: 'iliktronds_shop_cloud_v2', // Unique channel for this user's GitHub
+        roomCode: 'iliktronds_shop_cloud_v5',
         totalsFilter: 'all',
-        isManagerUnlocked: false,
+        stockFilter: 'pending',
         mqttClient: null
       };
 
-      // 1. Load Data safely from localStorage
+      // 1. Load Data safely from localStorage / sessionStorage
       function loadLocalState() {
         try {
           const storedSales = localStorage.getItem(STORAGE_KEYS.SALES);
-          if (storedSales) {
-            state.sales = JSON.parse(storedSales);
-          }
+          if (storedSales) state.sales = JSON.parse(storedSales);
+
+          const storedStock = localStorage.getItem(STORAGE_KEYS.STOCK_NEEDS);
+          if (storedStock) state.stockNeeds = JSON.parse(storedStock);
 
           const storedPresets = localStorage.getItem(STORAGE_KEYS.PRESETS);
-          if (storedPresets) {
-            state.presets = JSON.parse(storedPresets);
+          if (storedPresets) state.presets = JSON.parse(storedPresets);
+
+          const storedPins = localStorage.getItem(STORAGE_KEYS.USER_PINS);
+          if (storedPins) {
+            try {
+              const parsed = JSON.parse(storedPins);
+              state.userPins = Object.assign({}, DEFAULT_USER_PINS, parsed);
+            } catch(e) {}
           }
 
-          const storedPin = localStorage.getItem(STORAGE_KEYS.PIN);
-          if (storedPin && storedPin.trim() !== '') {
-            state.pin = storedPin.trim();
-          }
-
-          const storedSeller = localStorage.getItem(STORAGE_KEYS.SELLER);
-          if (storedSeller) {
-            state.currentSeller = storedSeller;
+          const storedSession = sessionStorage.getItem(STORAGE_KEYS.ACTIVE_SESSION) || localStorage.getItem(STORAGE_KEYS.ACTIVE_SESSION);
+          if (storedSession && ['نورالدين', 'ايوب', 'عبد الله'].includes(storedSession)) {
+            setUserSession(storedSession, false); // Don't auto-start music on passive reload unless user interacted
           }
 
           const storedTs = localStorage.getItem(STORAGE_KEYS.LAST_SYNC_TS);
-          if (storedTs) {
-            state.lastUpdated = parseInt(storedTs, 10) || 0;
-          }
+          if (storedTs) state.lastUpdated = parseInt(storedTs, 10) || 0;
         } catch (e) {
           console.error('LocalStorage load error:', e);
         }
@@ -410,9 +748,9 @@
         try {
           state.lastUpdated = Date.now();
           localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(state.sales));
+          localStorage.setItem(STORAGE_KEYS.STOCK_NEEDS, JSON.stringify(state.stockNeeds));
           localStorage.setItem(STORAGE_KEYS.PRESETS, JSON.stringify(state.presets));
-          localStorage.setItem(STORAGE_KEYS.PIN, state.pin);
-          localStorage.setItem(STORAGE_KEYS.SELLER, state.currentSeller);
+          localStorage.setItem(STORAGE_KEYS.USER_PINS, JSON.stringify(state.userPins));
           localStorage.setItem(STORAGE_KEYS.LAST_SYNC_TS, state.lastUpdated.toString());
         } catch (e) {
           console.error('LocalStorage save error:', e);
@@ -440,40 +778,183 @@
         }, 3200);
       }
 
+      // Set active user session
+      function setUserSession(userName, startMusic = true) {
+        state.activeUser = userName;
+        state.isManager = (userName === 'نورالدين');
+
+        try {
+          sessionStorage.setItem(STORAGE_KEYS.ACTIVE_SESSION, userName);
+          localStorage.setItem(STORAGE_KEYS.ACTIVE_SESSION, userName);
+        } catch(e) {}
+
+        const overlay = document.getElementById('login-overlay');
+        if (overlay) overlay.classList.add('hidden');
+
+        updateUserHeader();
+        renderAll();
+
+        // Autoplay background music upon login interaction
+        if (startMusic) {
+          const isMuted = localStorage.getItem(STORAGE_KEYS.MUSIC_MUTED) === 'true';
+          if (!isMuted) {
+            ShopAudio.start();
+          }
+        }
+      }
+
+      function logoutUser() {
+        state.activeUser = null;
+        state.isManager = false;
+
+        try {
+          sessionStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION);
+          localStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION);
+        } catch(e) {}
+
+        ShopAudio.stop();
+
+        const overlay = document.getElementById('login-overlay');
+        const pinInput = document.getElementById('login-pin-input');
+        if (overlay) overlay.classList.remove('hidden');
+        if (pinInput) {
+          pinInput.value = '';
+          setTimeout(() => pinInput.focus(), 150);
+        }
+
+        updateUserHeader();
+        renderAll();
+      }
+
+      function updateUserHeader() {
+        const userDisplay = document.getElementById('user-display-name');
+        const userRoleIcon = document.getElementById('user-role-icon');
+        const openManagerBtn = document.getElementById('open-manager-btn');
+        const formSellerName = document.getElementById('form-seller-name');
+        const submitSellerLabel = document.getElementById('submit-seller-label');
+        const stockSellerLabel = document.getElementById('stock-seller-label');
+
+        if (state.activeUser) {
+          if (userDisplay) {
+            userDisplay.textContent = state.isManager ? 'نورالدين (المدير)' : state.activeUser;
+          }
+          if (userRoleIcon) {
+            userRoleIcon.textContent = state.isManager ? '👑' : '👤';
+          }
+          if (formSellerName) formSellerName.textContent = state.activeUser;
+          if (submitSellerLabel) submitSellerLabel.textContent = state.activeUser;
+          if (stockSellerLabel) stockSellerLabel.textContent = state.activeUser;
+
+          if (openManagerBtn) {
+            if (state.isManager) openManagerBtn.classList.remove('hidden');
+            else openManagerBtn.classList.add('hidden');
+          }
+        } else {
+          if (userDisplay) userDisplay.textContent = 'غير مسجل';
+          if (openManagerBtn) openManagerBtn.classList.add('hidden');
+        }
+      }
+
+      // Setup Music Toggle Button
+      function setupMusicPlayer() {
+        const btnToggleMusic = document.getElementById('btn-toggle-music');
+        if (btnToggleMusic) {
+          btnToggleMusic.addEventListener('click', () => {
+            const active = ShopAudio.toggle();
+            try {
+              localStorage.setItem(STORAGE_KEYS.MUSIC_MUTED, active ? 'false' : 'true');
+            } catch(e) {}
+            if (active) {
+              showToast('تم تشغيل موسيقى المحل الهادئة 🎵');
+            } else {
+              showToast('تم كتم الموسيقى 🔇');
+            }
+          });
+        }
+      }
+
       // ==========================================
-      // 2. PERMANENT CLOUD RETAIN SYNC (MQTT Retain & Multi-Device)
+      // 2. PIN AUTHENTICATION GATE
+      // ==========================================
+      function setupLoginGate() {
+        const pinInput = document.getElementById('login-pin-input');
+        const submitBtn = document.getElementById('btn-login-submit');
+        const logoutBtn = document.getElementById('btn-logout');
+
+        function attemptLogin() {
+          const entered = (pinInput.value || '').trim();
+          if (!entered) {
+            showToast('يرجى إدخال رمز PIN', true);
+            pinInput.focus();
+            return;
+          }
+
+          let matchedUser = null;
+          for (const user of ['نورالدين', 'ايوب', 'عبد الله']) {
+            if (state.userPins[user] && state.userPins[user] === entered) {
+              matchedUser = user;
+              break;
+            }
+          }
+
+          if (matchedUser) {
+            setUserSession(matchedUser, true); // Starts music automatically upon successful PIN login!
+            if (matchedUser === 'نورالدين') {
+              showToast('مرحباً بك يا نورالدين (المدير 👑)! فتحت كامل الصلاحيات والمداخيل.');
+            } else {
+              showToast(`مرحباً بك يا ${matchedUser} 👤! تم تسجيل دخولك بنجاح.`);
+            }
+          } else {
+            showToast('رمز PIN غير صحيح!', true);
+            pinInput.value = '';
+            pinInput.focus();
+          }
+        }
+
+        if (submitBtn) submitBtn.addEventListener('click', attemptLogin);
+        if (pinInput) {
+          pinInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') attemptLogin();
+          });
+        }
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            logoutUser();
+            showToast('تم قفل الشاشة وتسجيل الخروج 🔒');
+          });
+        }
+      }
+
+      // ==========================================
+      // 3. PERMANENT CLOUD RETAIN SYNC
       // ==========================================
       function setupRealtimeSync() {
         const syncDot = document.getElementById('sync-dot');
         const syncStatus = document.getElementById('sync-status');
         const topic = `electro_noureddine_store/${state.roomCode}/state`;
 
-        // Local BroadcastChannel for instant multi-tab sync on same phone/PC
         let localChannel = null;
         try {
-          localChannel = new BroadcastChannel('electro_local_channel_v2');
+          localChannel = new BroadcastChannel('electro_local_channel_v5');
           localChannel.onmessage = (e) => {
             if (e.data && e.data.type === 'FULL_SYNC') {
               applyIncomingState(e.data.payload, false);
             }
           };
         } catch (err) {
-          // BroadcastChannel unsupported
+          // Unsupported
         }
 
-        // Apply incoming state from Cloud or other phone
         function applyIncomingState(payload, fromNetwork = true) {
           if (!payload) return;
-          
           let changed = false;
 
-          // Sync PIN if valid and provided
-          if (payload.pin && typeof payload.pin === 'string' && payload.pin.trim() !== '') {
-            if (state.pin !== payload.pin.trim()) {
-              state.pin = payload.pin.trim();
-              try { localStorage.setItem(STORAGE_KEYS.PIN, state.pin); } catch(e){}
-              changed = true;
-            }
+          // Sync User PINs
+          if (payload.userPins && typeof payload.userPins === 'object') {
+            state.userPins = Object.assign({}, DEFAULT_USER_PINS, payload.userPins);
+            try { localStorage.setItem(STORAGE_KEYS.USER_PINS, JSON.stringify(state.userPins)); } catch(e){}
+            changed = true;
           }
 
           // Sync Presets
@@ -483,9 +964,8 @@
             changed = true;
           }
 
-          // Sync Sales: Take the newer or longer list or merged
+          // Sync Sales
           if (Array.isArray(payload.sales)) {
-            // Check if sales changed
             if (JSON.stringify(payload.sales) !== JSON.stringify(state.sales)) {
               state.sales = payload.sales;
               try { localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(state.sales)); } catch(e){}
@@ -493,23 +973,30 @@
             }
           }
 
+          // Sync Stock Needs
+          if (Array.isArray(payload.stockNeeds)) {
+            if (JSON.stringify(payload.stockNeeds) !== JSON.stringify(state.stockNeeds)) {
+              state.stockNeeds = payload.stockNeeds;
+              try { localStorage.setItem(STORAGE_KEYS.STOCK_NEEDS, JSON.stringify(state.stockNeeds)); } catch(e){}
+              changed = true;
+            }
+          }
+
           if (changed) {
             renderAll();
             if (fromNetwork) {
-              showToast('تمت مزامنة المبيعات والإعدادات من السحابة ☁️');
+              showToast('تمت المزامنة من السحابة ☁️');
             }
           }
         }
 
-        // Publish full state to Cloud with RETAIN = true
-        // Retained messages stay on the MQTT broker permanently so even if both phones are closed,
-        // the moment ANY phone opens, the broker delivers the latest sales & PIN immediately!
         function broadcastStateToCloud() {
           const payload = {
             sales: state.sales,
+            stockNeeds: state.stockNeeds,
             presets: state.presets,
-            pin: state.pin,
-            updatedBy: state.currentSeller,
+            userPins: state.userPins,
+            updatedBy: state.activeUser || 'المحل',
             timestamp: Date.now()
           };
 
@@ -519,7 +1006,6 @@
 
           if (state.mqttClient && state.mqttClient.connected) {
             try {
-              // RETAIN: TRUE is the key! The broker keeps it stored in cloud memory!
               state.mqttClient.publish(topic, JSON.stringify(payload), { retain: true, qos: 1 });
             } catch (err) {
               console.warn('MQTT publish error:', err);
@@ -529,7 +1015,6 @@
 
         state.syncToCloud = broadcastStateToCloud;
 
-        // Connect to MQTT Broker over WebSockets
         try {
           const brokerUrl = 'wss://broker.emqx.io:8084/mqtt';
           const client = mqtt.connect(brokerUrl, {
@@ -542,14 +1027,8 @@
           state.mqttClient = client;
 
           client.on('connect', () => {
-            if (syncDot) {
-              syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
-            }
-            if (syncStatus) {
-              syncStatus.textContent = 'سحابة متصلة ومتزامنة ☁️';
-            }
-
-            // Subscribe to the shop topic; broker will IMMEDIATELY deliver retained state!
+            if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
+            if (syncStatus) syncStatus.textContent = 'سحابة متصلة ومتزامنة ☁️';
             client.subscribe(topic, { qos: 1 });
           });
 
@@ -557,9 +1036,7 @@
             try {
               const data = JSON.parse(message.toString());
               if (!data) return;
-
-              // If it's a retained full state or live update
-              if (data.sales || data.pin) {
+              if (data.sales || data.stockNeeds || data.userPins) {
                 applyIncomingState(data, true);
               }
             } catch (err) {
@@ -577,7 +1054,257 @@
       }
 
       // ==========================================
-      // 3. UI RENDERING & AGGREGATION
+      // 4. PAGE NAVIGATION (SALES vs STOCK)
+      // ==========================================
+      function setupPageNavigation() {
+        const btnSales = document.getElementById('nav-btn-sales');
+        const btnStock = document.getElementById('nav-btn-stock');
+        const viewSales = document.getElementById('view-sales-page');
+        const viewStock = document.getElementById('view-stock-page');
+
+        if (btnSales && btnStock) {
+          btnSales.addEventListener('click', () => {
+            state.currentView = 'sales';
+            btnSales.className = 'page-nav-btn active flex-1 py-1.5 rounded-lg bg-emerald-600 text-white flex items-center justify-center gap-1.5 shadow-sm transition';
+            btnStock.className = 'page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition';
+            viewSales.classList.remove('hidden');
+            viewStock.classList.add('hidden');
+          });
+
+          btnStock.addEventListener('click', () => {
+            state.currentView = 'stock';
+            btnStock.className = 'page-nav-btn active flex-1 py-1.5 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow-sm transition font-black';
+            btnSales.className = 'page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition';
+            viewStock.classList.remove('hidden');
+            viewSales.classList.add('hidden');
+            renderStockSection();
+          });
+        }
+      }
+
+      // ==========================================
+      // 5. INVENTORY / MISSING STOCK SECTION
+      // ==========================================
+      function setupStockSection() {
+        const form = document.getElementById('stock-form');
+        const inputName = document.getElementById('input-stock-name');
+        const inputQty = document.getElementById('input-stock-qty');
+        const inputPriority = document.getElementById('input-stock-priority');
+        const filterPending = document.getElementById('filter-stock-pending');
+        const filterBought = document.getElementById('filter-stock-bought');
+        const copyWhatsappBtn = document.getElementById('copy-whatsapp-stock-btn');
+
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = (inputName.value || '').trim();
+            const qty = Math.max(1, parseInt(inputQty.value || 1, 10));
+            const priority = inputPriority.value || 'عادي';
+
+            if (!name) {
+              showToast('يرجى كتابة اسم السلعة المطلوبة!', true);
+              inputName.focus();
+              return;
+            }
+
+            const newStockItem = {
+              id: 'STK-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 100),
+              name: name,
+              qty: qty,
+              priority: priority,
+              addedBy: state.activeUser || 'المحل',
+              date: new Date().toISOString(),
+              status: 'pending'
+            };
+
+            state.stockNeeds.unshift(newStockItem);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+
+            showToast(`تم تقييد "${name}" فلائحة السلعة لي خاصانا بنجاح! 📦`);
+            inputName.value = '';
+            inputQty.value = '1';
+            inputName.focus();
+            renderStockSection();
+          });
+        }
+
+        if (filterPending && filterBought) {
+          filterPending.addEventListener('click', () => {
+            state.stockFilter = 'pending';
+            filterPending.className = 'stock-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            filterBought.className = 'stock-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderStockSection();
+          });
+
+          filterBought.addEventListener('click', () => {
+            state.stockFilter = 'bought';
+            filterBought.className = 'stock-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            filterPending.className = 'stock-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderStockSection();
+          });
+        }
+
+        if (copyWhatsappBtn) {
+          copyWhatsappBtn.addEventListener('click', () => {
+            const pending = state.stockNeeds.filter(item => item.status !== 'bought');
+            if (pending.length === 0) {
+              showToast('ما كاينا حتى سلعة خاصة حالياً لنسخها!', true);
+              return;
+            }
+
+            let msg = `📦 *لائحة السلعة لي خاصا محل إلكترو نور الدين:*\n`;
+            msg += `📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')}\n\n`;
+
+            pending.forEach((item, idx) => {
+              const pMark = item.priority === 'مستعجل بزاف' ? '🔴' : item.priority === 'طلب زبون' ? '🟡' : '🔹';
+              msg += `${idx + 1}. ${pMark} *${item.name}* (الكمية: ${item.qty}) - قيدها: ${item.addedBy}\n`;
+            });
+
+            msg += `\n_تم إرسالها من تطبيق إلكترو نور الدين_`;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(msg).then(() => {
+                showToast('تم نسخ لائحة السلعة بنجاح! دير ليها Coller فالواتساب 📋');
+              }).catch(() => {
+                fallbackCopy(msg);
+              });
+            } else {
+              fallbackCopy(msg);
+            }
+          });
+        }
+      }
+
+      function fallbackCopy(text) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+          document.execCommand('copy');
+          showToast('تم نسخ لائحة السلعة بنجاح! دير ليها Coller فالواتساب 📋');
+        } catch(e) {
+          showToast('تعذر النسخ التلقائي', true);
+        }
+        document.body.removeChild(temp);
+      }
+
+      function renderStockSection() {
+        const container = document.getElementById('stock-items-container');
+        const counter = document.getElementById('stock-list-counter');
+        const badgeCount = document.getElementById('badge-needed-stock-count');
+        if (!container) return;
+
+        const pendingItems = state.stockNeeds.filter(item => item.status !== 'bought');
+        if (badgeCount) badgeCount.textContent = pendingItems.length;
+
+        const displayedItems = state.stockNeeds.filter(item => {
+          if (state.stockFilter === 'bought') return item.status === 'bought';
+          return item.status !== 'bought';
+        });
+
+        if (counter) {
+          counter.textContent = `${displayedItems.length} سلعة`;
+        }
+
+        if (displayedItems.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-slate-400 text-xs">
+              ${state.stockFilter === 'bought' ? 'لا توجد سلع مشتراة في الأرشيف.' : 'ما كاينا حتى سلعة مقيدة بلي خاصانا حالياً. المخزون واجد!'}
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = displayedItems.map(item => {
+          const isBought = item.status === 'bought';
+          const pBadge = item.priority === 'مستعجل بزاف' 
+            ? '<span class="bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded text-[10px]">مستعجل 🔴</span>'
+            : item.priority === 'طلب زبون'
+            ? '<span class="bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded text-[10px]">طلب زبون 🟡</span>'
+            : '<span class="bg-slate-100 text-slate-600 font-semibold px-1.5 py-0.5 rounded text-[10px]">عادي</span>';
+
+          const dateStr = new Date(item.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+
+          const deleteBtnHtml = state.isManager ? `
+            <button class="delete-stock-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
+              data-id="${item.id}" title="حذف (المدير فقط)">
+              ✕
+            </button>
+          ` : '';
+
+          return `
+            <div class="py-2.5 flex items-center justify-between gap-2 text-xs ${isBought ? 'opacity-60 bg-slate-50/50' : ''}">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="font-extrabold text-slate-800 text-sm truncate ${isBought ? 'line-through text-slate-500' : ''}">${item.name}</h4>
+                  <span class="bg-amber-100 text-amber-900 font-black text-xs px-2 py-0.5 rounded-lg">خاصنا: ${item.qty} قطع</span>
+                  ${pBadge}
+                </div>
+                <p class="text-[10px] text-slate-400 mt-0.5">قيدها: <strong class="text-slate-600">${item.addedBy || 'المحل'}</strong> | ${dateStr}</p>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                ${!isBought ? `
+                  <button class="mark-bought-btn px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg text-xs transition flex items-center gap-1"
+                    data-id="${item.id}" title="تم الشراء وإدخالها للمحل">
+                    <span>✅</span> <span>تشراَت</span>
+                  </button>
+                ` : `
+                  <button class="unmark-bought-btn px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px]"
+                    data-id="${item.id}" title="إرجاع إلى قائمة السلع المطلوبة">
+                    <span>↩️</span> إرجاع
+                  </button>
+                `}
+
+                ${deleteBtnHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.querySelectorAll('.mark-bought-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.stockNeeds.find(i => i.id === id);
+            if (item) {
+              item.status = 'bought';
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+              showToast(`تم التأشير على "${item.name}" بأنها تشراَت ودخلات للمخزون ✅`);
+              renderStockSection();
+            }
+          });
+        });
+
+        container.querySelectorAll('.unmark-bought-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.stockNeeds.find(i => i.id === id);
+            if (item) {
+              item.status = 'pending';
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+              renderStockSection();
+            }
+          });
+        });
+
+        container.querySelectorAll('.delete-stock-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            state.stockNeeds = state.stockNeeds.filter(i => i.id !== id);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+            showToast('تم حذف البند من لائحة السلع');
+            renderStockSection();
+          });
+        });
+      }
+
+      // ==========================================
+      // 6. SALES UI RENDERING & AGGREGATION
       // ==========================================
       function renderPresets() {
         const chipsContainer = document.getElementById('quick-products-chips');
@@ -634,9 +1361,28 @@
 
         const totalMoney = state.sales.reduce((acc, s) => acc + (s.totalPrice || 0), 0);
 
-        document.getElementById('kpi-today-money').textContent = `${todayMoney} DH`;
         document.getElementById('kpi-today-count').textContent = `${todayCount} قطعة`;
-        document.getElementById('kpi-total-money').textContent = `${totalMoney} DH`;
+
+        const todayMoneyEl = document.getElementById('kpi-today-money');
+        const todayMoneyLocked = document.getElementById('kpi-today-money-locked');
+        const totalMoneyEl = document.getElementById('kpi-total-money');
+        const totalMoneyLocked = document.getElementById('kpi-total-money-locked');
+
+        if (state.isManager) {
+          todayMoneyEl.textContent = `${todayMoney} DH`;
+          todayMoneyEl.classList.remove('hidden');
+          todayMoneyLocked.classList.add('hidden');
+
+          totalMoneyEl.textContent = `${totalMoney} DH`;
+          totalMoneyEl.classList.remove('hidden');
+          totalMoneyLocked.classList.add('hidden');
+        } else {
+          todayMoneyEl.classList.add('hidden');
+          todayMoneyLocked.classList.remove('hidden');
+
+          totalMoneyEl.classList.add('hidden');
+          totalMoneyLocked.classList.remove('hidden');
+        }
       }
 
       function renderAggregatedItems() {
@@ -674,18 +1420,24 @@
 
         const sortedGroups = Object.values(groups).sort((a, b) => b.totalQty - a.totalQty);
 
-        container.innerHTML = sortedGroups.map(g => `
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition flex items-center justify-between">
-            <div>
-              <h4 class="font-extrabold text-sm text-slate-800">${g.name}</h4>
-              <p class="text-[11px] text-slate-500 font-semibold">المجموع: <span class="font-black text-emerald-700">${g.totalMoney} DH</span></p>
+        container.innerHTML = sortedGroups.map(g => {
+          const moneyDisplay = state.isManager
+            ? `<span class="font-black text-emerald-700">${g.totalMoney} DH</span>`
+            : `<span class="text-slate-400 font-bold">🔒 خاص بالمدير</span>`;
+
+          return `
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition flex items-center justify-between">
+              <div>
+                <h4 class="font-extrabold text-sm text-slate-800">${g.name}</h4>
+                <p class="text-[11px] text-slate-500 font-semibold">المجموع: ${moneyDisplay}</p>
+              </div>
+              <div class="text-left bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+                <span class="text-[10px] text-slate-400 font-bold block">تباعو:</span>
+                <span class="text-base font-black text-blue-600">${g.totalQty} <span class="text-xs font-bold text-slate-600">قطع</span></span>
+              </div>
             </div>
-            <div class="text-left bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
-              <span class="text-[10px] text-slate-400 font-bold block">تباعو:</span>
-              <span class="text-base font-black text-blue-600">${g.totalQty} <span class="text-xs font-bold text-slate-600">قطع</span></span>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       function renderSalesList() {
@@ -708,6 +1460,18 @@
           const timeStr = new Date(s.date).toLocaleTimeString('ar-MA', { hour: '2-digit', minute: '2-digit' });
           const dateStr = new Date(s.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
 
+          const priceDisplay = state.isManager
+            ? `<span class="font-black text-sm text-emerald-600 block">${s.totalPrice} DH</span>
+               ${s.qty > 1 ? `<span class="text-[10px] text-slate-400">(${s.unitPrice} DH/قطعة)</span>` : ''}`
+            : `<span class="text-xs text-slate-400 font-bold block">🔒 مخفي</span>`;
+
+          const deleteBtnHtml = state.isManager ? `
+            <button class="delete-sale-btn w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-sm transition"
+              data-id="${s.id}" title="مسح هذه العملية (صلاحية المدير فقط)">
+              🗑️
+            </button>
+          ` : '';
+
           return `
             <div class="py-2.5 flex items-center justify-between gap-2 text-xs">
               <div class="flex-1 min-w-0">
@@ -715,19 +1479,15 @@
                   <h4 class="font-extrabold text-slate-800 text-sm truncate">${s.name}</h4>
                   <span class="bg-blue-100 text-blue-800 font-black text-[10px] px-1.5 py-0.5 rounded">${s.qty > 1 ? s.qty + 'x' : '1'}</span>
                 </div>
-                <p class="text-[10px] text-slate-400">باعها: <strong class="text-slate-600">${s.seller}</strong> | ${dateStr} - ${timeStr}</p>
+                <p class="text-[10px] text-slate-400">باعها: <strong class="text-slate-600 font-bold">${s.seller}</strong> | ${dateStr} - ${timeStr}</p>
               </div>
 
               <div class="flex items-center gap-3">
                 <div class="text-left">
-                  <span class="font-black text-sm text-emerald-600 block">${s.totalPrice} DH</span>
-                  ${s.qty > 1 ? `<span class="text-[10px] text-slate-400">(${s.unitPrice} DH/قطعة)</span>` : ''}
+                  ${priceDisplay}
                 </div>
 
-                <button class="delete-sale-btn w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-sm transition"
-                  data-id="${s.id}" title="مسح هذه العملية (صلاحية المدير)">
-                  🗑️
-                </button>
+                ${deleteBtnHtml}
               </div>
             </div>
           `;
@@ -736,7 +1496,9 @@
         container.querySelectorAll('.delete-sale-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             const saleId = btn.getAttribute('data-id');
-            promptDeleteSale(saleId);
+            if (state.isManager) {
+              executeDeleteSale(saleId);
+            }
           });
         });
       }
@@ -746,10 +1508,11 @@
         renderKPIs();
         renderAggregatedItems();
         renderSalesList();
+        renderStockSection();
       }
 
       // ==========================================
-      // 4. SALE SUBMISSION & OPERATIONS
+      // 7. SALE SUBMISSION & OPERATIONS
       // ==========================================
       function setupSaleForm() {
         const form = document.getElementById('sale-form');
@@ -758,7 +1521,6 @@
         const inputQty = document.getElementById('input-item-qty');
         const btnInc = document.getElementById('btn-inc-qty');
         const btnDec = document.getElementById('btn-dec-qty');
-        const sellerSelect = document.getElementById('seller-select');
         const dismissTipBtn = document.getElementById('dismiss-tip-btn');
         const tipBanner = document.getElementById('browser-tip-banner');
 
@@ -778,15 +1540,6 @@
           btnDec.addEventListener('click', () => {
             const current = parseInt(inputQty.value || 1, 10);
             if (current > 1) inputQty.value = current - 1;
-          });
-        }
-
-        if (sellerSelect) {
-          sellerSelect.value = state.currentSeller;
-          sellerSelect.addEventListener('change', (e) => {
-            state.currentSeller = e.target.value;
-            saveLocalState();
-            showToast(`تم تبديل البائع الحالي إلى: ${state.currentSeller}`);
           });
         }
 
@@ -813,6 +1566,12 @@
           form.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            if (!state.activeUser) {
+              showToast('يجب تسجيل الدخول برمز PIN أولاً!', true);
+              logoutUser();
+              return;
+            }
+
             const name = (inputName.value || '').trim();
             const unitPrice = parseFloat(inputPrice.value || 0);
             const qty = Math.max(1, parseInt(inputQty.value || 1, 10));
@@ -836,21 +1595,19 @@
               unitPrice: unitPrice,
               qty: qty,
               totalPrice: totalPrice,
-              seller: state.currentSeller,
+              seller: state.activeUser,
               date: new Date().toISOString()
             };
 
-            // Add to sales list
             state.sales.unshift(newSale);
             saveLocalState();
 
-            // Broadcast to other phones & PC via MQTT Retain
             if (state.syncToCloud) {
               state.syncToCloud();
             }
 
             playCashSound();
-            showToast(`تم تقييد البيع: ${name} (${totalPrice} DH) بنجاح!`);
+            showToast(`تم تقييد البيع: ${name} (${totalPrice} DH) باسم ${state.activeUser}!`);
 
             inputName.value = '';
             inputPrice.value = '';
@@ -862,23 +1619,12 @@
         }
       }
 
-      function promptDeleteSale(saleId) {
-        if (state.isManagerUnlocked) {
-          executeDeleteSale(saleId);
+      function executeDeleteSale(saleId) {
+        if (!state.isManager) {
+          showToast('مسح المبيعات متاح للمدير فقط!', true);
           return;
         }
 
-        showPinDialog('أدخل رمز PIN للمدير لمسح هذه العملية:', (enteredPin) => {
-          if (enteredPin === state.pin || enteredPin === '1234') {
-            state.isManagerUnlocked = true;
-            executeDeleteSale(saleId);
-          } else {
-            showToast('الرمز السري PIN غير صحيح!', true);
-          }
-        });
-      }
-
-      function executeDeleteSale(saleId) {
         const sale = state.sales.find(s => s.id === saleId);
         const name = sale ? sale.name : '';
         state.sales = state.sales.filter(s => s.id !== saleId);
@@ -893,31 +1639,22 @@
       }
 
       // ==========================================
-      // 5. MANAGER SPACE (PIN PROTECTED MODAL)
+      // 8. MANAGER SPACE (FOR NOUREDDINE ONLY)
       // ==========================================
       function setupManagerSpace() {
         const modal = document.getElementById('manager-modal');
         const openBtn = document.getElementById('open-manager-btn');
         const closeBtn = document.getElementById('close-manager-modal');
 
-        const pinStep = document.getElementById('manager-pin-step');
-        const panelStep = document.getElementById('manager-panel-step');
-        const pinInput = document.getElementById('manager-pin-input');
-        const verifyBtn = document.getElementById('btn-verify-pin');
-
         if (openBtn) {
           openBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-            if (state.isManagerUnlocked) {
-              pinStep.classList.add('hidden');
-              panelStep.classList.remove('hidden');
-              renderPresets();
-            } else {
-              pinStep.classList.remove('hidden');
-              panelStep.classList.add('hidden');
-              pinInput.value = '';
-              setTimeout(() => pinInput.focus(), 100);
+            if (!state.isManager) {
+              showToast('هذه الصفحة خاصة بنورالدين (المدير) فقط!', true);
+              return;
             }
+            modal.classList.remove('hidden');
+            renderManagerPINDisplay();
+            renderPresets();
           });
         }
 
@@ -927,26 +1664,31 @@
           });
         }
 
-        if (verifyBtn) {
-          verifyBtn.addEventListener('click', () => {
-            const entered = pinInput.value.trim();
-            if (entered === state.pin || entered === '1234') {
-              state.isManagerUnlocked = true;
-              pinStep.classList.add('hidden');
-              panelStep.classList.remove('hidden');
-              renderPresets();
-              showToast('تم التحقق بنجاح! مرحباً بالمدير 👑');
-            } else {
-              showToast('رمز PIN غير صحيح!', true);
+        document.querySelectorAll('.save-user-pin-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const user = btn.getAttribute('data-user');
+            let inputId = 'input-pin-noureddine';
+            if (user === 'ايوب') inputId = 'input-pin-ayoub';
+            else if (user === 'عبد الله') inputId = 'input-pin-abdellah';
+
+            const input = document.getElementById(inputId);
+            const newPin = (input?.value || '').trim();
+
+            if (newPin.length < 3) {
+              showToast('يجب أن يتكون رمز PIN من 3 أرقام على الأقل', true);
+              return;
             }
-          });
 
-          pinInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') verifyBtn.click();
-          });
-        }
+            state.userPins[user] = newPin;
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
 
-        // Add Preset
+            input.value = '';
+            renderManagerPINDisplay();
+            showToast(`تم تحديث كود PIN الخاص بـ (${user}) بنجاح! 🔒`);
+          });
+        });
+
         const addPresetBtn = document.getElementById('btn-add-preset');
         if (addPresetBtn) {
           addPresetBtn.addEventListener('click', () => {
@@ -969,7 +1711,6 @@
           });
         }
 
-        // Clear All Sales
         const clearAllBtn = document.getElementById('btn-clear-all-sales');
         if (clearAllBtn) {
           clearAllBtn.addEventListener('click', () => {
@@ -984,29 +1725,20 @@
           });
         }
 
-        // Export CSV (Excel)
         const exportCsvBtn = document.getElementById('btn-export-csv');
         if (exportCsvBtn) {
           exportCsvBtn.addEventListener('click', exportSalesCSV);
         }
+      }
 
-        // Save New PIN (Now saves locally AND syncs to Cloud!)
-        const savePinBtn = document.getElementById('btn-save-new-pin');
-        if (savePinBtn) {
-          savePinBtn.addEventListener('click', () => {
-            const newPin = (document.getElementById('input-new-pin')?.value || '').trim();
-            if (newPin.length < 4) {
-              showToast('يجب أن يتكون رمز PIN من 4 أرقام على الأقل', true);
-              return;
-            }
-            state.pin = newPin;
-            saveLocalState();
-            // Critical: Sync PIN to Cloud so it never resets!
-            if (state.syncToCloud) state.syncToCloud();
-            document.getElementById('input-new-pin').value = '';
-            showToast(`تم تحديث وحفظ رمز PIN الجديد (${newPin}) سحابياً بنجاح 🔒`);
-          });
-        }
+      function renderManagerPINDisplay() {
+        const pinN = document.getElementById('display-pin-noureddine');
+        const pinA = document.getElementById('display-pin-ayoub');
+        const pinAb = document.getElementById('display-pin-abdellah');
+
+        if (pinN) pinN.textContent = state.userPins['نورالدين'] || '1234';
+        if (pinA) pinA.textContent = state.userPins['ايوب'] || '2222';
+        if (pinAb) pinAb.textContent = state.userPins['عبد الله'] || '3333';
       }
 
       function exportSalesCSV() {
@@ -1035,46 +1767,6 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         showToast('تم تحميل ملف Excel بنجاح 📊');
-      }
-
-      function showPinDialog(msg, callback) {
-        let dlg = document.getElementById('dialog-pin-prompt');
-        if (!dlg) {
-          dlg = document.createElement('div');
-          dlg.id = 'dialog-pin-prompt';
-          dlg.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3';
-          dlg.innerHTML = `
-            <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-3 shadow-2xl text-right">
-              <h4 id="dlg-pin-title" class="font-bold text-xs text-slate-800"></h4>
-              <input type="password" id="dlg-pin-input" placeholder="الرمز: 1234" maxlength="8"
-                class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-center font-mono text-base outline-none focus:border-amber-500">
-              <div class="flex justify-end gap-2 pt-1">
-                <button id="dlg-pin-cancel" class="px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">إلغاء</button>
-                <button id="dlg-pin-ok" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 rounded-lg text-xs font-black text-slate-950">تأكيد</button>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(dlg);
-        }
-
-        document.getElementById('dlg-pin-title').textContent = msg;
-        const input = document.getElementById('dlg-pin-input');
-        input.value = '';
-        dlg.classList.remove('hidden');
-        input.focus();
-
-        const cancel = document.getElementById('dlg-pin-cancel');
-        const ok = document.getElementById('dlg-pin-ok');
-
-        cancel.onclick = () => dlg.classList.add('hidden');
-        ok.onclick = () => {
-          const val = input.value;
-          dlg.classList.add('hidden');
-          callback(val);
-        };
-        input.onkeydown = (e) => {
-          if (e.key === 'Enter') ok.click();
-        };
       }
 
       function showConfirmDialog(msg, callback) {
@@ -1109,9 +1801,19 @@
       function init() {
         loadLocalState();
         setupRealtimeSync();
+        setupMusicPlayer();
+        setupLoginGate();
+        setupPageNavigation();
         setupSaleForm();
+        setupStockSection();
         setupManagerSpace();
+        updateUserHeader();
         renderAll();
+
+        if (!state.activeUser) {
+          const pinInput = document.getElementById('login-pin-input');
+          if (pinInput) setTimeout(() => pinInput.focus(), 200);
+        }
       }
 
       if (document.readyState === 'loading') {
