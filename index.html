@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" class="h-full bg-slate-100 text-slate-800">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>تسجيل مبيعات ومخزون المحل | إلكترو نور الدين</title>
+  <title>نظام إدارة المحل، المبيعات والكريدي | إلكترو نور الدين</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -52,8 +51,8 @@
       50% { transform: scale(1.15); opacity: 0.4; }
       100% { transform: scale(0.95); opacity: 0.8; }
     }
-    .mic-pulse {
-      animation: pulse-ring 1.5s infinite ease-in-out;
+    .badge-pulse {
+      animation: pulse-ring 2s infinite ease-in-out;
     }
   </style>
 </head>
@@ -64,7 +63,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl border border-slate-200 text-center relative overflow-hidden">
       
       <!-- Top Decorative Accent -->
-      <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/30 text-white font-black">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/30 text-white font-black">
         ⚡
       </div>
 
@@ -89,10 +88,10 @@
       <!-- Help hint for shop members -->
       <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-500 space-y-1">
         <p class="font-bold text-slate-700">الأعضاء المصرح لهم:</p>
-        <div class="flex items-center justify-center gap-2 text-[10px] text-slate-600">
-          <span class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-black">نورالدين (المدير)</span>
-          <span class="bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded font-bold">ايوب</span>
-          <span class="bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded font-bold">عبد الله</span>
+        <div class="flex items-center justify-center gap-1.5 text-[10px] text-slate-600 flex-wrap">
+          <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-black">نورالدين (المدير)</span>
+          <span class="bg-blue-100 text-blue-900 px-2 py-0.5 rounded-md font-bold">ايوب</span>
+          <span class="bg-blue-100 text-blue-900 px-2 py-0.5 rounded-md font-bold">عبد الله</span>
         </div>
         <p class="text-[10px] text-slate-400">كل عضو عندو كود PIN خاص بيه كيحميه</p>
       </div>
@@ -100,75 +99,87 @@
     </div>
   </div>
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- ==================== RESPONSIVE SMART HEADER ==================== -->
   <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 border-b border-slate-800">
-    <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2.5">
+    <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2 space-y-2">
+      
+      <!-- Top Row: Logo, User Badge, Manager Button & Lock -->
       <div class="flex items-center justify-between gap-2">
         
-        <!-- Logo & Title -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-xl shadow-md font-black">
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-lg shadow font-black">
             📱
           </div>
           <div>
             <h1 class="font-extrabold text-sm sm:text-base leading-tight">إلكترو نور الدين</h1>
-            <p class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
+            <p class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
               <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping"></span>
-              <span id="sync-status">سحابة متزامنة ودائمة ☁️</span>
+              <span id="sync-status">سحابة متزامنة ☁️</span>
             </p>
           </div>
         </div>
 
-        <!-- Right: Background Music, User Badge & Manager PIN Button -->
-        <div class="flex items-center gap-2">
+        <!-- User Controls (Always Visible & Never Overflowing!) -->
+        <div class="flex items-center gap-1.5">
           
-          <!-- Music Track Selector & Toggle -->
-          <div class="flex items-center bg-slate-800 border border-slate-700 rounded-xl p-1 gap-1">
-            <button id="btn-toggle-music" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-sm transition" title="تشغيل / كتم الموسيقى">
-              <span id="music-icon">🎵</span>
-            </button>
-            <select id="music-track-select" class="bg-slate-900 text-emerald-400 text-xs font-bold rounded-lg px-2 py-1 outline-none border border-slate-700 cursor-pointer">
-              <option value="optimism">صباح التفاؤل والنشاط 🌅</option>
-              <option value="hope">أمل وطاقة إيجابية 🌟</option>
-              <option value="success">عزيمة ونجاح 🚀</option>
-              <option value="calm">هدوء وتركيز للمحل ☕</option>
-              <option value="boutique">أجواء المتجر الهادئ 🛍️</option>
-            </select>
-          </div>
-
-          <!-- User Identity Badge (Locked strictly to the logged-in user!) -->
-          <div id="current-user-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-black shadow-sm">
-            <span id="user-role-icon">👤</span>
-            <span id="user-display-name" class="text-white">--</span>
-          </div>
-
-          <!-- Manager Space Button (Visible only to Manager!) -->
-          <button id="open-manager-btn" class="hidden flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition">
+          <!-- Manager Space Button (Visible when logged in as Manager!) -->
+          <button id="open-manager-btn" class="hidden flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition active:scale-95">
             <span>👑</span>
-            <span class="hidden sm:inline">لوحة المدير</span>
-            <span class="sm:hidden">المدير</span>
+            <span>المدير</span>
           </button>
 
-          <!-- Logout / Lock Button -->
-          <button id="btn-logout" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-700/60 font-bold text-xs shadow transition" title="تسجيل الخروج وقفل الشاشة">
+          <!-- User Identity Badge -->
+          <div id="current-user-badge" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200">
+            <span id="user-role-icon">👤</span>
+            <span id="user-display-name">--</span>
+          </div>
+
+          <!-- Lock / Logout Button -->
+          <button id="btn-logout" class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-700/60 text-xs font-bold shadow transition active:scale-95" title="قفل الشاشة">
             <span>🔒</span>
-            <span class="hidden sm:inline">قفل</span>
           </button>
         </div>
 
       </div>
 
-      <!-- Navigation Bar between Pages: 1. المبيعات | 2. السلعة لي خاصانا (المخزون) -->
-      <nav class="flex items-center gap-2 pt-2.5 mt-2 border-t border-slate-800 text-xs font-black">
-        <button id="nav-btn-sales" class="page-nav-btn active flex-1 py-1.5 rounded-lg bg-emerald-600 text-white flex items-center justify-center gap-1.5 shadow-sm transition">
+      <!-- Second Row: Music Player Controls (Dedicated full width on phone!) -->
+      <div class="flex items-center bg-slate-800/90 border border-slate-700/80 rounded-xl p-1 gap-1.5">
+        <button id="btn-toggle-music" class="w-8 h-7 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-xs transition" title="تشغيل / كتم الموسيقى">
+          <span id="music-icon">🎵</span>
+        </button>
+        <select id="music-track-select" class="flex-1 bg-slate-900 text-emerald-400 text-[11px] font-bold rounded-lg px-2 py-1 outline-none border border-slate-700 cursor-pointer">
+          <option value="optimism">1. صباح التفاؤل (كاليمبا وأجراس) 🌅</option>
+          <option value="calm">2. هدوء وتركيز (لو-فاي كافيه) ☕</option>
+          <option value="hope">3. أمل وطاقة (عزف جيتار وهارب) 🎸</option>
+          <option value="success">4. عزيمة ونجاح (سينث نشيط ومحفز) 🚀</option>
+          <option value="nature">5. عصافير الطبيعة وبيانو هادئ 🌿</option>
+        </select>
+      </div>
+
+      <!-- Third Row: 3 Navigation Tabs (Grid layout: 100% responsive, never overflows!) -->
+      <nav class="grid grid-cols-3 gap-1 pt-1 border-t border-slate-800 text-[11px] sm:text-xs font-black">
+        
+        <!-- Tab 1: Sales -->
+        <button id="nav-btn-sales" class="page-nav-btn active py-2 rounded-xl bg-emerald-600 text-white flex items-center justify-center gap-1 shadow-sm transition">
           <span>🛍️</span>
-          <span>تسجيل المبيعات (Ventes)</span>
+          <span class="truncate">المبيعات</span>
         </button>
-        <button id="nav-btn-stock" class="page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition">
+
+        <!-- Tab 2: Missing Stock -->
+        <button id="nav-btn-stock" class="page-nav-btn py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1 transition">
           <span>📦</span>
-          <span>السلعة لي خاصانا (المخزون)</span>
-          <span id="badge-needed-stock-count" class="bg-amber-500 text-slate-950 text-[10px] px-1.5 py-0.2 rounded-full font-black">0</span>
+          <span class="truncate">السلعة لي خاصا</span>
+          <span id="badge-needed-stock-count" class="bg-amber-500 text-slate-950 text-[10px] px-1 rounded-full font-black">0</span>
         </button>
+
+        <!-- Tab 3: Credit & Debts -->
+        <button id="nav-btn-credit" class="page-nav-btn py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1 transition">
+          <span>💳</span>
+          <span class="truncate">الكريدي</span>
+          <span id="badge-credit-count" class="bg-rose-500 text-white text-[10px] px-1 rounded-full font-black">0</span>
+        </button>
+
       </nav>
 
     </div>
@@ -344,7 +355,7 @@
               <span>لائحة السلعة لي خاصانا (مقسّمة حسب الفروع)</span>
             </h2>
             <p class="text-xs text-slate-500">
-              قيد أي سلعة تقاضات، وغادي تطلع فـ الفرع الخاص بيها (شاشات، بطاريات، 5D، بوشيطات...)
+              قيد أي سلعة تقاضات، وغادي تطلع فـ الفرع الخاص بيها مع إشعار بالعدد في الأعلى!
             </p>
           </div>
 
@@ -363,7 +374,7 @@
           </div>
         </div>
 
-        <!-- Voice AI Live Status Banner (hidden by default) -->
+        <!-- Voice AI Live Status Banner -->
         <div id="voice-status-box" class="hidden p-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-red-600 inline-block animate-ping"></span>
@@ -428,18 +439,9 @@
 
       </div>
 
-      <!-- Category Filter Pills Bar for Stock -->
+      <!-- Category Filter Pills Bar for Stock (With Live Missing Badges!) -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs font-bold" id="stock-category-filter-bar">
-        <button data-cat="all" class="stock-cat-pill active px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 whitespace-nowrap shadow-xs">الكل</button>
-        <button data-cat="افشور" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">📱 افشورات</button>
-        <button data-cat="5D" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🛡️ 5D</button>
-        <button data-cat="زاج عادي" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔲 زاج عادي</button>
-        <button data-cat="بوشيط" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">💼 بوشيطات</button>
-        <button data-cat="باتري" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔋 باتريات</button>
-        <button data-cat="شارجورات" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔌 شارجورات</button>
-        <button data-cat="اكسسوارات" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🎧 اكسسوارات</button>
-        <button data-cat="هواتف" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">📲 هواتف</button>
-        <button data-cat="اصلاح الهاتف" class="stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap">🔧 قطع اصلاح</button>
+        <!-- Dynamically rendered pills with live quantity badges -->
       </div>
 
       <!-- Missing Stock List (Organized into Branches / Categories!) -->
@@ -469,8 +471,561 @@
 
     </div>
 
+    <!-- ======================================================== -->
+    <!-- VIEW 3: صفحة إدارة الكريدي والديون (MULTI-ITEM CREDIT PAGE) -->
+    <!-- ======================================================== -->
+    <div id="view-credit-page" class="space-y-4 hidden">
+
+      <!-- Credit Summary KPI Header -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- فرع كنسال الناس -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+          <span class="text-xs text-rose-600 font-bold block mb-0.5">💰 كريدي كنسالوه للزبائن</span>
+          <span id="kpi-customers-credit" class="text-xl sm:text-2xl font-black text-rose-600">0 DH</span>
+          <span id="kpi-customers-count" class="text-[10px] text-slate-400 block mt-0.5">0 زبون باقي كيتسال</span>
+        </div>
+
+        <!-- فرع كيتسالوني الناس -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center">
+          <span class="text-xs text-amber-600 font-bold block mb-0.5">🏪 ديون كيتسالوها لينا المحلات</span>
+          <span id="kpi-suppliers-debt" class="text-xl sm:text-2xl font-black text-amber-600">0 DH</span>
+          <span id="kpi-suppliers-count" class="text-[10px] text-slate-400 block mt-0.5">0 محل أو ممول كيتسالنا</span>
+        </div>
+      </div>
+
+      <!-- Credit Sub-Navigation (الزبائن vs المحلات والموردين) -->
+      <div class="flex items-center gap-2 bg-slate-200/80 p-1 rounded-2xl text-xs font-black">
+        <button id="btn-credit-sub-customers" class="credit-sub-tab active flex-1 py-2 rounded-xl bg-white text-slate-900 shadow-sm transition">
+          <span>👥</span> <span>كريدي الزبائن (كنسال الناس)</span>
+        </button>
+        <button id="btn-credit-sub-suppliers" class="credit-sub-tab flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
+          <span>🏪</span> <span>ديون المحلات (كيتسالوني الناس)</span>
+        </button>
+      </div>
+
+      <!-- ---------------------------------------------------- -->
+      <!-- SUB-VIEW A: كريدي الزبائن (مع إمكانية تقييد عدة سلع لنفس الزبون!) -->
+      <!-- ---------------------------------------------------- -->
+      <div id="subview-credit-customers" class="space-y-4 block">
+        
+        <!-- Multi-Item Customer Credit Form -->
+        <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3.5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                <span class="text-rose-600">📝</span>
+                <span>تقييد كريدي زبون (عدة سلع لنفس الزبون)</span>
+              </h3>
+              <p class="text-xs text-slate-500">تقدر تقيد شحال ما بغيتي من سلعة (مثلا: lcd a12 و conector a13) فـ نفس الحساب وكل حاجة بالثمن والدفع ديالها!</p>
+            </div>
+            <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-bold">تسجيل فوري</span>
+          </div>
+
+          <form id="customer-credit-form" class="space-y-3">
+            
+            <!-- Customer Basic Info -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">اسم الزبون (مثلا: عامير):</label>
+                <input type="text" id="credit-cust-name" placeholder="اكتب اسم الزبون..." required
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-rose-500">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (للتواصل وتذكير الواتساب):</label>
+                <input type="text" id="credit-cust-phone" placeholder="06XXXXXXXX"
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono text-slate-800 outline-none focus:bg-white focus:border-rose-500">
+              </div>
+            </div>
+
+            <!-- Dynamic Items Container (Multiple items for the same customer!) -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-black text-slate-800">السلع لي خدا هاد الزبون (كل سلعة بثمنها وتسبيقها):</label>
+                <button type="button" id="btn-add-credit-item-row" class="text-xs font-black text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                  <span>➕</span> <span>زيادة سلعة أخرى لهاد الزبون</span>
+                </button>
+              </div>
+
+              <!-- Item rows wrapper -->
+              <div id="credit-items-rows-container" class="space-y-2">
+                <!-- Row 1 (Initial) -->
+                <div class="credit-item-row p-2.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2">
+                  <div class="flex-1">
+                    <input type="text" placeholder="اسم السلعة (مثلا: lcd a12)" required
+                      class="row-item-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-rose-500">
+                  </div>
+                  <div class="w-full sm:w-24">
+                    <input type="number" placeholder="الثمن DH" min="0" step="any" required
+                      class="row-item-total w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-slate-900 outline-none focus:border-rose-500 text-center">
+                  </div>
+                  <div class="w-full sm:w-24">
+                    <input type="number" placeholder="الدفع DH" min="0" step="any" value="0"
+                      class="row-item-paid w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-emerald-600 outline-none focus:border-rose-500 text-center">
+                  </div>
+                  <div class="w-full sm:w-24 text-center">
+                    <span class="row-item-rem text-xs font-black text-rose-600 bg-rose-50 px-2 py-1.5 rounded-lg border border-rose-200 block truncate">باقي: 0 DH</span>
+                  </div>
+                  <div class="w-8 text-center hidden row-remove-btn-wrap">
+                    <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 font-black text-sm p-1">✕</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Calculation Summary Bar -->
+            <div class="p-3 bg-slate-900 text-white rounded-xl flex items-center justify-between flex-wrap gap-2 text-xs">
+              <div>
+                <span class="text-slate-400">مجموع أثمنة السلع:</span>
+                <strong id="form-calc-grand-total" class="text-white mr-1 text-sm font-mono">0 DH</strong>
+              </div>
+              <div>
+                <span class="text-slate-400">مجموع المدفوع:</span>
+                <strong id="form-calc-grand-paid" class="text-emerald-400 mr-1 text-sm font-mono">0 DH</strong>
+              </div>
+              <div class="bg-rose-950/80 px-3 py-1 rounded-lg border border-rose-700/60">
+                <span class="text-rose-200">إجمالي ما كنسالو لهاد الزبون:</span>
+                <strong id="form-calc-grand-rem" class="text-rose-400 mr-1 text-base font-black font-mono">0 DH</strong>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]">
+              <span>💾</span>
+              <span>حفظ وتقييد حساب الزبون فالسحابة</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- Customers Credit List (Cards showing all items for each customer) -->
+        <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-800">دفتر ديون الزبائن:</h3>
+              <p class="text-xs text-slate-400">كل زبون ببطاقة خاصة فيه السلع لي واخذ وتفاصيل كل سلعة</p>
+            </div>
+            
+            <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
+              <button id="filter-custcredit-pending" class="custcredit-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">باقي كيتسال ⏳</button>
+              <button id="filter-custcredit-settled" class="custcredit-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">خالص ومسدود ✅</button>
+            </div>
+          </div>
+
+          <!-- Container of Customer Credit Cards -->
+          <div id="customers-credit-cards-container" class="space-y-3 max-h-[600px] overflow-y-auto">
+            <div class="text-center py-8 text-slate-400 text-xs">
+              ما كاين حتى كريدي على الزبائن دابا. كلشي خالص!
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ---------------------------------------------------- -->
+      <!-- SUB-VIEW B: ديون المحلات والموردين (كيتسالوني الناس) -->
+      <!-- ---------------------------------------------------- -->
+      <div id="subview-credit-suppliers" class="space-y-4 hidden">
+        
+        <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-base text-slate-800 flex items-center gap-2">
+              <span class="text-amber-600">🏪</span>
+              <span>تقييد سلعة خديتها من عند محل أو مورد (كيتسالني)</span>
+            </h3>
+            <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-bold">تتبع ديون المحل</span>
+          </div>
+
+          <form id="supplier-debt-form" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+              
+              <div class="sm:col-span-6">
+                <label class="block text-xs font-bold text-slate-700 mb-1">اسم المحل أو الشخص لي كيتسالنا:</label>
+                <input type="text" id="debt-supp-name" placeholder="مثلا: محل إلكترو كازا / سفيان درب غلف" required
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-amber-500">
+              </div>
+
+              <div class="sm:col-span-6">
+                <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
+                <input type="text" id="debt-supp-phone" placeholder="06XXXXXXXX"
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono text-slate-800 outline-none focus:bg-white focus:border-amber-500">
+              </div>
+
+              <div class="sm:col-span-6">
+                <label class="block text-xs font-bold text-slate-700 mb-1">اشنو خديت من عندو (السلعة):</label>
+                <input type="text" id="debt-supp-items" placeholder="مثلا: 2 شاشات A12 + 5 كابلات..." required
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-amber-500">
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 mb-1">المجموع (DH):</label>
+                <input type="number" id="debt-supp-total" placeholder="500" min="0" step="any" required
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-slate-900 outline-none focus:bg-white focus:border-amber-500 text-center">
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 mb-1">عطيتو تسبيق (DH):</label>
+                <input type="number" id="debt-supp-paid" value="0" min="0" step="any" placeholder="200"
+                  class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-black text-emerald-600 outline-none focus:bg-white focus:border-amber-500 text-center">
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 mb-1">باقي كيتسالني (DH):</label>
+                <input type="text" id="debt-supp-remaining" value="0 DH" readonly
+                  class="w-full p-2.5 bg-amber-50 border-2 border-amber-200 rounded-xl text-sm font-black text-amber-700 text-center cursor-not-allowed">
+              </div>
+
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]">
+              <span>➕</span>
+              <span>تقييد هاد الدين فالسحابة</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- Suppliers Debt List -->
+        <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <h3 class="font-extrabold text-base text-slate-800">لائحة المحلات لي كيتسالونا فلوس:</h3>
+            
+            <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-bold">
+              <button id="filter-suppdebt-pending" class="suppdebt-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs">باقي كنتسالو ⏳</button>
+              <button id="filter-suppdebt-settled" class="suppdebt-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900">رديت ليهم خالص ✅</button>
+            </div>
+          </div>
+
+          <div id="suppliers-debt-list" class="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+            <div class="text-center py-8 text-slate-400 text-xs">
+              ما كاين حتى محل كيتسالنا شي حاجة حالياً. الحمد لله!
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
   </main>
 
+  <!-- ==================== MODAL: إضافة سلعة أخرى لزبون موجود ==================== -->
+  <div id="modal-add-item-to-cust" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-right">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+          <span>➕</span> <span>زيادة سلعة جديدة لحساب الزبون</span>
+        </h4>
+        <button type="button" id="btn-close-add-item-modal" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <p id="modal-target-cust-name" class="text-xs font-black text-rose-600 bg-rose-50 p-2.5 rounded-xl my-3">الزبون: --</p>
+
+      <form id="form-modal-add-item" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اسم السلعة (مثلا: conector a13):</label>
+          <input type="text" id="modal-new-item-name" placeholder="اكتب السلعة..." required autocomplete="off"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-rose-500 font-bold text-slate-900">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الثمن (DH):</label>
+            <input type="number" id="modal-new-item-total" placeholder="50" min="0" step="any" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-slate-900">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الدفع / التسبيق (DH):</label>
+            <input type="number" id="modal-new-item-paid" placeholder="0" min="0" step="any" value="0"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-emerald-600">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btn-cancel-modal-item" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 active:scale-95 transition">إلغاء</button>
+          <button type="submit" id="btn-save-modal-item" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-md active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
+            <span>💾</span> <span>إضافة للكريدي</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: دفع جزء من الكريدي ==================== -->
+  <div id="modal-partial-payment" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-2xl text-right">
+      <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+        <span>💵</span> <span>تسديد دفعة من الكريدي</span>
+      </h4>
+      <p id="partial-pay-name" class="text-xs text-slate-600 font-bold">--</p>
+      
+      <div>
+        <label class="block text-[11px] text-slate-500 mb-1 font-bold">المبلغ المدفوع دابا (DH):</label>
+        <input type="number" id="input-partial-amount" min="1" step="any" placeholder="مثلا: 100"
+          class="w-full p-2.5 bg-slate-50 border-2 border-emerald-400 rounded-xl text-center font-black text-base text-emerald-700 outline-none">
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btn-cancel-partial" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">إلغاء</button>
+        <button id="btn-confirm-partial" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow">تأكيد الدفع ✅</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: إرسال السلعة من المبيعات إلى السلعة لي خاصا ==================== -->
+  <div id="modal-send-sale-to-stock" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-right">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+          <span>📦</span> <span>إرسال السلعة إلى النواقص (السلعة لي خاصا)</span>
+        </h4>
+        <button type="button" id="btn-close-send-stock-modal" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <p id="send-stock-sale-info" class="text-xs font-bold text-amber-800 bg-amber-50 p-2.5 rounded-xl my-3 border border-amber-200">
+        من عملية البيع: --
+      </p>
+
+      <form id="form-send-sale-to-stock" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اسم السلعة المطلوبة (النواقص):</label>
+          <input type="text" id="send-stock-name" placeholder="مثلا: افشور a12" required autocomplete="off"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-amber-500 font-bold text-slate-900">
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اختر الفرع / التصنيف المناسب:</label>
+          <select id="send-stock-category" required
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-amber-500 font-bold text-slate-800">
+            <option value="افشور">📱 افشور (شاشات وافشورات)</option>
+            <option value="5D">🛡️ 5D (زجاج 5D / 9D Incassable)</option>
+            <option value="زاج عادي">🔲 زاج عادي (حماية عادي)</option>
+            <option value="بوشيط">💼 بوشيط (أغطية وبوشيطات)</option>
+            <option value="باتري">🔋 باتري (بطاريات)</option>
+            <option value="شارجورات">🔌 شارجورات (شواحن وكابلات)</option>
+            <option value="اكسسوارات">🎧 اكسسوارات (سماعات وإكسسوار)</option>
+            <option value="هواتف">📲 هواتف (هواتف ذكية)</option>
+            <option value="اصلاح الهاتف">🔧 اصلاح الهاتف (قطع غيار وكونيكتور)</option>
+          </select>
+          
+          <!-- Category Quick Selection Pills -->
+          <div class="flex items-center gap-1.5 flex-wrap mt-2" id="send-stock-pills-container">
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="افشور">📱 افشور</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="5D">🛡️ 5D</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="زاج عادي">🔲 زاج</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="بوشيط">💼 بوشيط</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="باتري">🔋 باتري</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="شارجورات">🔌 شارجورات</button>
+            <button type="button" class="stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer" data-cat="اصلاح الهاتف">🔧 اصلاح</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الكمية المطلوبة:</label>
+            <input type="number" id="send-stock-qty" min="1" value="1" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-slate-900">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">درجة الأولوية:</label>
+            <select id="send-stock-priority"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white font-bold text-slate-800 text-center">
+              <option value="عادي">عادي ⚪</option>
+              <option value="طلب زبون">طلب زبون 🟡</option>
+              <option value="مستعجل بزاف">مستعجل 🔴</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btn-cancel-send-stock" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 active:scale-95 transition">إلغاء</button>
+          <button type="submit" id="btn-confirm-send-stock" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-md active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
+            <span>📦</span> <span>تأكيد الإرسال للنواقص</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: تعديل عملية البيع (خاص بالمدير) ==================== -->
+  <div id="modal-edit-sale" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-right">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+          <span>✏️</span> <span>تعديل عملية البيع (صلاحية المدير 👑)</span>
+        </h4>
+        <button type="button" id="btn-close-edit-sale-modal" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <p class="text-xs text-blue-700 bg-blue-50 p-2 rounded-xl my-3 font-bold border border-blue-200">
+        تعديل تقياد الموظف وتصحيح الثمن أو السلعة أو الكمية
+      </p>
+
+      <form id="form-edit-sale" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-sale-id">
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اسم السلعة المباعة:</label>
+          <input type="text" id="edit-sale-name" placeholder="اسم السلعة..." required autocomplete="off"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-blue-500 font-bold text-slate-900">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">ثمن القطعة (DH):</label>
+            <input type="number" id="edit-sale-unit-price" min="0" step="any" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-emerald-600">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الكمية المباعة:</label>
+            <input type="number" id="edit-sale-qty" min="1" step="1" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-blue-600">
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+          <span class="text-slate-500 font-bold">المجموع الكلي للبيع:</span>
+          <span id="edit-sale-calc-total" class="font-black text-sm text-emerald-700">0 DH</span>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">الموظف / البائع المسجل باسمه:</label>
+          <select id="edit-sale-seller" required
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white font-bold text-slate-800">
+            <option value="نورالدين">نورالدين (المدير 👑)</option>
+            <option value="ايوب">ايوب 👤</option>
+            <option value="عبد الله">عبد الله 👤</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btn-cancel-edit-sale" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 active:scale-95 transition">إلغاء</button>
+          <button type="submit" id="btn-save-edit-sale" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-md active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
+            <span>💾</span> <span>حفظ التعديلات</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: تعديل السلعة لي خاصا (خاص بالمدير) ==================== -->
+  <div id="modal-edit-stock" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-right">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+          <span>✏️</span> <span>تعديل السلعة لي خاصا (المدير 👑)</span>
+        </h4>
+        <button type="button" id="btn-close-edit-stock-modal" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <form id="form-edit-stock" class="space-y-3 text-xs mt-3">
+        <input type="hidden" id="edit-stock-id">
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اسم السلعة:</label>
+          <input type="text" id="edit-stock-name" required autocomplete="off"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-amber-500 font-bold text-slate-900">
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">الفرع / التصنيف:</label>
+          <select id="edit-stock-cat" required
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white font-bold text-slate-800">
+            <option value="افشور">📱 افشور (شاشات وافشورات)</option>
+            <option value="5D">🛡️ 5D (زجاج 5D / 9D Incassable)</option>
+            <option value="زاج عادي">🔲 زاج عادي (حماية عادي)</option>
+            <option value="بوشيط">💼 بوشيط (أغطية وبوشيطات)</option>
+            <option value="باتري">🔋 باتري (بطاريات)</option>
+            <option value="شارجورات">🔌 شارجورات (شواحن وكابلات)</option>
+            <option value="اكسسوارات">🎧 اكسسوارات (سماعات وإكسسوار)</option>
+            <option value="هواتف">📲 هواتف (هواتف ذكية)</option>
+            <option value="اصلاح الهاتف">🔧 اصلاح الهاتف (قطع غيار وكونيكتور)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الكمية:</label>
+            <input type="number" id="edit-stock-qty" min="1" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الأولوية:</label>
+            <select id="edit-stock-priority"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white font-bold text-center">
+              <option value="عادي">عادي ⚪</option>
+              <option value="طلب زبون">طلب زبون 🟡</option>
+              <option value="مستعجل بزاف">مستعجل 🔴</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">الموظف الذي قيدها:</label>
+          <select id="edit-stock-addedby" required
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white font-bold text-slate-800">
+            <option value="نورالدين">نورالدين (المدير 👑)</option>
+            <option value="ايوب">ايوب 👤</option>
+            <option value="عبد الله">عبد الله 👤</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btn-cancel-edit-stock" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 active:scale-95 transition">إلغاء</button>
+          <button type="submit" id="btn-save-edit-stock" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-md active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
+            <span>💾</span> <span>حفظ التعديلات</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: تعديل سلعة الكريدي (خاص بالمدير) ==================== -->
+  <div id="modal-edit-credit-item" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-right">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h4 class="font-black text-sm text-slate-900 flex items-center gap-1.5">
+          <span>✏️</span> <span>تعديل سلعة الكريدي (المدير 👑)</span>
+        </h4>
+        <button type="button" id="btn-close-edit-credit-modal" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <p id="edit-credit-item-cust-name" class="text-xs text-rose-600 bg-rose-50 p-2 rounded-xl my-3 font-bold border border-rose-200">الزبون: --</p>
+
+      <form id="form-edit-credit-item" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-credit-cust-id">
+        <input type="hidden" id="edit-credit-item-id">
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">اسم السلعة:</label>
+          <input type="text" id="edit-credit-item-name" required autocomplete="off"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-rose-500 font-bold text-slate-900">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">الثمن الإجمالي (DH):</label>
+            <input type="number" id="edit-credit-item-total" min="0" step="any" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">المدفوع / التسبيق (DH):</label>
+            <input type="number" id="edit-credit-item-paid" min="0" step="any" value="0" required
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white text-center font-black text-emerald-600">
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+          <span class="text-slate-500 font-bold">الباقي المحسوب:</span>
+          <span id="edit-credit-item-calc-rem" class="font-black text-sm text-rose-600">0 DH</span>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btn-cancel-edit-credit" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 active:scale-95 transition">إلغاء</button>
+          <button type="submit" id="btn-save-edit-credit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-md active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
+            <span>💾</span> <span>حفظ التعديلات</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
   <!-- ==================== MODAL: لوحة المدير (خاصة بنورالدين فقط) ==================== -->
   <div id="manager-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
     <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl border border-slate-200 text-right">
@@ -488,7 +1043,7 @@
       <div class="space-y-4 text-xs">
         
         <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 font-bold flex items-center justify-between">
-          <span>مرحباً يا نورالدين! هنا يمكنك التحكم في أكواد PIN للأعضاء والسلع.</span>
+          <span>مرحباً يا نورالدين! هنا يمكنك التحكم في أكواد PIN للأعضاء والسلع والكريدي.</span>
           <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-amber-300 font-black">المدير العام</span>
         </div>
 
@@ -560,17 +1115,46 @@
           </div>
         </div>
 
-        <!-- Dangerous Manager Actions -->
-        <div class="pt-3 border-t border-slate-200 space-y-2">
-          <h4 class="font-bold text-red-700">إجراءات الحذف ومسح السجل:</h4>
+        <!-- Data Backup & Restore & CSV Export Actions -->
+        <div class="pt-3 border-t border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-black text-slate-800 text-sm flex items-center gap-1.5">
+              <span>💾</span> <span>النسخ الاحتياطي الشامل واسترجاع البيانات:</span>
+            </h4>
+            <span class="text-[10px] bg-blue-100 text-blue-900 font-black px-2 py-0.5 rounded-full">نسخة كاملة</span>
+          </div>
+
+          <!-- Educational instructions box on how to backup & restore on phone/PC -->
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-1.5 text-xs text-blue-950 font-bold">
+            <p class="font-black text-blue-900 flex items-center gap-1">
+              <span>💡</span> <span>دليل الهاتف: كيفاش تهز الباكاب وكيفاش ترجعو:</span>
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-[11px] text-blue-900 font-semibold leading-relaxed">
+              <li><strong>هزان الباكاب:</strong> اضغط على <strong>«تحميل نسخة احتياطية كاملة 💾»</strong>، غايتيليشارجا ملف JSON فالهاتف فيه كولشي: المبيعات، السلعة لي خاصا، الكريدي، ديون المحلات، وأكواد PIN.</li>
+              <li><strong>ترجاع الباكاب:</strong> إيلا تبدل التليفون أو تمسحات لمعلومات، اضغط على <strong>«استرجاع نسخة احتياطية 📥»</strong> وعزل نفس الملف؛ فالحين كيرجع كولشي وكيتسنكرونيزا مع باقي الهواتف!</li>
+            </ul>
+          </div>
           
-          <div class="flex items-center gap-2">
-            <button id="btn-export-csv" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">
-              <span>📥</span> تصدير Excel (CSV)
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <!-- Download Full Backup JSON -->
+            <button type="button" id="btn-backup-json" class="py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition cursor-pointer">
+              <span>💾</span> <span>تحميل نسخة احتياطية كاملة</span>
             </button>
 
-            <button id="btn-clear-all-sales" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">
-              <span>🗑️</span> مسح كل المبيعات نهائياً
+            <!-- Restore Backup JSON -->
+            <button type="button" id="btn-trigger-restore" class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition cursor-pointer">
+              <span>📥</span> <span>استرجاع نسخة احتياطية</span>
+            </button>
+            <input type="file" id="input-restore-file" accept=".json,application/json" class="hidden">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" id="btn-export-csv" class="py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 shadow-xs cursor-pointer">
+              <span>📊</span> تصدير Excel (CSV)
+            </button>
+
+            <button type="button" id="btn-clear-all-sales" class="py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 shadow-xs cursor-pointer">
+              <span>🗑️</span> تصفير المبيعات فقط
             </button>
           </div>
         </div>
@@ -583,15 +1167,15 @@
   <!-- TOAST FEEDBACK NOTIFICATION -->
   <div id="toast-box" class="fixed bottom-4 left-4 z-50 pointer-events-none"></div>
 
-  <!-- ==================== WEB AUDIO OPTIMISTIC AMBIENT SYNTHESIZER ==================== -->
+  <!-- ==================== RADICALLY DISTINCT WEB AUDIO SYNTHESIZER ==================== -->
   <script>
-    // Sophisticated Web Audio Synthesizer with 5 Optimistic / Uplifting Ambient Tracks
     const ShopAudio = (function() {
       let audioCtx = null;
       let isPlaying = false;
       let timerId = null;
       let masterGain = null;
       let currentTrack = 'optimism';
+      let activeOscillators = [];
 
       function getContext() {
         if (!audioCtx) {
@@ -609,132 +1193,244 @@
         return audioCtx;
       }
 
-      // Track Chord Definitions (Optimistic, Cheerful, Peaceful Chords)
-      const TRACK_DEFINITIONS = {
-        // 1. صباح التفاؤل والنشاط (Bright C-major / F-major uplifting bells & pads)
-        optimism: {
-          interval: 3200,
-          filterFreq: 850,
-          waveform: 'triangle',
-          chords: [
-            [261.63, 329.63, 392.00, 523.25], // C Major
-            [349.23, 440.00, 523.25, 659.25], // F Major7
-            [220.00, 329.63, 440.00, 523.25], // Am7
-            [196.00, 246.94, 293.66, 392.00]  // G Major
-          ]
-        },
-        // 2. أمل وطاقة إيجابية (G Major / D Major bright hope)
-        hope: {
-          interval: 3600,
-          filterFreq: 750,
-          waveform: 'sine',
-          chords: [
-            [196.00, 293.66, 392.00, 493.88], // G Major
-            [293.66, 369.99, 440.00, 587.33], // D Major
-            [220.00, 261.63, 329.63, 440.00], // Am
-            [174.61, 261.63, 349.23, 440.00]  // F Major
-          ]
-        },
-        // 3. عزيمة ونجاح (Uplifting cadence with rich harmonics)
-        success: {
-          interval: 3000,
-          filterFreq: 950,
-          waveform: 'triangle',
-          chords: [
-            [261.63, 392.00, 493.88, 659.25], // Cmaj9
-            [293.66, 440.00, 587.33, 739.99], // Dadd9
-            [329.63, 392.00, 493.88, 587.33], // Em7
-            [349.23, 440.00, 523.25, 659.25]  // Fmaj7
-          ]
-        },
-        // 4. هدوء وتركيز للمحل (Warm relaxing Lo-Fi Rhodes)
-        calm: {
-          interval: 4000,
-          filterFreq: 550,
-          waveform: 'triangle',
-          chords: [
-            [220.00, 261.63, 329.63, 392.00], // Am7
-            [174.61, 220.00, 261.63, 329.63], // Fmaj7
-            [261.63, 329.63, 392.00, 493.88], // Cmaj7
-            [196.00, 261.63, 293.66, 349.23]  // G7sus
-          ]
-        },
-        // 5. أجواء المتجر الهادئ (Boutique jazz pads)
-        boutique: {
-          interval: 3800,
-          filterFreq: 680,
-          waveform: 'sine',
-          chords: [
-            [261.63, 329.63, 392.00, 493.88], // Cmaj7
-            [246.94, 329.63, 392.00, 493.88], // Em/B
-            [220.00, 261.63, 329.63, 392.00], // Am7
-            [174.61, 220.00, 261.63, 349.23]  // Fmaj7
-          ]
+      function silenceActiveSounds() {
+        if (timerId) {
+          clearTimeout(timerId);
+          timerId = null;
         }
-      };
+        activeOscillators.forEach(item => {
+          try {
+            if (item.gainNode) {
+              item.gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+              item.gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            }
+            if (item.osc) {
+              item.osc.stop(audioCtx.currentTime);
+              item.osc.disconnect();
+            }
+          } catch(e) {}
+        });
+        activeOscillators = [];
+      }
 
-      let stepIndex = 0;
-
-      function playNextChord() {
-        if (!isPlaying) return;
+      // 1. Kalimba
+      const kalimbaNotes = [523.25, 659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25];
+      let kalimbaIdx = 0;
+      function playKalimbaPhrase() {
+        if (!isPlaying || currentTrack !== 'optimism') return;
         const ctx = getContext();
         if (!ctx) return;
-
-        const track = TRACK_DEFINITIONS[currentTrack] || TRACK_DEFINITIONS.optimism;
-        const chordNotes = track.chords[stepIndex % track.chords.length];
-        stepIndex++;
-
         const now = ctx.currentTime;
+        const freq = kalimbaNotes[kalimbaIdx % kalimbaNotes.length];
+        kalimbaIdx++;
+        const osc = ctx.createOscillator();
+        const noteGain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        noteGain.gain.setValueAtTime(0.001, now);
+        noteGain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+        osc.connect(noteGain);
+        noteGain.connect(masterGain);
+        osc.start(now);
+        osc.stop(now + 0.7);
+        activeOscillators.push({ osc, gainNode: noteGain });
+        timerId = setTimeout(playKalimbaPhrase, 420);
+      }
 
-        chordNotes.forEach((freq, i) => {
+      // 2. Lo-Fi
+      const lofiChords = [
+        { sub: 110.00, pad: [220.00, 261.63, 329.63, 392.00] },
+        { sub: 146.83, pad: [220.00, 261.63, 349.23, 440.00] },
+        { sub: 130.81, pad: [261.63, 329.63, 392.00, 493.88] },
+        { sub: 164.81, pad: [246.94, 293.66, 392.00, 440.00] }
+      ];
+      let lofiIdx = 0;
+      function playLofiPhrase() {
+        if (!isPlaying || currentTrack !== 'calm') return;
+        const ctx = getContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const chord = lofiChords[lofiIdx % lofiChords.length];
+        lofiIdx++;
+        const bassOsc = ctx.createOscillator();
+        const bassGain = ctx.createGain();
+        bassOsc.type = 'sine';
+        bassOsc.frequency.setValueAtTime(chord.sub, now);
+        bassGain.gain.setValueAtTime(0.001, now);
+        bassGain.gain.linearRampToValueAtTime(0.09, now + 0.3);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + 3.8);
+        bassOsc.connect(bassGain);
+        bassGain.connect(masterGain);
+        bassOsc.start(now);
+        bassOsc.stop(now + 4.0);
+        activeOscillators.push({ osc: bassOsc, gainNode: bassGain });
+
+        chord.pad.forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const noteGain = ctx.createGain();
           const filter = ctx.createBiquadFilter();
-
-          osc.type = track.waveform;
+          osc.type = 'triangle';
           osc.frequency.setValueAtTime(freq, now);
-
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(track.filterFreq, now);
-
+          filter.frequency.setValueAtTime(420, now);
           noteGain.gain.setValueAtTime(0.001, now);
-          noteGain.gain.linearRampToValueAtTime(0.05, now + 0.6 + (i * 0.12));
-          noteGain.gain.exponentialRampToValueAtTime(0.001, now + (track.interval / 1000) - 0.2);
-
+          noteGain.gain.linearRampToValueAtTime(0.035, now + 0.5 + (i * 0.08));
+          noteGain.gain.exponentialRampToValueAtTime(0.001, now + 3.7);
           osc.connect(filter);
           filter.connect(noteGain);
           noteGain.connect(masterGain);
-
-          osc.start(now + (i * 0.06));
-          osc.stop(now + (track.interval / 1000));
+          osc.start(now + (i * 0.05));
+          osc.stop(now + 4.0);
+          activeOscillators.push({ osc, gainNode: noteGain });
         });
+        timerId = setTimeout(playLofiPhrase, 4000);
+      }
 
-        timerId = setTimeout(playNextChord, track.interval);
+      // 3. Acoustic Guitar
+      const guitarPatterns = [
+        [146.83, 220.00, 293.66, 369.99, 440.00],
+        [196.00, 246.94, 293.66, 392.00, 493.88],
+        [220.00, 261.63, 329.63, 440.00, 523.25],
+        [174.61, 220.00, 261.63, 349.23, 440.00]
+      ];
+      let guitarIdx = 0;
+      function playGuitarPhrase() {
+        if (!isPlaying || currentTrack !== 'hope') return;
+        const ctx = getContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const strings = guitarPatterns[guitarIdx % guitarPatterns.length];
+        guitarIdx++;
+        strings.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const noteGain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(freq * 1.5, now);
+          filter.Q.setValueAtTime(2.0, now);
+          const pluckTime = now + (i * 0.065);
+          noteGain.gain.setValueAtTime(0.0001, pluckTime);
+          noteGain.gain.linearRampToValueAtTime(0.07, pluckTime + 0.015);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, pluckTime + 1.8);
+          osc.connect(filter);
+          filter.connect(noteGain);
+          noteGain.connect(masterGain);
+          osc.start(pluckTime);
+          osc.stop(pluckTime + 1.9);
+          activeOscillators.push({ osc, gainNode: noteGain });
+        });
+        timerId = setTimeout(playGuitarPhrase, 2600);
+      }
+
+      // 4. Synth
+      const synthPulseNotes = [392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+      let synthIdx = 0;
+      function playSynthPhrase() {
+        if (!isPlaying || currentTrack !== 'success') return;
+        const ctx = getContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const freq = synthPulseNotes[synthIdx % synthPulseNotes.length];
+        synthIdx++;
+        const osc = ctx.createOscillator();
+        const noteGain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1100, now);
+        noteGain.gain.setValueAtTime(0.001, now);
+        noteGain.gain.linearRampToValueAtTime(0.04, now + 0.04);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+        osc.connect(filter);
+        filter.connect(noteGain);
+        noteGain.connect(masterGain);
+        osc.start(now);
+        osc.stop(now + 0.5);
+        activeOscillators.push({ osc, gainNode: noteGain });
+        timerId = setTimeout(playSynthPhrase, 340);
+      }
+
+      // 5. Nature
+      const naturePianoChords = [
+        [523.25, 659.25, 783.99],
+        [587.33, 698.46, 880.00],
+        [659.25, 783.99, 987.77],
+        [698.46, 880.00, 1046.50]
+      ];
+      let natureIdx = 0;
+      function playNaturePhrase() {
+        if (!isPlaying || currentTrack !== 'nature') return;
+        const ctx = getContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const chord = naturePianoChords[natureIdx % naturePianoChords.length];
+        natureIdx++;
+        chord.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const noteGain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          noteGain.gain.setValueAtTime(0.001, now);
+          noteGain.gain.linearRampToValueAtTime(0.035, now + 0.05 + (i * 0.04));
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+          osc.connect(noteGain);
+          noteGain.connect(masterGain);
+          osc.start(now + (i * 0.04));
+          osc.stop(now + 3.4);
+          activeOscillators.push({ osc, gainNode: noteGain });
+        });
+        setTimeout(() => {
+          if (!isPlaying || currentTrack !== 'nature') return;
+          const birdNow = ctx.currentTime;
+          const birdOsc = ctx.createOscillator();
+          const birdGain = ctx.createGain();
+          birdOsc.type = 'sine';
+          birdOsc.frequency.setValueAtTime(2600, birdNow);
+          birdOsc.frequency.exponentialRampToValueAtTime(3600, birdNow + 0.08);
+          birdOsc.frequency.exponentialRampToValueAtTime(2400, birdNow + 0.16);
+          birdGain.gain.setValueAtTime(0.001, birdNow);
+          birdGain.gain.linearRampToValueAtTime(0.025, birdNow + 0.04);
+          birdGain.gain.exponentialRampToValueAtTime(0.0001, birdNow + 0.22);
+          birdOsc.connect(birdGain);
+          birdGain.connect(masterGain);
+          birdOsc.start(birdNow);
+          birdOsc.stop(birdNow + 0.25);
+          activeOscillators.push({ osc: birdOsc, gainNode: birdGain });
+        }, 900);
+        timerId = setTimeout(playNaturePhrase, 3600);
+      }
+
+      function playCurrentTrackDispatcher() {
+        silenceActiveSounds();
+        if (!isPlaying) return;
+        if (currentTrack === 'optimism') playKalimbaPhrase();
+        else if (currentTrack === 'calm') playLofiPhrase();
+        else if (currentTrack === 'hope') playGuitarPhrase();
+        else if (currentTrack === 'success') playSynthPhrase();
+        else if (currentTrack === 'nature') playNaturePhrase();
       }
 
       function setTrack(trackKey) {
-        if (TRACK_DEFINITIONS[trackKey]) {
-          currentTrack = trackKey;
-          if (isPlaying) {
-            if (timerId) clearTimeout(timerId);
-            stepIndex = 0;
-            playNextChord();
-          }
-        }
+        currentTrack = trackKey;
+        silenceActiveSounds();
+        if (isPlaying) playCurrentTrackDispatcher();
       }
 
       function start() {
         if (isPlaying) return;
         getContext();
         isPlaying = true;
-        stepIndex = 0;
-        playNextChord();
+        playCurrentTrackDispatcher();
         updateMusicButtonUI(true);
       }
 
       function stop() {
         isPlaying = false;
-        if (timerId) clearTimeout(timerId);
+        silenceActiveSounds();
         updateMusicButtonUI(false);
       }
 
@@ -767,10 +1463,10 @@
         const icon = document.getElementById('music-icon');
         if (btn) {
           if (active) {
-            btn.className = 'w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm transition shadow-sm animate-pulse';
+            btn.className = 'w-8 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs transition shadow-sm animate-pulse';
             if (icon) icon.textContent = '🔊';
           } else {
-            btn.className = 'w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center text-sm transition';
+            btn.className = 'w-8 h-7 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 flex items-center justify-center text-xs transition';
             if (icon) icon.textContent = '🔇';
           }
         }
@@ -797,19 +1493,22 @@
     (function() {
       'use strict';
 
-      // Storage Keys
+      // ==========================================
+      // PERMANENT STORAGE KEYS
+      // ==========================================
       const STORAGE_KEYS = {
-        SALES: 'electro_simple_sales_v6',
-        STOCK_NEEDS: 'electro_simple_stock_needs_v6',
-        PRESETS: 'electro_simple_presets_v6',
-        USER_PINS: 'electro_user_pins_v6',
-        ACTIVE_SESSION: 'electro_active_user_v6',
-        LAST_SYNC_TS: 'electro_simple_last_sync_v6',
-        MUSIC_MUTED: 'electro_music_muted_pref_v6',
-        MUSIC_TRACK: 'electro_music_track_pref_v6'
+        SALES: 'electro_permanent_sales_db',
+        STOCK_NEEDS: 'electro_permanent_stock_db',
+        CREDIT_CUSTOMERS: 'electro_permanent_credit_cust_db',
+        DEBT_SUPPLIERS: 'electro_permanent_debt_supp_db',
+        PRESETS: 'electro_permanent_presets_db',
+        USER_PINS: 'electro_permanent_pins_db',
+        ACTIVE_SESSION: 'electro_active_user_session',
+        LAST_SYNC_TS: 'electro_permanent_sync_timestamp',
+        MUSIC_MUTED: 'electro_music_muted_pref',
+        MUSIC_TRACK: 'electro_music_track_pref'
       };
 
-      // Initial Default Presets
       const DEFAULT_PRESETS = [
         { name: 'افشور A12', price: 250 },
         { name: 'افشور Samsung A51', price: 380 },
@@ -823,49 +1522,174 @@
         { name: 'زجاج حماية 9D', price: 25 }
       ];
 
-      // Default Individual PINs
       const DEFAULT_USER_PINS = {
         'نورالدين': '1234',
         'ايوب': '2222',
         'عبد الله': '3333'
       };
 
+      const STOCK_CATEGORIES_INFO = {
+        'افشور': { name: 'شاشات وافشورات', icon: '📱', color: 'blue' },
+        '5D': { name: 'زجاج 5D / 9D Incassable', icon: '🛡️', color: 'emerald' },
+        'زاج عادي': { name: 'زاج حماية عادي', icon: '🔲', color: 'slate' },
+        'بوشيط': { name: 'بوشيطات وأغطية', icon: '💼', color: 'purple' },
+        'باتري': { name: 'بطاريات', icon: '🔋', color: 'amber' },
+        'شارجورات': { name: 'شواحن وكابلات', icon: '🔌', color: 'orange' },
+        'اكسسوارات': { name: 'إكسسوارات وسماعات', icon: '🎧', color: 'indigo' },
+        'هواتف': { name: 'هواتف ذكية', icon: '📲', color: 'teal' },
+        'اصلاح الهاتف': { name: 'قطع غيار وإصلاح الهاتف', icon: '🔧', color: 'rose' }
+      };
+
       // App State
       const state = {
-        currentView: 'sales', // 'sales' or 'stock'
-        activeUser: null, // 'نورالدين', 'ايوب', or 'عبد الله'
+        currentView: 'sales', // 'sales', 'stock', 'credit'
+        creditSubView: 'customers', // 'customers' or 'suppliers'
+        activeUser: null,
         isManager: false,
         userPins: Object.assign({}, DEFAULT_USER_PINS),
         sales: [],
         stockNeeds: [],
+        creditCustomers: [], // Each customer has: name, phone, items: [ { id, name, total, paid, remaining, status } ]
+        debtSuppliers: [],
         presets: DEFAULT_PRESETS,
         lastUpdated: 0,
-        roomCode: 'iliktronds_shop_cloud_v6',
+        roomCode: 'iliktronds_shop_permanent_cloud_v1',
         totalsFilter: 'all',
         stockFilter: 'pending',
-        stockCatFilter: 'all', // Category filter in stock view
+        stockCatFilter: 'all',
+        custCreditFilter: 'pending',
+        suppDebtFilter: 'pending',
+        activeTargetCustForNewItem: null, // Holds customer for adding another item
+        activeTargetCustId: null,
+        activeTargetCustName: null,
+        activePartialTarget: null, // Holds item being partially paid
+        activeSendToStockSale: null, // Holds sale being sent to missing stock
+        activeEditingSale: null, // Holds sale currently being edited by manager
+        activeEditingStock: null, // Holds missing stock item being edited by manager
+        activeEditingCreditCust: null,
+        activeEditingCreditItem: null,
         mqttClient: null
       };
 
-      // 1. Load Data safely from localStorage / sessionStorage
-      function loadLocalState() {
-        try {
-          const storedSales = localStorage.getItem(STORAGE_KEYS.SALES);
-          if (storedSales) state.sales = JSON.parse(storedSales);
+      // Helper to compute customer totals from items array
+      function updateCustomerRecordTotals(cust) {
+        if (!cust.items) cust.items = [];
+        let total = 0;
+        let paid = 0;
+        let remaining = 0;
 
-          const storedStock = localStorage.getItem(STORAGE_KEYS.STOCK_NEEDS);
-          if (storedStock) state.stockNeeds = JSON.parse(storedStock);
+        cust.items.forEach(it => {
+          total += Number(it.total || 0);
+          paid += Number(it.paid || 0);
+          it.remaining = Math.max(0, Number(it.total || 0) - Number(it.paid || 0));
+          remaining += it.remaining;
+          it.status = it.remaining <= 0 ? 'settled' : 'pending';
+        });
+
+        cust.total = total;
+        cust.paid = paid;
+        cust.remaining = remaining;
+        cust.status = remaining <= 0 ? 'settled' : 'pending';
+      }
+
+      // 1. Automatic Data Recovery & Migration
+      function migrateAndLoadData() {
+        try {
+          let loadedSales = localStorage.getItem(STORAGE_KEYS.SALES);
+          let loadedStock = localStorage.getItem(STORAGE_KEYS.STOCK_NEEDS);
+          let loadedCreditCust = localStorage.getItem(STORAGE_KEYS.CREDIT_CUSTOMERS);
+          let loadedDebtSupp = localStorage.getItem(STORAGE_KEYS.DEBT_SUPPLIERS);
+          let loadedPins = localStorage.getItem(STORAGE_KEYS.USER_PINS);
+
+          const olderKeys = ['v7', 'v6', 'v5', 'v4', 'v3', 'v2', 'v1'];
+          
+          if (!loadedSales) {
+            for (const v of olderKeys) {
+              const old = localStorage.getItem(`electro_simple_sales_${v}`);
+              if (old && JSON.parse(old).length > 0) {
+                loadedSales = old;
+                break;
+              }
+            }
+          }
+
+          if (!loadedStock) {
+            for (const v of olderKeys) {
+              const old = localStorage.getItem(`electro_simple_stock_needs_${v}`);
+              if (old && JSON.parse(old).length > 0) {
+                loadedStock = old;
+                break;
+              }
+            }
+          }
+
+          if (!loadedCreditCust) {
+            for (const v of olderKeys) {
+              const old = localStorage.getItem(`electro_credit_cust_${v}`);
+              if (old && JSON.parse(old).length > 0) {
+                loadedCreditCust = old;
+                break;
+              }
+            }
+          }
+
+          if (!loadedDebtSupp) {
+            for (const v of olderKeys) {
+              const old = localStorage.getItem(`electro_debt_supp_${v}`);
+              if (old && JSON.parse(old).length > 0) {
+                loadedDebtSupp = old;
+                break;
+              }
+            }
+          }
+
+          if (!loadedPins) {
+            for (const v of olderKeys) {
+              const old = localStorage.getItem(`electro_user_pins_${v}`);
+              if (old) {
+                loadedPins = old;
+                break;
+              }
+            }
+          }
+
+          if (loadedSales) state.sales = JSON.parse(loadedSales);
+          if (loadedStock) state.stockNeeds = JSON.parse(loadedStock);
+
+          // Customer Credit Migration: Ensure each record has an `items` array and safe `id`
+          if (loadedCreditCust) {
+            const rawCust = JSON.parse(loadedCreditCust);
+            state.creditCustomers = rawCust.map(c => {
+              if (!c.id) c.id = 'CRD-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000);
+              if (!c.items || !Array.isArray(c.items)) {
+                const legacyName = (typeof c.items === 'string' && c.items.trim()) ? c.items : (c.itemsText || 'سلعة');
+                c.items = [
+                  {
+                    id: 'ITM-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000),
+                    name: legacyName,
+                    total: Number(c.total || 0),
+                    paid: Number(c.paid || 0),
+                    remaining: Math.max(0, Number(c.total || 0) - Number(c.paid || 0)),
+                    date: c.date || new Date().toISOString(),
+                    status: (Number(c.total || 0) - Number(c.paid || 0)) <= 0 ? 'settled' : 'pending'
+                  }
+                ];
+              }
+              updateCustomerRecordTotals(c);
+              return c;
+            });
+          }
+
+          if (loadedDebtSupp) state.debtSuppliers = JSON.parse(loadedDebtSupp);
+
+          if (loadedPins) {
+            try {
+              state.userPins = Object.assign({}, DEFAULT_USER_PINS, JSON.parse(loadedPins));
+            } catch(e) {}
+          }
 
           const storedPresets = localStorage.getItem(STORAGE_KEYS.PRESETS);
           if (storedPresets) state.presets = JSON.parse(storedPresets);
-
-          const storedPins = localStorage.getItem(STORAGE_KEYS.USER_PINS);
-          if (storedPins) {
-            try {
-              const parsed = JSON.parse(storedPins);
-              state.userPins = Object.assign({}, DEFAULT_USER_PINS, parsed);
-            } catch(e) {}
-          }
 
           const storedTrack = localStorage.getItem(STORAGE_KEYS.MUSIC_TRACK);
           if (storedTrack) {
@@ -879,10 +1703,9 @@
             setUserSession(storedSession, false);
           }
 
-          const storedTs = localStorage.getItem(STORAGE_KEYS.LAST_SYNC_TS);
-          if (storedTs) state.lastUpdated = parseInt(storedTs, 10) || 0;
+          saveLocalState();
         } catch (e) {
-          console.error('LocalStorage load error:', e);
+          console.error('Data migration error:', e);
         }
       }
 
@@ -891,6 +1714,8 @@
           state.lastUpdated = Date.now();
           localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(state.sales));
           localStorage.setItem(STORAGE_KEYS.STOCK_NEEDS, JSON.stringify(state.stockNeeds));
+          localStorage.setItem(STORAGE_KEYS.CREDIT_CUSTOMERS, JSON.stringify(state.creditCustomers));
+          localStorage.setItem(STORAGE_KEYS.DEBT_SUPPLIERS, JSON.stringify(state.debtSuppliers));
           localStorage.setItem(STORAGE_KEYS.PRESETS, JSON.stringify(state.presets));
           localStorage.setItem(STORAGE_KEYS.USER_PINS, JSON.stringify(state.userPins));
           localStorage.setItem(STORAGE_KEYS.LAST_SYNC_TS, state.lastUpdated.toString());
@@ -975,12 +1800,8 @@
         const stockSellerLabel = document.getElementById('stock-seller-label');
 
         if (state.activeUser) {
-          if (userDisplay) {
-            userDisplay.textContent = state.isManager ? 'نورالدين (المدير)' : state.activeUser;
-          }
-          if (userRoleIcon) {
-            userRoleIcon.textContent = state.isManager ? '👑' : '👤';
-          }
+          if (userDisplay) userDisplay.textContent = state.isManager ? 'نورالدين' : state.activeUser;
+          if (userRoleIcon) userRoleIcon.textContent = state.isManager ? '👑' : '👤';
           if (formSellerName) formSellerName.textContent = state.activeUser;
           if (submitSellerLabel) submitSellerLabel.textContent = state.activeUser;
           if (stockSellerLabel) stockSellerLabel.textContent = state.activeUser;
@@ -996,200 +1817,7 @@
       }
 
       // ==========================================
-      // 2. MUSIC PLAYER & TRACK SELECTOR
-      // ==========================================
-      function setupMusicPlayer() {
-        const btnToggleMusic = document.getElementById('btn-toggle-music');
-        const trackSelect = document.getElementById('music-track-select');
-
-        if (btnToggleMusic) {
-          btnToggleMusic.addEventListener('click', () => {
-            const active = ShopAudio.toggle();
-            try {
-              localStorage.setItem(STORAGE_KEYS.MUSIC_MUTED, active ? 'false' : 'true');
-            } catch(e) {}
-            if (active) {
-              showToast('تم تشغيل موسيقى المحل الهادئة 🎵');
-            } else {
-              showToast('تم كتم الموسيقى 🔇');
-            }
-          });
-        }
-
-        if (trackSelect) {
-          trackSelect.addEventListener('change', (e) => {
-            const selected = e.target.value;
-            ShopAudio.setTrack(selected);
-            try {
-              localStorage.setItem(STORAGE_KEYS.MUSIC_TRACK, selected);
-            } catch(e) {}
-            if (!ShopAudio.isPlaying()) {
-              ShopAudio.start();
-            }
-            showToast(`تم تبديل الموسيقى إلى: ${trackSelect.options[trackSelect.selectedIndex].text} 🎶`);
-          });
-        }
-      }
-
-      // ==========================================
-      // 3. VOICE AI INPUT FOR STOCK (تسجيل السلع بالصوت)
-      // ==========================================
-      function setupVoiceStockAI() {
-        const btnVoice = document.getElementById('btn-voice-ai-stock');
-        const statusBox = document.getElementById('voice-status-box');
-        const statusText = document.getElementById('voice-status-text');
-        const cancelBtn = document.getElementById('btn-cancel-voice');
-
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if (!btnVoice) return;
-
-        let recognition = null;
-        if (SpeechRec) {
-          recognition = new SpeechRec();
-          recognition.lang = 'ar-MA'; // Moroccan Arabic
-          recognition.continuous = false;
-          recognition.interimResults = false;
-        }
-
-        function stopListening() {
-          if (recognition) {
-            try { recognition.stop(); } catch(e) {}
-          }
-          if (statusBox) statusBox.classList.add('hidden');
-        }
-
-        if (cancelBtn) {
-          cancelBtn.addEventListener('click', stopListening);
-        }
-
-        btnVoice.addEventListener('click', () => {
-          if (!SpeechRec) {
-            showToast('الإدخال الصوتي غير مدعوم في متصفحك. يرجى استخدام Google Chrome أو Safari.', true);
-            return;
-          }
-
-          statusBox.classList.remove('hidden');
-          statusText.textContent = '🔴 جاري الاستماع... تكلم بالدارجة (مثال: خاصنا 3 افشورات a12 مستعجل)';
-
-          try {
-            recognition.start();
-          } catch(e) {
-            // Might already be active
-          }
-        });
-
-        if (recognition) {
-          recognition.onresult = (event) => {
-            const spoken = (event.results[0][0].transcript || '').trim();
-            statusBox.classList.add('hidden');
-            showToast(`سمعت: "${spoken}" 🎙️`);
-            parseSpokenStockAI(spoken);
-          };
-
-          recognition.onerror = (event) => {
-            statusBox.classList.add('hidden');
-            showToast(`خطأ في الصوت: ${event.error}`, true);
-          };
-
-          recognition.onend = () => {
-            statusBox.classList.add('hidden');
-          };
-        }
-      }
-
-      // AI-like Darija Parsing for Voice Input
-      function parseSpokenStockAI(spokenText) {
-        const text = spokenText.toLowerCase();
-
-        // 1. Detect Quantity
-        let qty = 1;
-        const numberMatches = text.match(/\d+/);
-        if (numberMatches) {
-          qty = parseInt(numberMatches[0], 10);
-        } else if (/جوج|زوج|إثنين|اثنين/i.test(text)) {
-          qty = 2;
-        } else if (/تلاتة|ثلاثة|تلات/i.test(text)) {
-          qty = 3;
-        } else if (/ربعة|أربعة|اربعة/i.test(text)) {
-          qty = 4;
-        } else if (/خمسة|خمس/i.test(text)) {
-          qty = 5;
-        } else if (/ستة|ست/i.test(text)) {
-          qty = 6;
-        } else if (/سبعة|سبع/i.test(text)) {
-          qty = 7;
-        } else if (/تمانية|ثمانية/i.test(text)) {
-          qty = 8;
-        } else if (/تسعود|تسعة/i.test(text)) {
-          qty = 9;
-        } else if (/عشرة|عشر/i.test(text)) {
-          qty = 10;
-        }
-
-        // 2. Detect Category
-        let category = 'افشور';
-        if (/5d|9d|انكاسابل|إنكاسابل|incassable/i.test(text)) {
-          category = '5D';
-        } else if (/زاج عادي|زجاج عادي|زاج|زجاج/i.test(text)) {
-          category = 'زاج عادي';
-        } else if (/بوشيط|بوشيت|كفر|غطاء|pochette/i.test(text)) {
-          category = 'بوشيط';
-        } else if (/باتري|بطارية|بيل|batterie/i.test(text)) {
-          category = 'باتري';
-        } else if (/شارجور|شاحن|كابل|خيط|chargeur|cable/i.test(text)) {
-          category = 'شارجورات';
-        } else if (/سماعات|ايربودز|سماعة|اكسسوار|accessoire|ecouteur/i.test(text)) {
-          category = 'اكسسوارات';
-        } else if (/هاتف|تليفون|بورطابل|telephone/i.test(text)) {
-          category = 'هواتف';
-        } else if (/اصلاح|كونكتور|كاميرا|نابا|كونيكتور/i.test(text)) {
-          category = 'اصلاح الهاتف';
-        } else if (/افشور|شاشة|أفشور|afficheur|ecran/i.test(text)) {
-          category = 'افشور';
-        }
-
-        // 3. Detect Priority
-        let priority = 'عادي';
-        if (/مستعجل|ضروري|سربينا|عاجل|دغيا/i.test(text)) {
-          priority = 'مستعجل بزاف';
-        } else if (/كليان|زبون|خاص بالكليان/i.test(text)) {
-          priority = 'طلب زبون';
-        }
-
-        // 4. Clean Item Name
-        let cleanedName = spokenText
-          .replace(/خاصنا|قيد|لينا|بغيت|سجل|جيبلنا|شري|ديال|سلعة/gi, '')
-          .replace(/\b(1|2|3|4|5|6|7|8|9|10)\b/g, '')
-          .replace(/جوج|زوج|تلاتة|ربعة|خمسة|عشرة/gi, '')
-          .replace(/مستعجل|ضروري|دغيا|سربينا|طلب زبون/gi, '')
-          .trim();
-
-        if (!cleanedName || cleanedName.length < 2) {
-          cleanedName = spokenText;
-        }
-
-        // Auto-fill into input fields
-        const inputName = document.getElementById('input-stock-name');
-        const inputQty = document.getElementById('input-stock-qty');
-        const inputCat = document.getElementById('input-stock-category');
-        const inputPriority = document.getElementById('input-stock-priority');
-
-        if (inputName) inputName.value = cleanedName;
-        if (inputQty) inputQty.value = qty;
-        if (inputCat) inputCat.value = category;
-        if (inputPriority) inputPriority.value = priority;
-
-        // Auto submit directly!
-        const stockForm = document.getElementById('stock-form');
-        if (stockForm) {
-          const submitEvent = new Event('submit', { cancelable: true });
-          stockForm.dispatchEvent(submitEvent);
-        }
-      }
-
-      // ==========================================
-      // 4. PIN AUTHENTICATION GATE
+      // 2. PIN AUTHENTICATION GATE
       // ==========================================
       function setupLoginGate() {
         const pinInput = document.getElementById('login-pin-input');
@@ -1242,7 +1870,7 @@
       }
 
       // ==========================================
-      // 5. PERMANENT CLOUD RETAIN SYNC
+      // 3. PERMANENT CLOUD RETAIN SYNC
       // ==========================================
       function setupRealtimeSync() {
         const syncDot = document.getElementById('sync-dot');
@@ -1251,7 +1879,7 @@
 
         let localChannel = null;
         try {
-          localChannel = new BroadcastChannel('electro_local_channel_v6');
+          localChannel = new BroadcastChannel('electro_permanent_channel_v1');
           localChannel.onmessage = (e) => {
             if (e.data && e.data.type === 'FULL_SYNC') {
               applyIncomingState(e.data.payload, false);
@@ -1263,39 +1891,66 @@
           if (!payload) return;
           let changed = false;
 
-          // Sync User PINs
           if (payload.userPins && typeof payload.userPins === 'object') {
             state.userPins = Object.assign({}, DEFAULT_USER_PINS, payload.userPins);
-            try { localStorage.setItem(STORAGE_KEYS.USER_PINS, JSON.stringify(state.userPins)); } catch(e){}
             changed = true;
           }
 
-          // Sync Presets
           if (Array.isArray(payload.presets) && payload.presets.length > 0) {
             state.presets = payload.presets;
-            try { localStorage.setItem(STORAGE_KEYS.PRESETS, JSON.stringify(state.presets)); } catch(e){}
             changed = true;
           }
 
-          // Sync Sales
           if (Array.isArray(payload.sales)) {
             if (JSON.stringify(payload.sales) !== JSON.stringify(state.sales)) {
               state.sales = payload.sales;
-              try { localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(state.sales)); } catch(e){}
               changed = true;
             }
           }
 
-          // Sync Stock Needs
           if (Array.isArray(payload.stockNeeds)) {
             if (JSON.stringify(payload.stockNeeds) !== JSON.stringify(state.stockNeeds)) {
               state.stockNeeds = payload.stockNeeds;
-              try { localStorage.setItem(STORAGE_KEYS.STOCK_NEEDS, JSON.stringify(state.stockNeeds)); } catch(e){}
+              changed = true;
+            }
+          }
+
+          if (Array.isArray(payload.creditCustomers)) {
+            const sanitizedCust = payload.creditCustomers.map(c => {
+              if (!c.id) c.id = 'CRD-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000);
+              if (!Array.isArray(c.items)) {
+                const legacyName = (typeof c.items === 'string' && c.items.trim()) ? c.items : (c.itemsText || 'سلعة');
+                c.items = [
+                  {
+                    id: 'ITM-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000),
+                    name: legacyName,
+                    total: Number(c.total || 0),
+                    paid: Number(c.paid || 0),
+                    remaining: Math.max(0, Number(c.total || 0) - Number(c.paid || 0)),
+                    date: c.date || new Date().toISOString(),
+                    status: (Number(c.total || 0) - Number(c.paid || 0)) <= 0 ? 'settled' : 'pending'
+                  }
+                ];
+              }
+              updateCustomerRecordTotals(c);
+              return c;
+            });
+
+            if (JSON.stringify(sanitizedCust) !== JSON.stringify(state.creditCustomers)) {
+              state.creditCustomers = sanitizedCust;
+              changed = true;
+            }
+          }
+
+          if (Array.isArray(payload.debtSuppliers)) {
+            if (JSON.stringify(payload.debtSuppliers) !== JSON.stringify(state.debtSuppliers)) {
+              state.debtSuppliers = payload.debtSuppliers;
               changed = true;
             }
           }
 
           if (changed) {
+            saveLocalState();
             renderAll();
             if (fromNetwork) {
               showToast('تمت المزامنة من السحابة ☁️');
@@ -1307,6 +1962,8 @@
           const payload = {
             sales: state.sales,
             stockNeeds: state.stockNeeds,
+            creditCustomers: state.creditCustomers,
+            debtSuppliers: state.debtSuppliers,
             presets: state.presets,
             userPins: state.userPins,
             updatedBy: state.activeUser || 'المحل',
@@ -1341,7 +1998,7 @@
 
           client.on('connect', () => {
             if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
-            if (syncStatus) syncStatus.textContent = 'سحابة متصلة ومتزامنة ☁️';
+            if (syncStatus) syncStatus.textContent = 'سحابة متصلة ☁️';
             client.subscribe(topic, { qos: 1 });
           });
 
@@ -1349,7 +2006,7 @@
             try {
               const data = JSON.parse(message.toString());
               if (!data) return;
-              if (data.sales || data.stockNeeds || data.userPins) {
+              if (data.sales || data.stockNeeds || data.creditCustomers || data.debtSuppliers || data.userPins) {
                 applyIncomingState(data, true);
               }
             } catch (err) {
@@ -1359,7 +2016,7 @@
 
           client.on('offline', () => {
             if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-amber-500 inline-block';
-            if (syncStatus) syncStatus.textContent = 'وضع محلي (جاري إعادة الاتصال)';
+            if (syncStatus) syncStatus.textContent = 'وضع محلي';
           });
         } catch (e) {
           console.warn('MQTT setup error:', e);
@@ -1367,49 +2024,48 @@
       }
 
       // ==========================================
-      // 6. PAGE NAVIGATION (SALES vs STOCK)
+      // 4. MAIN PAGE NAVIGATION (3 TABS)
       // ==========================================
       function setupPageNavigation() {
         const btnSales = document.getElementById('nav-btn-sales');
         const btnStock = document.getElementById('nav-btn-stock');
+        const btnCredit = document.getElementById('nav-btn-credit');
+
         const viewSales = document.getElementById('view-sales-page');
         const viewStock = document.getElementById('view-stock-page');
+        const viewCredit = document.getElementById('view-credit-page');
 
-        if (btnSales && btnStock) {
-          btnSales.addEventListener('click', () => {
-            state.currentView = 'sales';
-            btnSales.className = 'page-nav-btn active flex-1 py-1.5 rounded-lg bg-emerald-600 text-white flex items-center justify-center gap-1.5 shadow-sm transition';
-            btnStock.className = 'page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition';
+        function switchMainTab(target) {
+          state.currentView = target;
+
+          [btnSales, btnStock, btnCredit].forEach(b => {
+            b.className = 'page-nav-btn py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1 transition';
+          });
+
+          [viewSales, viewStock, viewCredit].forEach(v => v.classList.add('hidden'));
+
+          if (target === 'sales') {
+            btnSales.className = 'page-nav-btn active py-2 rounded-xl bg-emerald-600 text-white flex items-center justify-center gap-1 shadow-sm transition font-black';
             viewSales.classList.remove('hidden');
-            viewStock.classList.add('hidden');
-          });
-
-          btnStock.addEventListener('click', () => {
-            state.currentView = 'stock';
-            btnStock.className = 'page-nav-btn active flex-1 py-1.5 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow-sm transition font-black';
-            btnSales.className = 'page-nav-btn flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-center gap-1.5 transition';
+          } else if (target === 'stock') {
+            btnStock.className = 'page-nav-btn active py-2 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1 shadow-sm transition font-black';
             viewStock.classList.remove('hidden');
-            viewSales.classList.add('hidden');
             renderStockSection();
-          });
+          } else if (target === 'credit') {
+            btnCredit.className = 'page-nav-btn active py-2 rounded-xl bg-rose-600 text-white flex items-center justify-center gap-1 shadow-sm transition font-black';
+            viewCredit.classList.remove('hidden');
+            renderCreditSection();
+          }
         }
+
+        if (btnSales) btnSales.addEventListener('click', () => switchMainTab('sales'));
+        if (btnStock) btnStock.addEventListener('click', () => switchMainTab('stock'));
+        if (btnCredit) btnCredit.addEventListener('click', () => switchMainTab('credit'));
       }
 
       // ==========================================
-      // 7. INVENTORY / MISSING STOCK SECTION (BY CATEGORY BRANCHES)
+      // 5. INVENTORY & MISSING STOCK SECTION
       // ==========================================
-      const STOCK_CATEGORIES_INFO = {
-        'افشور': { name: 'شاشات وافشورات (Écrans)', icon: '📱', color: 'blue' },
-        '5D': { name: 'زجاج حماية 5D / 9D Incassable', icon: '🛡️', color: 'emerald' },
-        'زاج عادي': { name: 'زاج حماية عادي', icon: '🔲', color: 'slate' },
-        'بوشيط': { name: 'بوشيطات وأغطية (Pochettes)', icon: '💼', color: 'purple' },
-        'باتري': { name: 'بطاريات (Batteries)', icon: '🔋', color: 'amber' },
-        'شارجورات': { name: 'شواحن وكابلات (Chargeurs)', icon: '🔌', color: 'orange' },
-        'اكسسوارات': { name: 'إكسسوارات وسماعات (Accessoires)', icon: '🎧', color: 'indigo' },
-        'هواتف': { name: 'هواتف ذكية (Téléphones)', icon: '📲', color: 'teal' },
-        'اصلاح الهاتف': { name: 'قطع غيار وإصلاح الهاتف (Réparation)', icon: '🔧', color: 'rose' }
-      };
-
       function setupStockSection() {
         const form = document.getElementById('stock-form');
         const inputName = document.getElementById('input-stock-name');
@@ -1419,18 +2075,6 @@
         const filterPending = document.getElementById('filter-stock-pending');
         const filterBought = document.getElementById('filter-stock-bought');
         const copyWhatsappBtn = document.getElementById('copy-whatsapp-stock-btn');
-
-        // Category filter pills
-        document.querySelectorAll('.stock-cat-pill').forEach(pill => {
-          pill.addEventListener('click', () => {
-            document.querySelectorAll('.stock-cat-pill').forEach(p => {
-              p.className = 'stock-cat-pill px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 whitespace-nowrap';
-            });
-            pill.className = 'stock-cat-pill active px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 whitespace-nowrap shadow-xs font-black';
-            state.stockCatFilter = pill.getAttribute('data-cat');
-            renderStockSection();
-          });
-        });
 
         if (form) {
           form.addEventListener('submit', (e) => {
@@ -1486,7 +2130,6 @@
           });
         }
 
-        // WhatsApp Copy Formatted by Categories
         if (copyWhatsappBtn) {
           copyWhatsappBtn.addEventListener('click', () => {
             const pending = state.stockNeeds.filter(item => item.status !== 'bought');
@@ -1498,7 +2141,6 @@
             let msg = `📦 *لائحة السلعة لي خاصا محل إلكترو نور الدين:*\n`;
             msg += `📅 التاريخ: ${new Date().toLocaleDateString('ar-MA')}\n\n`;
 
-            // Group by category for WhatsApp
             const groups = {};
             pending.forEach(item => {
               const c = item.category || 'افشور';
@@ -1545,8 +2187,63 @@
         document.body.removeChild(temp);
       }
 
-      // Render Categorized Stock Branches
+      function renderStockFilterPills() {
+        const bar = document.getElementById('stock-category-filter-bar');
+        if (!bar) return;
+
+        const catCounts = {};
+        let totalPending = 0;
+        state.stockNeeds.forEach(item => {
+          if (item.status !== 'bought') {
+            const c = item.category || 'افشور';
+            catCounts[c] = (catCounts[c] || 0) + 1;
+            totalPending++;
+          }
+        });
+
+        const categories = [
+          { key: 'all', label: 'الكل', icon: '✨', count: totalPending },
+          { key: 'افشور', label: 'افشورات', icon: '📱', count: catCounts['افشور'] || 0 },
+          { key: '5D', label: '5D', icon: '🛡️', count: catCounts['5D'] || 0 },
+          { key: 'زاج عادي', label: 'زاج عادي', icon: '🔲', count: catCounts['زاج عادي'] || 0 },
+          { key: 'بوشيط', label: 'بوشيط', icon: '💼', count: catCounts['بوشيط'] || 0 },
+          { key: 'باتري', label: 'باتري', icon: '🔋', count: catCounts['باتري'] || 0 },
+          { key: 'شارجورات', label: 'شارجورات', icon: '🔌', count: catCounts['شارجورات'] || 0 },
+          { key: 'اكسسوارات', label: 'اكسسوارات', icon: '🎧', count: catCounts['اكسسوارات'] || 0 },
+          { key: 'هواتف', label: 'هواتف', icon: '📲', count: catCounts['هواتف'] || 0 },
+          { key: 'اصلاح الهاتف', label: 'قطع اصلاح', icon: '🔧', count: catCounts['اصلاح الهاتف'] || 0 }
+        ];
+
+        bar.innerHTML = categories.map(cat => {
+          const isActive = state.stockCatFilter === cat.key;
+          const badgeHtml = cat.count > 0 
+            ? `<span class="mr-1 px-1.5 py-0.2 rounded-full text-[10px] font-black ${isActive ? 'bg-slate-900 text-amber-400' : 'bg-red-500 text-white badge-pulse'}">${cat.count}</span>` 
+            : '';
+
+          return `
+            <button data-cat="${cat.key}" class="stock-cat-pill px-3 py-1.5 rounded-xl whitespace-nowrap transition flex items-center gap-1 ${
+              isActive 
+                ? 'bg-amber-500 text-slate-950 font-black shadow-xs' 
+                : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 font-bold'
+            }">
+              <span>${cat.icon}</span>
+              <span>${cat.label}</span>
+              ${badgeHtml}
+            </button>
+          `;
+        }).join('');
+
+        bar.querySelectorAll('.stock-cat-pill').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.stockCatFilter = btn.getAttribute('data-cat');
+            renderStockSection();
+          });
+        });
+      }
+
       function renderStockSection() {
+        renderStockFilterPills();
+
         const container = document.getElementById('stock-branches-container');
         const counter = document.getElementById('stock-list-counter');
         const badgeCount = document.getElementById('badge-needed-stock-count');
@@ -1560,14 +2257,11 @@
           return item.status !== 'bought';
         });
 
-        // Apply category filter if not 'all'
         if (state.stockCatFilter !== 'all') {
           filteredItems = filteredItems.filter(item => (item.category || 'افشور') === state.stockCatFilter);
         }
 
-        if (counter) {
-          counter.textContent = `${filteredItems.length} سلعة`;
-        }
+        if (counter) counter.textContent = `${filteredItems.length} سلعة`;
 
         if (filteredItems.length === 0) {
           container.innerHTML = `
@@ -1578,7 +2272,6 @@
           return;
         }
 
-        // Group filtered items by category
         const groups = {};
         filteredItems.forEach(item => {
           const c = item.category || 'افشور';
@@ -1586,7 +2279,6 @@
           groups[c].push(item);
         });
 
-        // Build HTML grouped by category branches
         container.innerHTML = Object.keys(groups).map(catKey => {
           const catInfo = STOCK_CATEGORIES_INFO[catKey] || { name: catKey, icon: '📦', color: 'slate' };
           const itemsInCat = groups[catKey];
@@ -1601,8 +2293,15 @@
 
             const dateStr = new Date(item.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
 
+            const editStockBtnHtml = state.isManager ? `
+              <button class="edit-stock-btn w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs transition border border-blue-200 cursor-pointer active:scale-95"
+                data-id="${item.id}" title="تعديل السلعة لي خاصا (المدير 👑)">
+                ✏️
+              </button>
+            ` : '';
+
             const deleteBtnHtml = state.isManager ? `
-              <button class="delete-stock-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
+              <button class="delete-stock-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition cursor-pointer active:scale-95"
                 data-id="${item.id}" title="حذف (المدير فقط)">
                 ✕
               </button>
@@ -1620,18 +2319,23 @@
                 </div>
 
                 <div class="flex items-center gap-1.5">
-                  ${!isBought ? `
-                    <button class="mark-bought-btn px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg text-xs transition flex items-center gap-1"
+                  ${!isBought ? (state.isManager ? `
+                    <button class="mark-bought-btn px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-black rounded-lg text-xs transition flex items-center gap-1 cursor-pointer active:scale-95"
                       data-id="${item.id}" title="تم الشراء وإدخالها للمحل">
                       <span>✅</span> <span>تشراَت</span>
                     </button>
                   ` : `
-                    <button class="unmark-bought-btn px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px]"
+                    <span class="text-[10px] text-slate-400 font-bold bg-slate-100 px-1.5 py-0.5 rounded">🔒 الشراء للمدير فقط</span>
+                  `) : (state.isManager ? `
+                    <button class="unmark-bought-btn px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px] cursor-pointer active:scale-95"
                       data-id="${item.id}" title="إرجاع إلى قائمة السلع المطلوبة">
                       <span>↩️</span> إرجاع
                     </button>
-                  `}
+                  ` : `
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">تشراَت ✓</span>
+                  `)}
 
+                  ${editStockBtnHtml}
                   ${deleteBtnHtml}
                 </div>
               </div>
@@ -1656,9 +2360,12 @@
           `;
         }).join('');
 
-        // Attach listeners
         container.querySelectorAll('.mark-bought-btn').forEach(btn => {
           btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('التأشير على شراء السلع متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
             const id = btn.getAttribute('data-id');
             const item = state.stockNeeds.find(i => i.id === id);
             if (item) {
@@ -1673,6 +2380,10 @@
 
         container.querySelectorAll('.unmark-bought-btn').forEach(btn => {
           btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('إرجاع السلع المطلوبة متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
             const id = btn.getAttribute('data-id');
             const item = state.stockNeeds.find(i => i.id === id);
             if (item) {
@@ -1681,6 +2392,15 @@
               if (state.syncToCloud) state.syncToCloud();
               renderStockSection();
             }
+          });
+        });
+
+        container.querySelectorAll('.edit-stock-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            const item = state.stockNeeds.find(i => i.id === id);
+            if (item) openEditStockModal(item);
           });
         });
 
@@ -1697,7 +2417,1000 @@
       }
 
       // ==========================================
-      // 8. SALES UI RENDERING & AGGREGATION
+      // 6. MULTI-ITEM CREDIT & DEBTS SECTION (إدارة الكريدي المتعدد)
+      // ==========================================
+      function setupCreditSection() {
+        const btnSubCust = document.getElementById('btn-credit-sub-customers');
+        const btnSubSupp = document.getElementById('btn-credit-sub-suppliers');
+        const subviewCust = document.getElementById('subview-credit-customers');
+        const subviewSupp = document.getElementById('subview-credit-suppliers');
+
+        // Customer Multi-Item Credit Form
+        const formCust = document.getElementById('customer-credit-form');
+        const inputCustName = document.getElementById('credit-cust-name');
+        const inputCustPhone = document.getElementById('credit-cust-phone');
+        const itemsRowsContainer = document.getElementById('credit-items-rows-container');
+        const btnAddRow = document.getElementById('btn-add-credit-item-row');
+
+        // Supplier Debt Elements
+        const formSupp = document.getElementById('supplier-debt-form');
+        const inputSuppName = document.getElementById('debt-supp-name');
+        const inputSuppPhone = document.getElementById('debt-supp-phone');
+        const inputSuppItems = document.getElementById('debt-supp-items');
+        const inputSuppTotal = document.getElementById('debt-supp-total');
+        const inputSuppPaid = document.getElementById('debt-supp-paid');
+        const inputSuppRem = document.getElementById('debt-supp-remaining');
+
+        // Partial payment modal
+        const modalPartial = document.getElementById('modal-partial-payment');
+        const cancelPartial = document.getElementById('btn-cancel-partial');
+        const confirmPartial = document.getElementById('btn-confirm-partial');
+
+        // Add Item to Existing Customer Modal elements
+        const modalAddItem = document.getElementById('modal-add-item-to-cust');
+        const formAddItem = document.getElementById('form-modal-add-item');
+        const closeAddItemModal = document.getElementById('btn-close-add-item-modal');
+        const cancelAddItemModal = document.getElementById('btn-cancel-modal-item');
+        const saveAddItemModal = document.getElementById('btn-save-modal-item');
+
+        // Live calculation of grand totals across all item rows in Customer Credit form
+        function recalcCustomerFormTotals() {
+          let gTotal = 0;
+          let gPaid = 0;
+          let gRem = 0;
+
+          const rows = itemsRowsContainer.querySelectorAll('.credit-item-row');
+          rows.forEach(r => {
+            const totInp = r.querySelector('.row-item-total');
+            const paidInp = r.querySelector('.row-item-paid');
+            const remSpan = r.querySelector('.row-item-rem');
+
+            const tot = Math.max(0, parseFloat(totInp?.value || 0));
+            const paid = Math.max(0, parseFloat(paidInp?.value || 0));
+            const rem = Math.max(0, tot - paid);
+
+            if (remSpan) remSpan.textContent = `باقي: ${rem.toFixed(0)} DH`;
+
+            gTotal += tot;
+            gPaid += paid;
+            gRem += rem;
+          });
+
+          document.getElementById('form-calc-grand-total').textContent = `${gTotal.toFixed(0)} DH`;
+          document.getElementById('form-calc-grand-paid').textContent = `${gPaid.toFixed(0)} DH`;
+          document.getElementById('form-calc-grand-rem').textContent = `${gRem.toFixed(0)} DH`;
+        }
+
+        // Attach listeners to a row for live calculation
+        function attachRowListeners(row) {
+          const totInp = row.querySelector('.row-item-total');
+          const paidInp = row.querySelector('.row-item-paid');
+          const removeBtn = row.querySelector('.btn-remove-row');
+
+          [totInp, paidInp].forEach(inp => inp && inp.addEventListener('input', recalcCustomerFormTotals));
+
+          if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+              const allRows = itemsRowsContainer.querySelectorAll('.credit-item-row');
+              if (allRows.length > 1) {
+                row.remove();
+                recalcCustomerFormTotals();
+                checkRowRemoveButtons();
+              }
+            });
+          }
+        }
+
+        function checkRowRemoveButtons() {
+          const allRows = itemsRowsContainer.querySelectorAll('.credit-item-row');
+          allRows.forEach(r => {
+            const wrap = r.querySelector('.row-remove-btn-wrap');
+            if (wrap) {
+              if (allRows.length > 1) wrap.classList.remove('hidden');
+              else wrap.classList.add('hidden');
+            }
+          });
+        }
+
+        // Initialize first row listeners
+        const firstRow = itemsRowsContainer.querySelector('.credit-item-row');
+        if (firstRow) attachRowListeners(firstRow);
+
+        // Add another item row button
+        if (btnAddRow) {
+          btnAddRow.addEventListener('click', () => {
+            const newRow = document.createElement('div');
+            newRow.className = 'credit-item-row p-2.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2';
+            newRow.innerHTML = `
+              <div class="flex-1">
+                <input type="text" placeholder="اسم السلعة (مثلا: conector a13)" required
+                  class="row-item-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-rose-500">
+              </div>
+              <div class="w-full sm:w-24">
+                <input type="number" placeholder="الثمن DH" min="0" step="any" required
+                  class="row-item-total w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-slate-900 outline-none focus:border-rose-500 text-center">
+              </div>
+              <div class="w-full sm:w-24">
+                <input type="number" placeholder="الدفع DH" min="0" step="any" value="0"
+                  class="row-item-paid w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-emerald-600 outline-none focus:border-rose-500 text-center">
+              </div>
+              <div class="w-full sm:w-24 text-center">
+                <span class="row-item-rem text-xs font-black text-rose-600 bg-rose-50 px-2 py-1.5 rounded-lg border border-rose-200 block truncate">باقي: 0 DH</span>
+              </div>
+              <div class="w-8 text-center row-remove-btn-wrap">
+                <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 font-black text-sm p-1">✕</button>
+              </div>
+            `;
+            itemsRowsContainer.appendChild(newRow);
+            attachRowListeners(newRow);
+            checkRowRemoveButtons();
+            const nameInp = newRow.querySelector('.row-item-name');
+            if (nameInp) nameInp.focus();
+          });
+        }
+
+        // Auto calculate remaining for supplier debt
+        function calcSuppRemaining() {
+          const tot = Math.max(0, parseFloat(inputSuppTotal.value || 0));
+          const paid = Math.max(0, parseFloat(inputSuppPaid.value || 0));
+          const rem = Math.max(0, tot - paid);
+          inputSuppRem.value = `${rem.toFixed(0)} DH`;
+        }
+        [inputSuppTotal, inputSuppPaid].forEach(inp => inp && inp.addEventListener('input', calcSuppRemaining));
+
+        // Sub tab switching
+        if (btnSubCust && btnSubSupp) {
+          btnSubCust.addEventListener('click', () => {
+            state.creditSubView = 'customers';
+            btnSubCust.className = 'credit-sub-tab active flex-1 py-2 rounded-xl bg-white text-slate-900 shadow-sm transition font-black';
+            btnSubSupp.className = 'credit-sub-tab flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition font-bold';
+            subviewCust.classList.remove('hidden');
+            subviewSupp.classList.add('hidden');
+          });
+
+          btnSubSupp.addEventListener('click', () => {
+            state.creditSubView = 'suppliers';
+            btnSubSupp.className = 'credit-sub-tab active flex-1 py-2 rounded-xl bg-white text-slate-900 shadow-sm transition font-black';
+            btnSubCust.className = 'credit-sub-tab flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition font-bold';
+            subviewSupp.classList.remove('hidden');
+            subviewCust.classList.add('hidden');
+          });
+        }
+
+        // Filters
+        const fCustPending = document.getElementById('filter-custcredit-pending');
+        const fCustSettled = document.getElementById('filter-custcredit-settled');
+        if (fCustPending && fCustSettled) {
+          fCustPending.addEventListener('click', () => {
+            state.custCreditFilter = 'pending';
+            fCustPending.className = 'custcredit-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            fCustSettled.className = 'custcredit-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderCreditSection();
+          });
+          fCustSettled.addEventListener('click', () => {
+            state.custCreditFilter = 'settled';
+            fCustSettled.className = 'custcredit-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            fCustPending.className = 'custcredit-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderCreditSection();
+          });
+        }
+
+        const fSuppPending = document.getElementById('filter-suppdebt-pending');
+        const fSuppSettled = document.getElementById('filter-suppdebt-settled');
+        if (fSuppPending && fSuppSettled) {
+          fSuppPending.addEventListener('click', () => {
+            state.suppDebtFilter = 'pending';
+            fSuppPending.className = 'suppdebt-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            fSuppSettled.className = 'suppdebt-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderCreditSection();
+          });
+          fSuppSettled.addEventListener('click', () => {
+            state.suppDebtFilter = 'settled';
+            fSuppSettled.className = 'suppdebt-filter-btn px-2.5 py-1 rounded-md bg-white text-slate-900 shadow-xs font-bold';
+            fSuppPending.className = 'suppdebt-filter-btn px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 font-bold';
+            renderCreditSection();
+          });
+        }
+
+        // SUBMIT CUSTOMER MULTI-ITEM CREDIT FORM
+        if (formCust) {
+          formCust.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const custName = (inputCustName.value || '').trim();
+            const custPhone = (inputCustPhone.value || '').trim();
+
+            if (!custName) {
+              showToast('يرجى كتابة اسم الزبون!', true);
+              inputCustName.focus();
+              return;
+            }
+
+            const itemsCollected = [];
+            const rows = itemsRowsContainer.querySelectorAll('.credit-item-row');
+            rows.forEach(r => {
+              const nameInp = r.querySelector('.row-item-name');
+              const totInp = r.querySelector('.row-item-total');
+              const paidInp = r.querySelector('.row-item-paid');
+
+              const itemName = (nameInp?.value || '').trim();
+              const itemTotal = Math.max(0, parseFloat(totInp?.value || 0));
+              const itemPaid = Math.max(0, parseFloat(paidInp?.value || 0));
+              const itemRem = Math.max(0, itemTotal - itemPaid);
+
+              if (itemName) {
+                itemsCollected.push({
+                  id: 'ITM-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000),
+                  name: itemName,
+                  total: itemTotal,
+                  paid: itemPaid,
+                  remaining: itemRem,
+                  date: new Date().toISOString(),
+                  status: itemRem <= 0 ? 'settled' : 'pending'
+                });
+              }
+            });
+
+            if (itemsCollected.length === 0) {
+              showToast('يرجى إضافة سلعة واحدة على الأقل!', true);
+              return;
+            }
+
+            // Check if customer already exists to append items, or create new!
+            let existingCust = state.creditCustomers.find(c => c.name.trim().toLowerCase() === custName.toLowerCase() && c.status !== 'settled');
+
+            if (existingCust) {
+              // Append items to existing customer
+              existingCust.items = existingCust.items.concat(itemsCollected);
+              if (custPhone) existingCust.phone = custPhone;
+              updateCustomerRecordTotals(existingCust);
+              showToast(`تمت إضافة ${itemsCollected.length} سلع جديدة إلى حساب الزبون "${custName}" بنجاح! 💳`);
+            } else {
+              // Create new Customer record
+              const newCustomerRecord = {
+                id: 'CRD-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 100),
+                name: custName,
+                phone: custPhone,
+                date: new Date().toISOString(),
+                addedBy: state.activeUser || 'المحل',
+                items: itemsCollected,
+                status: 'pending'
+              };
+              updateCustomerRecordTotals(newCustomerRecord);
+              state.creditCustomers.unshift(newCustomerRecord);
+              showToast(`تم تسجيل كريدي الزبون "${custName}" بـ (${itemsCollected.length} سلع) بنجاح! 💳`);
+            }
+
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+
+            playCashSound();
+
+            // Reset form to 1 single clean row
+            inputCustName.value = '';
+            inputCustPhone.value = '';
+            itemsRowsContainer.innerHTML = `
+              <div class="credit-item-row p-2.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2">
+                <div class="flex-1">
+                  <input type="text" placeholder="اسم السلعة (مثلا: lcd a12)" required
+                    class="row-item-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-rose-500">
+                </div>
+                <div class="w-full sm:w-24">
+                  <input type="number" placeholder="الثمن DH" min="0" step="any" required
+                    class="row-item-total w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-slate-900 outline-none focus:border-rose-500 text-center">
+                </div>
+                <div class="w-full sm:w-24">
+                  <input type="number" placeholder="الدفع DH" min="0" step="any" value="0"
+                    class="row-item-paid w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-black text-emerald-600 outline-none focus:border-rose-500 text-center">
+                </div>
+                <div class="w-full sm:w-24 text-center">
+                  <span class="row-item-rem text-xs font-black text-rose-600 bg-rose-50 px-2 py-1.5 rounded-lg border border-rose-200 block truncate">باقي: 0 DH</span>
+                </div>
+                <div class="w-8 text-center hidden row-remove-btn-wrap">
+                  <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 font-black text-sm p-1">✕</button>
+                </div>
+              </div>
+            `;
+            const freshRow = itemsRowsContainer.querySelector('.credit-item-row');
+            attachRowListeners(freshRow);
+            recalcCustomerFormTotals();
+
+            renderCreditSection();
+          });
+        }
+
+        // Add Item Modal handlers
+        function hideAddItemModal() {
+          if (modalAddItem) modalAddItem.classList.add('hidden');
+          state.activeTargetCustForNewItem = null;
+          state.activeTargetCustId = null;
+          state.activeTargetCustName = null;
+          const nameInput = document.getElementById('modal-new-item-name');
+          const totalInput = document.getElementById('modal-new-item-total');
+          const paidInput = document.getElementById('modal-new-item-paid');
+          if (nameInput) nameInput.value = '';
+          if (totalInput) totalInput.value = '';
+          if (paidInput) paidInput.value = '0';
+        }
+
+        if (closeAddItemModal) closeAddItemModal.addEventListener('click', hideAddItemModal);
+        if (cancelAddItemModal) cancelAddItemModal.addEventListener('click', hideAddItemModal);
+
+        function handleSaveNewItemToCust(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+
+          try {
+            // Find customer robustly with ID, Name, or Object fallback
+            let cust = null;
+            if (state.activeTargetCustId) {
+              cust = state.creditCustomers.find(c => c.id === state.activeTargetCustId);
+            }
+            if (!cust && state.activeTargetCustName) {
+              cust = state.creditCustomers.find(c => c.name && c.name.trim().toLowerCase() === state.activeTargetCustName.trim().toLowerCase());
+            }
+            if (!cust) {
+              cust = state.activeTargetCustForNewItem;
+            }
+
+            if (!cust) {
+              showToast('حدث خطأ في تحديد حساب الزبون! يرجى إعادة فتح النافذة.', true);
+              return;
+            }
+
+            const nameInput = document.getElementById('modal-new-item-name');
+            const totalInput = document.getElementById('modal-new-item-total');
+            const paidInput = document.getElementById('modal-new-item-paid');
+
+            const name = (nameInput?.value || '').trim();
+            const total = Math.max(0, parseFloat(totalInput?.value || 0));
+            const paid = Math.max(0, parseFloat(paidInput?.value || 0));
+            const remaining = Math.max(0, total - paid);
+
+            if (!name) {
+              showToast('يرجى كتابة اسم السلعة!', true);
+              if (nameInput) nameInput.focus();
+              return;
+            }
+
+            // Ensure items array is healthy
+            if (!Array.isArray(cust.items)) {
+              if (typeof cust.items === 'string' && cust.items.trim()) {
+                cust.items = [{
+                  id: 'ITM-' + Date.now().toString(36) + '-1',
+                  name: cust.items,
+                  total: Number(cust.total || 0),
+                  paid: Number(cust.paid || 0),
+                  remaining: Math.max(0, Number(cust.total || 0) - Number(cust.paid || 0)),
+                  date: cust.date || new Date().toISOString(),
+                  status: (Number(cust.total || 0) - Number(cust.paid || 0)) <= 0 ? 'settled' : 'pending'
+                }];
+              } else {
+                cust.items = [];
+              }
+            }
+
+            const newItem = {
+              id: 'ITM-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000),
+              name: name,
+              total: total,
+              paid: paid,
+              remaining: remaining,
+              date: new Date().toISOString(),
+              status: remaining <= 0 ? 'settled' : 'pending'
+            };
+
+            cust.items.push(newItem);
+            updateCustomerRecordTotals(cust);
+
+            // Re-verify customer is present in state.creditCustomers
+            const exists = state.creditCustomers.some(c => c.id === cust.id || c.name.trim().toLowerCase() === cust.name.trim().toLowerCase());
+            if (!exists) {
+              state.creditCustomers.unshift(cust);
+            }
+
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+
+            hideAddItemModal();
+            playCashSound();
+            showToast(`تمت إضافة "${name}" لحساب الزبون "${cust.name}" بنجاح! ✅`);
+            renderCreditSection();
+          } catch (err) {
+            console.error('Error saving item to customer:', err);
+            showToast('حدث خطأ أثناء الإضافة: ' + err.message, true);
+          }
+        }
+
+        if (formAddItem) {
+          formAddItem.addEventListener('submit', handleSaveNewItemToCust);
+        }
+        if (saveAddItemModal) {
+          saveAddItemModal.addEventListener('click', handleSaveNewItemToCust);
+        }
+
+        // Submit Supplier Debt
+        if (formSupp) {
+          formSupp.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = (inputSuppName.value || '').trim();
+            const phone = (inputSuppPhone.value || '').trim();
+            const items = (inputSuppItems.value || '').trim();
+            const total = Math.max(0, parseFloat(inputSuppTotal.value || 0));
+            const paid = Math.max(0, parseFloat(inputSuppPaid.value || 0));
+            const remaining = Math.max(0, total - paid);
+
+            if (!name || !items) {
+              showToast('يرجى كتابة اسم المحل والسلعة التي أخذتها!', true);
+              return;
+            }
+
+            const newDebt = {
+              id: 'DBT-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 100),
+              name: name,
+              phone: phone,
+              items: items,
+              total: total,
+              paid: paid,
+              remaining: remaining,
+              addedBy: state.activeUser || 'المحل',
+              date: new Date().toISOString(),
+              status: remaining <= 0 ? 'settled' : 'pending'
+            };
+
+            state.debtSuppliers.unshift(newDebt);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+
+            playCashSound();
+            showToast(`تم تقييد دين المحل على "${name}" (الباقي: ${remaining} DH) بنجاح! 🏪`);
+            inputSuppName.value = '';
+            inputSuppPhone.value = '';
+            inputSuppItems.value = '';
+            inputSuppTotal.value = '';
+            inputSuppPaid.value = '0';
+            inputSuppRem.value = '0 DH';
+            renderCreditSection();
+          });
+        }
+
+        // Partial payment modal
+        if (cancelPartial) cancelPartial.addEventListener('click', () => modalPartial.classList.add('hidden'));
+        if (confirmPartial) {
+          confirmPartial.addEventListener('click', () => {
+            const amountInput = document.getElementById('input-partial-amount');
+            const amount = Math.max(0, parseFloat(amountInput.value || 0));
+            if (amount <= 0) {
+              showToast('يرجى كتابة مبلغ صحيح!', true);
+              return;
+            }
+
+            if (state.activePartialTarget) {
+              const { cust, item, type } = state.activePartialTarget;
+
+              if (type === 'cust_item') {
+                item.paid += amount;
+                item.remaining = Math.max(0, item.total - item.paid);
+                item.status = item.remaining <= 0 ? 'settled' : 'pending';
+                updateCustomerRecordTotals(cust);
+              } else if (type === 'cust_lump') {
+                // Apply lump sum to customer's pending items in order
+                let leftToApply = amount;
+                cust.items.forEach(it => {
+                  if (it.remaining > 0 && leftToApply > 0) {
+                    const payNow = Math.min(it.remaining, leftToApply);
+                    it.paid += payNow;
+                    it.remaining = Math.max(0, it.total - it.paid);
+                    it.status = it.remaining <= 0 ? 'settled' : 'pending';
+                    leftToApply -= payNow;
+                  }
+                });
+                updateCustomerRecordTotals(cust);
+              } else if (type === 'supplier') {
+                const target = state.activePartialTarget.target;
+                target.paid += amount;
+                target.remaining = Math.max(0, target.total - target.paid);
+                target.status = target.remaining <= 0 ? 'settled' : 'pending';
+              }
+
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+
+              modalPartial.classList.add('hidden');
+              amountInput.value = '';
+              playCashSound();
+              showToast(`تم تسجيل دفع ${amount} DH بنجاح! ✅`);
+              renderCreditSection();
+            }
+          });
+        }
+      }
+
+      function openAddItemModal(cust) {
+        if (!cust) return;
+        state.activeTargetCustForNewItem = cust;
+        state.activeTargetCustId = cust.id;
+        state.activeTargetCustName = cust.name;
+
+        const modal = document.getElementById('modal-add-item-to-cust');
+        const custNameEl = document.getElementById('modal-target-cust-name');
+        const nameInp = document.getElementById('modal-new-item-name');
+        const totInp = document.getElementById('modal-new-item-total');
+        const paidInp = document.getElementById('modal-new-item-paid');
+
+        if (custNameEl) custNameEl.textContent = `إضافة سلعة جديدة لحساب الزبون: ${cust.name}`;
+        if (nameInp) nameInp.value = '';
+        if (totInp) totInp.value = '';
+        if (paidInp) paidInp.value = '0';
+
+        if (modal) modal.classList.remove('hidden');
+        if (nameInp) setTimeout(() => nameInp.focus(), 150);
+      }
+
+      function openPartialPayModal(data) {
+        state.activePartialTarget = data;
+        const modal = document.getElementById('modal-partial-payment');
+        const nameEl = document.getElementById('partial-pay-name');
+        const amountInput = document.getElementById('input-partial-amount');
+
+        if (nameEl) nameEl.textContent = data.title;
+        if (amountInput) {
+          amountInput.value = '';
+          amountInput.max = data.maxAmount;
+        }
+        modal.classList.remove('hidden');
+        if (amountInput) setTimeout(() => amountInput.focus(), 150);
+      }
+
+      function renderCreditSection() {
+        const pendingCust = state.creditCustomers.filter(c => c.status !== 'settled');
+        const totalCustMoney = pendingCust.reduce((acc, c) => acc + (c.remaining || 0), 0);
+        document.getElementById('kpi-customers-credit').textContent = `${totalCustMoney} DH`;
+        document.getElementById('kpi-customers-count').textContent = `${pendingCust.length} زبون باقي كيتسال`;
+
+        const pendingSupp = state.debtSuppliers.filter(d => d.status !== 'settled');
+        const totalSuppMoney = pendingSupp.reduce((acc, d) => acc + (d.remaining || 0), 0);
+        document.getElementById('kpi-suppliers-debt').textContent = `${totalSuppMoney} DH`;
+        document.getElementById('kpi-suppliers-count').textContent = `${pendingSupp.length} محل أو مورد كيتسالنا`;
+
+        const badgeCredit = document.getElementById('badge-credit-count');
+        if (badgeCredit) badgeCredit.textContent = (pendingCust.length + pendingSupp.length);
+
+        renderCustomersCreditCards();
+        renderSuppliersDebtList();
+      }
+
+      // RENDER CUSTOMERS CREDIT CARDS (Each customer card displays all items neatly grouped!)
+      function renderCustomersCreditCards() {
+        const container = document.getElementById('customers-credit-cards-container');
+        if (!container) return;
+
+        const filtered = state.creditCustomers.filter(c => {
+          if (state.custCreditFilter === 'settled') return c.status === 'settled';
+          return c.status !== 'settled';
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-slate-400 text-xs">
+              ${state.custCreditFilter === 'settled' ? 'لا توجد ديون مسددة في الأرشيف.' : 'ما كاين حتى كريدي على الزبائن دابا. كلشي خالص!'}
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = filtered.map(cust => {
+          const isAllSettled = cust.status === 'settled';
+          const dateStr = new Date(cust.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+
+          // Render each item row in this customer's account
+          const itemsHtml = cust.items.map(it => {
+            const isItemSettled = it.status === 'settled';
+
+            return `
+              <div class="py-2 px-2.5 rounded-lg border ${isItemSettled ? 'bg-emerald-50/50 border-emerald-200 opacity-60' : 'bg-white border-slate-200'} flex items-center justify-between gap-2 text-xs">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold text-slate-800 ${isItemSettled ? 'line-through text-slate-500' : ''}">${it.name}</span>
+                    ${isItemSettled ? '<span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.2 rounded font-black">خالصة ✓</span>' : ''}
+                  </div>
+                  <div class="flex items-center gap-2.5 text-[11px] text-slate-500 mt-0.5 flex-wrap">
+                    <span>الثمن: <strong>${it.total} DH</strong></span>
+                    <span>الدفع: <strong class="text-emerald-600">${it.paid} DH</strong></span>
+                    <span>الباقي: <strong class="${isItemSettled ? 'text-slate-400' : 'text-rose-600 font-black'}">${it.remaining} DH</strong></span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  ${!isItemSettled ? (state.isManager ? `
+                    <button class="pay-item-btn px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-[11px] font-bold cursor-pointer active:scale-95 transition"
+                      data-cust-id="${cust.id}" data-item-id="${it.id}">
+                      💵 دفع جزء
+                    </button>
+                    <button class="settle-item-btn px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-[11px] font-black cursor-pointer active:scale-95 transition"
+                      data-cust-id="${cust.id}" data-item-id="${it.id}">
+                      ✅ تسدّات
+                    </button>
+                  ` : `
+                    <span class="text-[10px] text-slate-400 font-bold bg-slate-100 px-1.5 py-0.5 rounded">🔒 الخلاص للمدير فقط</span>
+                  `) : ''}
+
+                  ${state.isManager ? `
+                    <button class="edit-credit-item-btn px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-black text-xs rounded border border-blue-200 cursor-pointer transition active:scale-95"
+                      data-cust-id="${cust.id}" data-item-id="${it.id}" title="تعديل هذه السلعة (المدير 👑)">✏️</button>
+                    <button class="delete-item-btn text-red-500 hover:text-red-700 font-black text-xs px-1"
+                      data-cust-id="${cust.id}" data-item-id="${it.id}" title="حذف هذه السلعة">✕</button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // WhatsApp reminder detailed text
+          const hasPhone = cust.phone && cust.phone.trim() !== '';
+
+          return `
+            <div class="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200 space-y-3 ${isAllSettled ? 'opacity-60 bg-slate-100/60' : ''}">
+              
+              <!-- Card Header -->
+              <div class="flex items-center justify-between border-b border-slate-200/80 pb-2 flex-wrap gap-2">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-black text-base text-slate-900">${cust.name}</h4>
+                    <span class="bg-rose-100 text-rose-900 text-xs px-2 py-0.5 rounded-full font-black">
+                      ${cust.items.length} سلع
+                    </span>
+                    ${isAllSettled ? '<span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-black">الحساب مسدود كامل ✅</span>' : ''}
+                  </div>
+                  <div class="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
+                    ${hasPhone ? `<span class="font-mono text-slate-700 font-bold bg-white px-2 py-0.5 rounded border border-slate-200">📱 ${cust.phone}</span>` : ''}
+                    <span>قيده: <strong class="text-slate-700">${cust.addedBy}</strong> (${dateStr})</span>
+                  </div>
+                </div>
+
+                <!-- Customer Total Balances -->
+                <div class="text-left bg-white p-2 rounded-xl border border-slate-200 shadow-xs">
+                  <div class="text-[11px] text-slate-400 font-bold">المجموع: ${cust.total} DH | مدفوع: <span class="text-emerald-600 font-bold">${cust.paid} DH</span></div>
+                  <div class="text-sm font-black ${isAllSettled ? 'text-slate-400' : 'text-rose-600'}">
+                    الباقي كنسالوه: <span class="text-base">${cust.remaining} DH</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- List of items for this customer -->
+              <div class="space-y-1.5">
+                ${itemsHtml}
+              </div>
+
+              <!-- Card Actions (Add item, WhatsApp, Full Settle, Delete) -->
+              <div class="pt-2 border-t border-slate-200 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <!-- Add another item button -->
+                  <button class="add-item-to-cust-btn px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded-xl text-xs font-black border border-rose-200 transition flex items-center gap-1 cursor-pointer active:scale-95"
+                    data-id="${cust.id}" data-name="${encodeURIComponent(cust.name)}">
+                    <span>➕</span> <span>زيد سلعة جديدة لهاد الحساب</span>
+                  </button>
+
+                  ${hasPhone ? `
+                    <button class="whatsapp-cust-btn px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1"
+                      data-id="${cust.id}">
+                      <span>💬</span> <span>تذكير الواتساب</span>
+                    </button>
+                  ` : ''}
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  ${!isAllSettled ? (state.isManager ? `
+                    <button class="settle-all-cust-btn px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-xs transition cursor-pointer active:scale-95"
+                      data-id="${cust.id}">
+                      ✅ تسديد كامل الحساب
+                    </button>
+                  ` : `
+                    <span class="text-xs text-slate-400 font-bold bg-slate-100 px-2.5 py-1 rounded-xl">🔒 تسديد الحساب للمدير فقط</span>
+                  `) : ''}
+
+                  ${state.isManager ? `
+                    <button class="delete-cust-btn w-8 h-8 rounded-xl bg-slate-200 hover:bg-red-100 text-slate-500 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
+                      data-id="${cust.id}" title="مسح حساب هذا الزبون بالكامل (المدير فقط)">
+                      🗑️
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+
+        // Attach listeners for Customer Cards
+        container.querySelectorAll('.add-item-to-cust-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const custId = btn.getAttribute('data-id');
+            const custNameRaw = btn.getAttribute('data-name');
+            const custName = custNameRaw ? decodeURIComponent(custNameRaw) : '';
+            const cust = state.creditCustomers.find(c => c.id === custId)
+                      || state.creditCustomers.find(c => c.name && c.name.trim().toLowerCase() === custName.trim().toLowerCase());
+            if (cust) {
+              openAddItemModal(cust);
+            } else {
+              showToast('تعذر العثور على حساب الزبون', true);
+            }
+          });
+        });
+
+        // Settle single item
+        container.querySelectorAll('.settle-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('التأشير بخلاص الكريدي متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
+            const custId = btn.getAttribute('data-cust-id');
+            const itemId = btn.getAttribute('data-item-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust) {
+              const item = cust.items.find(it => it.id === itemId);
+              if (item) {
+                item.paid = item.total;
+                item.remaining = 0;
+                item.status = 'settled';
+                updateCustomerRecordTotals(cust);
+                saveLocalState();
+                if (state.syncToCloud) state.syncToCloud();
+                playCashSound();
+                showToast(`تم تسديد سلعة "${item.name}" بالكامل لحساب ${cust.name}! ✅`);
+                renderCreditSection();
+              }
+            }
+          });
+        });
+
+        // Pay partial for single item
+        container.querySelectorAll('.pay-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('تسجيل دفعات الكريدي متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
+            const custId = btn.getAttribute('data-cust-id');
+            const itemId = btn.getAttribute('data-item-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust) {
+              const item = cust.items.find(it => it.id === itemId);
+              if (item) {
+                openPartialPayModal({
+                  type: 'cust_item',
+                  cust: cust,
+                  item: item,
+                  title: `دفع جزء من (${item.name}) للزبون: ${cust.name}`,
+                  maxAmount: item.remaining
+                });
+              }
+            }
+          });
+        });
+
+        // Edit single item from customer account (Manager only)
+        container.querySelectorAll('.edit-credit-item-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const custId = btn.getAttribute('data-cust-id');
+            const itemId = btn.getAttribute('data-item-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust) {
+              const item = cust.items.find(it => it.id === itemId);
+              if (item) openEditCreditItemModal(cust, item);
+            }
+          });
+        });
+
+        // Delete single item from customer account
+        container.querySelectorAll('.delete-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const custId = btn.getAttribute('data-cust-id');
+            const itemId = btn.getAttribute('data-item-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust) {
+              cust.items = cust.items.filter(it => it.id !== itemId);
+              if (cust.items.length === 0) {
+                // If no items left, remove customer completely
+                state.creditCustomers = state.creditCustomers.filter(c => c.id !== custId);
+              } else {
+                updateCustomerRecordTotals(cust);
+              }
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+              showToast('تم حذف السلعة من حساب الزبون');
+              renderCreditSection();
+            }
+          });
+        });
+
+        // Settle all items for customer
+        container.querySelectorAll('.settle-all-cust-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('تسديد كامل الحساب متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
+            const custId = btn.getAttribute('data-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust) {
+              cust.items.forEach(it => {
+                it.paid = it.total;
+                it.remaining = 0;
+                it.status = 'settled';
+              });
+              updateCustomerRecordTotals(cust);
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+              playCashSound();
+              showToast(`تم تسديد كامل حساب الزبون "${cust.name}" بنجاح! ✅`);
+              renderCreditSection();
+            }
+          });
+        });
+
+        // Delete entire customer account (Manager only)
+        container.querySelectorAll('.delete-cust-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const custId = btn.getAttribute('data-id');
+            state.creditCustomers = state.creditCustomers.filter(c => c.id !== custId);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+            showToast('تم مسح حساب الزبون بالكامل من السجل');
+            renderCreditSection();
+          });
+        });
+
+        // WhatsApp Reminder (Itemized breakdown)
+        container.querySelectorAll('.whatsapp-cust-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const custId = btn.getAttribute('data-id');
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust && cust.phone) {
+              let cleanPhone = cust.phone.replace(/[^0-9]/g, '');
+              if (cleanPhone.startsWith('0')) cleanPhone = '212' + cleanPhone.substring(1);
+
+              let msg = `السلام عليكم أخي ${cust.name}، كنتواصلو معاك من محل إلكترو نور الدين بخصوص تفاصيل باقي الحساب:\n\n`;
+              
+              cust.items.forEach(it => {
+                if (it.remaining > 0) {
+                  msg += `• *${it.name}*: الثمن ${it.total} DH (مدفوع: ${it.paid} DH | باقي: *${it.remaining} DH*)\n`;
+                }
+              });
+
+              msg += `\n💰 *إجمالي المبلغ المتبقي: ${cust.remaining} درهم.*\n`;
+              msg += `مرحباً بك فالمحل فـ أي وقت وشكراً لك أخي!`;
+
+              const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+              window.open(url, '_blank');
+            }
+          });
+        });
+      }
+
+      function renderSuppliersDebtList() {
+        const container = document.getElementById('suppliers-debt-list');
+        if (!container) return;
+
+        const filtered = state.debtSuppliers.filter(d => {
+          if (state.suppDebtFilter === 'settled') return d.status === 'settled';
+          return d.status !== 'settled';
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-slate-400 text-xs">
+              ${state.suppDebtFilter === 'settled' ? 'لا توجد ديون مسددة في الأرشيف.' : 'ما كاين حتى محل كيتسالنا شي حاجة حالياً. الحمد لله!'}
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = filtered.map(item => {
+          const isSettled = item.status === 'settled';
+          const dateStr = new Date(item.date).toLocaleDateString('ar-MA', { day: 'numeric', month: 'short' });
+
+          const deleteBtn = state.isManager ? `
+            <button class="delete-suppdebt-btn w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-xs transition"
+              data-id="${item.id}" title="مسح (المدير فقط)">✕</button>
+          ` : '';
+
+          return `
+            <div class="py-3 px-2 flex items-center justify-between gap-2 text-xs ${isSettled ? 'opacity-60 bg-slate-50/50' : ''}">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-extrabold text-slate-900 text-sm truncate ${isSettled ? 'line-through text-slate-500' : ''}">${item.name}</h4>
+                  ${item.phone ? `<span class="bg-slate-100 text-slate-600 font-mono text-[11px] px-1.5 py-0.2 rounded font-bold">${item.phone}</span>` : ''}
+                  <span class="bg-amber-100 text-amber-900 text-[10px] px-2 py-0.5 rounded-md font-bold">خديت: ${item.items}</span>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-1 flex-wrap">
+                  <span>المجموع: <strong>${item.total} DH</strong></span>
+                  <span>عطيتو تسبيق: <strong class="text-emerald-600">${item.paid} DH</strong></span>
+                  <span>باقي كيتسالني: <strong class="text-amber-700 font-black text-sm">${item.remaining} DH</strong></span>
+                  <span class="text-slate-400">قيده: ${item.addedBy} (${dateStr})</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${!isSettled ? (state.isManager ? `
+                  <button class="partial-suppdebt-btn px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold transition cursor-pointer active:scale-95"
+                    data-id="${item.id}">
+                    💵 دفعت جزء
+                  </button>
+                  <button class="settle-suppdebt-btn px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition cursor-pointer active:scale-95"
+                    data-id="${item.id}">
+                    ✅ رديت كولشي
+                  </button>
+                ` : `
+                  <span class="text-[10px] text-slate-400 font-bold bg-slate-100 px-2 py-0.5 rounded">🔒 الدفع للمدير فقط</span>
+                `) : `
+                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black">خالص ومردود ✓</span>
+                `}
+
+                ${deleteBtn}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.querySelectorAll('.settle-suppdebt-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('أداء ديون المحلات متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
+            const id = btn.getAttribute('data-id');
+            const item = state.debtSuppliers.find(d => d.id === id);
+            if (item) {
+              item.paid = item.total;
+              item.remaining = 0;
+              item.status = 'settled';
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+              playCashSound();
+              showToast(`تم التأشير على دين "${item.name}" بأنه تم تسديده بالكامل! ✅`);
+              renderCreditSection();
+            }
+          });
+        });
+
+        container.querySelectorAll('.partial-suppdebt-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!state.isManager) {
+              showToast('دفع ديون المحلات متاح للمدير (نورالدين) فقط!', true);
+              return;
+            }
+            const id = btn.getAttribute('data-id');
+            const item = state.debtSuppliers.find(d => d.id === id);
+            if (item) {
+              openPartialPayModal({
+                type: 'supplier',
+                target: item,
+                title: `تسديد دفعة للمحل/المورد: ${item.name}`,
+                maxAmount: item.remaining
+              });
+            }
+          });
+        });
+
+        container.querySelectorAll('.delete-suppdebt-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            state.debtSuppliers = state.debtSuppliers.filter(d => d.id !== id);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+            showToast('تم مسح البند من لائحة ديون المحل');
+            renderCreditSection();
+          });
+        });
+      }
+
+      // ==========================================
+      // 7. SALES SECTION & PRESETS
       // ==========================================
       function renderPresets() {
         const chipsContainer = document.getElementById('quick-products-chips');
@@ -1833,6 +3546,137 @@
         }).join('');
       }
 
+
+      // Helper function to intelligently detect category based on item name keywords
+      function detectStockCategory(text) {
+        if (!text) return "افشور";
+        const t = text.toLowerCase();
+        if (t.includes("افشور") || t.includes("afficheur") || t.includes("lcd") || t.includes("ecran") || t.includes("شاشة") || t.includes("شاشه")) return "افشور";
+        if (t.includes("5d") || t.includes("9d") || t.includes("11d") || t.includes("incassable") || t.includes("انكاسابل") || t.includes("سيراميك") || t.includes("انكاسبل")) return "5D";
+        if (t.includes("زاج") || t.includes("زجاج") || t.includes("verre") || t.includes("عادي")) return "زاج عادي";
+        if (t.includes("بوشيط") || t.includes("بوشيت") || t.includes("pochette") || t.includes("غشاء") || t.includes("كفر") || t.includes("cover")) return "بوشيط";
+        if (t.includes("باتري") || t.includes("بطارية") || t.includes("بطاريه") || t.includes("battery") || t.includes("batterie") || t.includes("pile")) return "باتري";
+        if (t.includes("شارجور") || t.includes("شاحن") || t.includes("كابل") || t.includes("chargeur") || t.includes("cable") || t.includes("خيط") || t.includes("type c") || t.includes("type-c") || t.includes("lightning") || t.includes("20w")) return "شارجورات";
+        if (t.includes("سماعات") || t.includes("اوكوتور") || t.includes("ecouteur") || t.includes("airpods") || t.includes("casque") || t.includes("ساعة") || t.includes("montre") || t.includes("اكسسوار") || t.includes("accessoire") || t.includes("ring")) return "اكسسوارات";
+        if (t.includes("هاتف") || t.includes("تليفون") || t.includes("بورطابل") || t.includes("telephone") || t.includes("iphone") || t.includes("samsung") || t.includes("redmi") || t.includes("infinix") || t.includes("xiaomi") || t.includes("oppo") || t.includes("vivo") || t.includes("realme")) return "هواتف";
+        if (t.includes("اصلاح") || t.includes("كونيكتور") || t.includes("conector") || t.includes("connecteur") || t.includes("nappe") || t.includes("فلاتة") || t.includes("كاميرا") || t.includes("camera") || t.includes("سبيكر") || t.includes("speaker") || t.includes("ميكرو") || t.includes("micro") || t.includes("بياس") || t.includes("قطعة")) return "اصلاح الهاتف";
+        return "افشور";
+      }
+
+      function highlightStockPill(cat) {
+        document.querySelectorAll("#send-stock-pills-container .stock-pill-btn").forEach(b => {
+          if (b.getAttribute("data-cat") === cat) {
+            b.className = "stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-black bg-amber-500 text-slate-950 border-amber-600 shadow-xs cursor-pointer";
+          } else {
+            b.className = "stock-pill-btn px-2 py-1 rounded-lg border text-[11px] font-bold bg-white text-slate-700 hover:bg-amber-50 cursor-pointer";
+          }
+        });
+      }
+
+      function openSendSaleToStockModal(sale) {
+        if (!sale) return;
+        state.activeSendToStockSale = sale;
+        const modal = document.getElementById("modal-send-sale-to-stock");
+        const infoEl = document.getElementById("send-stock-sale-info");
+        const nameInp = document.getElementById("send-stock-name");
+        const catSelect = document.getElementById("send-stock-category");
+        const qtyInp = document.getElementById("send-stock-qty");
+        const prioritySelect = document.getElementById("send-stock-priority");
+
+        if (infoEl) infoEl.textContent = `من عملية بيع: ${sale.name} (${sale.qty} قطع) سجلها: ${sale.seller}`;
+        if (nameInp) nameInp.value = sale.name || "";
+        
+        const detectedCat = detectStockCategory(sale.name);
+        if (catSelect) catSelect.value = detectedCat;
+        if (qtyInp) qtyInp.value = sale.qty || 1;
+        if (prioritySelect) prioritySelect.value = "عادي";
+
+        highlightStockPill(detectedCat);
+
+        if (modal) modal.classList.remove("hidden");
+        if (nameInp) setTimeout(() => nameInp.focus(), 150);
+      }
+
+      function openEditSaleModal(sale) {
+        if (!state.isManager || !sale) {
+          showToast("تعديل المبيعات متاح للمدير (نورالدين) فقط!", true);
+          return;
+        }
+        state.activeEditingSale = sale;
+        const modal = document.getElementById("modal-edit-sale");
+        const idInp = document.getElementById("edit-sale-id");
+        const nameInp = document.getElementById("edit-sale-name");
+        const priceInp = document.getElementById("edit-sale-unit-price");
+        const qtyInp = document.getElementById("edit-sale-qty");
+        const sellerSelect = document.getElementById("edit-sale-seller");
+        const totalSpan = document.getElementById("edit-sale-calc-total");
+
+        if (idInp) idInp.value = sale.id;
+        if (nameInp) nameInp.value = sale.name;
+        if (priceInp) priceInp.value = sale.unitPrice;
+        if (qtyInp) qtyInp.value = sale.qty;
+        if (sellerSelect) sellerSelect.value = sale.seller || "نورالدين";
+
+        const calcTot = (parseFloat(sale.unitPrice || 0) * parseInt(sale.qty || 1, 10));
+        if (totalSpan) totalSpan.textContent = `${calcTot.toFixed(0)} DH`;
+
+        if (modal) modal.classList.remove("hidden");
+        if (nameInp) setTimeout(() => nameInp.focus(), 150);
+      }
+
+      function openEditStockModal(item) {
+        if (!state.isManager || !item) {
+          showToast("تعديل السلع متاح للمدير (نورالدين) فقط!", true);
+          return;
+        }
+        state.activeEditingStock = item;
+        const modal = document.getElementById("modal-edit-stock");
+        const idInp = document.getElementById("edit-stock-id");
+        const nameInp = document.getElementById("edit-stock-name");
+        const catSelect = document.getElementById("edit-stock-cat");
+        const qtyInp = document.getElementById("edit-stock-qty");
+        const prioritySelect = document.getElementById("edit-stock-priority");
+        const addedBySelect = document.getElementById("edit-stock-addedby");
+
+        if (idInp) idInp.value = item.id;
+        if (nameInp) nameInp.value = item.name;
+        if (catSelect) catSelect.value = item.category || "افشور";
+        if (qtyInp) qtyInp.value = item.qty || 1;
+        if (prioritySelect) prioritySelect.value = item.priority || "عادي";
+        if (addedBySelect) addedBySelect.value = item.addedBy || "نورالدين";
+
+        if (modal) modal.classList.remove("hidden");
+        if (nameInp) setTimeout(() => nameInp.focus(), 150);
+      }
+
+      function openEditCreditItemModal(cust, item) {
+        if (!state.isManager || !cust || !item) {
+          showToast("تعديل الكريدي متاح للمدير (نورالدين) فقط!", true);
+          return;
+        }
+        state.activeEditingCreditCust = cust;
+        state.activeEditingCreditItem = item;
+        const modal = document.getElementById("modal-edit-credit-item");
+        const custNameEl = document.getElementById("edit-credit-item-cust-name");
+        const custIdInp = document.getElementById("edit-credit-cust-id");
+        const itemIdInp = document.getElementById("edit-credit-item-id");
+        const nameInp = document.getElementById("edit-credit-item-name");
+        const totalInp = document.getElementById("edit-credit-item-total");
+        const paidInp = document.getElementById("edit-credit-item-paid");
+        const remSpan = document.getElementById("edit-credit-item-calc-rem");
+
+        if (custIdInp) custIdInp.value = cust.id;
+        if (itemIdInp) itemIdInp.value = item.id;
+        if (custNameEl) custNameEl.textContent = `الزبون: ${cust.name}`;
+        if (nameInp) nameInp.value = item.name;
+        if (totalInp) totalInp.value = item.total;
+        if (paidInp) paidInp.value = item.paid;
+        if (remSpan) remSpan.textContent = `${item.remaining} DH`;
+
+        if (modal) modal.classList.remove("hidden");
+        if (nameInp) setTimeout(() => nameInp.focus(), 150);
+      }
+
       function renderSalesList() {
         const container = document.getElementById('sales-list-container');
         const badgeCount = document.getElementById('sales-badge-count');
@@ -1858,33 +3702,65 @@
                ${s.qty > 1 ? `<span class="text-[10px] text-slate-400">(${s.unitPrice} DH/قطعة)</span>` : ''}`
             : `<span class="text-xs text-slate-400 font-bold block">🔒 مخفي</span>`;
 
+          const editBtnHtml = state.isManager ? `
+            <button class="edit-sale-btn w-8 h-8 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm transition active:scale-95 cursor-pointer border border-blue-200"
+              data-id="${s.id}" title="تعديل تفاصيل البيع (صلاحيات المدير 👑)">
+              ✏️
+            </button>
+          ` : '';
+
           const deleteBtnHtml = state.isManager ? `
-            <button class="delete-sale-btn w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-sm transition"
+            <button class="delete-sale-btn w-8 h-8 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center font-bold text-sm transition active:scale-95 cursor-pointer"
               data-id="${s.id}" title="مسح هذه العملية (صلاحية المدير فقط)">
               🗑️
             </button>
           ` : '';
 
           return `
-            <div class="py-2.5 flex items-center justify-between gap-2 text-xs">
+            <div class="py-2.5 flex items-center justify-between gap-2 text-xs border-b border-slate-100 last:border-0 flex-wrap sm:flex-nowrap">
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
                   <h4 class="font-extrabold text-slate-800 text-sm truncate">${s.name}</h4>
                   <span class="bg-blue-100 text-blue-800 font-black text-[10px] px-1.5 py-0.5 rounded">${s.qty > 1 ? s.qty + 'x' : '1'}</span>
                 </div>
-                <p class="text-[10px] text-slate-400">باعها: <strong class="text-slate-600 font-bold">${s.seller}</strong> | ${dateStr} - ${timeStr}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">باعها: <strong class="text-slate-600 font-bold">${s.seller}</strong> | ${dateStr} - ${timeStr}</p>
               </div>
 
-              <div class="flex items-center gap-3">
-                <div class="text-left">
+              <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap justify-end">
+                <!-- Send to Missing Stock Button -->
+                <button class="send-to-stock-btn px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-xl text-[11px] font-black transition flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
+                  data-id="${s.id}" title="إرسال هذه السلعة مباشرة للسلع لي خاصانا (النواقص)">
+                  <span>📦</span> <span>السلعة لي خاصا</span>
+                </button>
+
+                <div class="text-left min-w-[65px]">
                   ${priceDisplay}
                 </div>
 
+                ${editBtnHtml}
                 ${deleteBtnHtml}
               </div>
             </div>
           `;
         }).join('');
+
+        container.querySelectorAll('.send-to-stock-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const saleId = btn.getAttribute('data-id');
+            const sale = state.sales.find(s => s.id === saleId);
+            if (sale) openSendSaleToStockModal(sale);
+          });
+        });
+
+        container.querySelectorAll('.edit-sale-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const saleId = btn.getAttribute('data-id');
+            const sale = state.sales.find(s => s.id === saleId);
+            if (sale) openEditSaleModal(sale);
+          });
+        });
 
         container.querySelectorAll('.delete-sale-btn').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -1902,11 +3778,9 @@
         renderAggregatedItems();
         renderSalesList();
         renderStockSection();
+        renderCreditSection();
       }
 
-      // ==========================================
-      // 9. SALE SUBMISSION & OPERATIONS
-      // ==========================================
       function setupSaleForm() {
         const form = document.getElementById('sale-form');
         const inputName = document.getElementById('input-item-name');
@@ -2032,7 +3906,7 @@
       }
 
       // ==========================================
-      // 10. MANAGER SPACE (FOR NOUREDDINE ONLY)
+      // 8. MANAGER SPACE (FOR NOUREDDINE ONLY)
       // ==========================================
       function setupManagerSpace() {
         const modal = document.getElementById('manager-modal');
@@ -2122,6 +3996,130 @@
         if (exportCsvBtn) {
           exportCsvBtn.addEventListener('click', exportSalesCSV);
         }
+
+        const backupJsonBtn = document.getElementById('btn-backup-json');
+        if (backupJsonBtn) {
+          backupJsonBtn.addEventListener('click', () => {
+            const backupData = {
+              app: 'Electro Noureddine Shop POS',
+              version: '2.5',
+              timestamp: Date.now(),
+              date: new Date().toISOString(),
+              exportedBy: state.activeUser || 'نورالدين',
+              sales: state.sales,
+              stockNeeds: state.stockNeeds,
+              creditCustomers: state.creditCustomers,
+              debtSuppliers: state.debtSuppliers,
+              presets: state.presets,
+              userPins: state.userPins
+            };
+            const jsonStr = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const nowStr = new Date().toISOString().slice(0, 10);
+            a.download = `Backup_ElectroNoureddine_Kamel_${nowStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            playCashSound();
+            showToast('تم تحميل النسخة الاحتياطية الكاملة بنجاح فالهاتف 💾');
+          });
+        }
+
+        const triggerRestoreBtn = document.getElementById('btn-trigger-restore');
+        const restoreFileInput = document.getElementById('input-restore-file');
+
+        if (triggerRestoreBtn && restoreFileInput) {
+          triggerRestoreBtn.addEventListener('click', () => {
+            restoreFileInput.value = '';
+            restoreFileInput.click();
+          });
+
+          restoreFileInput.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              try {
+                const data = JSON.parse(event.target.result);
+                if (!data || typeof data !== 'object') {
+                  throw new Error('الملف فارغ أو صيغته غير صحيحة');
+                }
+
+                let itemsRestored = 0;
+
+                if (Array.isArray(data.sales)) {
+                  state.sales = data.sales;
+                  itemsRestored++;
+                }
+
+                if (Array.isArray(data.stockNeeds)) {
+                  state.stockNeeds = data.stockNeeds;
+                  itemsRestored++;
+                }
+
+                if (Array.isArray(data.creditCustomers)) {
+                  state.creditCustomers = data.creditCustomers.map(c => {
+                    if (!c.id) c.id = 'CRD-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1000);
+                    if (!Array.isArray(c.items)) {
+                      const legacyName = (typeof c.items === 'string' && c.items.trim()) ? c.items : (c.itemsText || 'سلعة');
+                      c.items = [{
+                        id: 'ITM-' + Date.now().toString(36) + '-1',
+                        name: legacyName,
+                        total: Number(c.total || 0),
+                        paid: Number(c.paid || 0),
+                        remaining: Math.max(0, Number(c.total || 0) - Number(c.paid || 0)),
+                        date: c.date || new Date().toISOString(),
+                        status: (Number(c.total || 0) - Number(c.paid || 0)) <= 0 ? 'settled' : 'pending'
+                      }];
+                    }
+                    updateCustomerRecordTotals(c);
+                    return c;
+                  });
+                  itemsRestored++;
+                }
+
+                if (Array.isArray(data.debtSuppliers)) {
+                  state.debtSuppliers = data.debtSuppliers;
+                  itemsRestored++;
+                }
+
+                if (Array.isArray(data.presets)) {
+                  state.presets = data.presets;
+                  itemsRestored++;
+                }
+
+                if (data.userPins && typeof data.userPins === 'object') {
+                  state.userPins = Object.assign({}, DEFAULT_USER_PINS, data.userPins);
+                  itemsRestored++;
+                }
+
+                if (itemsRestored === 0) {
+                  throw new Error('الملف لا يحتوي على بيانات مقبولة');
+                }
+
+                saveLocalState();
+                if (state.syncToCloud) state.syncToCloud();
+
+                renderAll();
+                renderManagerPINDisplay();
+                renderPresets();
+
+                modal.classList.add('hidden');
+                playCashSound();
+                showToast(`تم استرجاع جميع المعلومات والأكواد بنجاح (${state.sales.length} مبيعات، ${state.stockNeeds.length} سلعة، ${state.creditCustomers.length} كريدي)! 📥✅`);
+              } catch (err) {
+                console.error('Restore error:', err);
+                showToast('فشل استرجاع النسخة: ' + err.message, true);
+              }
+            };
+            reader.readAsText(file);
+          });
+        }
       }
 
       function renderManagerPINDisplay() {
@@ -2191,8 +4189,410 @@
         };
       }
 
+      function setupMusicPlayer() {
+        const btnToggleMusic = document.getElementById('btn-toggle-music');
+        const trackSelect = document.getElementById('music-track-select');
+
+        if (btnToggleMusic) {
+          btnToggleMusic.addEventListener('click', () => {
+            const active = ShopAudio.toggle();
+            try {
+              localStorage.setItem(STORAGE_KEYS.MUSIC_MUTED, active ? 'false' : 'true');
+            } catch(e) {}
+            if (active) {
+              showToast('تم تشغيل موسيقى المحل 🎵');
+            } else {
+              showToast('تم كتم الموسيقى 🔇');
+            }
+          });
+        }
+
+        if (trackSelect) {
+          trackSelect.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            ShopAudio.setTrack(selected);
+            try {
+              localStorage.setItem(STORAGE_KEYS.MUSIC_TRACK, selected);
+            } catch(e) {}
+            if (!ShopAudio.isPlaying()) {
+              ShopAudio.start();
+            }
+            showToast(`تم تبديل الموسيقى فالحين إلى: ${trackSelect.options[trackSelect.selectedIndex].text} 🎶`);
+          });
+        }
+      }
+
+      function setupVoiceStockAI() {
+        const btnVoice = document.getElementById('btn-voice-ai-stock');
+        const statusBox = document.getElementById('voice-status-box');
+        const statusText = document.getElementById('voice-status-text');
+        const cancelBtn = document.getElementById('btn-cancel-voice');
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!btnVoice) return;
+
+        let recognition = null;
+        if (SpeechRec) {
+          recognition = new SpeechRec();
+          recognition.lang = 'ar-MA';
+          recognition.continuous = false;
+          recognition.interimResults = false;
+        }
+
+        function stopListening() {
+          if (recognition) {
+            try { recognition.stop(); } catch(e) {}
+          }
+          if (statusBox) statusBox.classList.add('hidden');
+        }
+
+        if (cancelBtn) cancelBtn.addEventListener('click', stopListening);
+
+        btnVoice.addEventListener('click', () => {
+          if (!SpeechRec) {
+            showToast('الإدخال الصوتي غير مدعوم في متصفحك. يرجى استخدام Google Chrome أو Safari.', true);
+            return;
+          }
+
+          statusBox.classList.remove('hidden');
+          statusText.textContent = '🔴 جاري الاستماع... تكلم بالدارجة (مثال: خاصنا 3 افشورات a12 مستعجل)';
+
+          try {
+            recognition.start();
+          } catch(e) {}
+        });
+
+        if (recognition) {
+          recognition.onresult = (event) => {
+            const spoken = (event.results[0][0].transcript || '').trim();
+            statusBox.classList.add('hidden');
+            showToast(`سمعت: "${spoken}" 🎙️`);
+            parseSpokenStockAI(spoken);
+          };
+
+          recognition.onerror = (event) => {
+            statusBox.classList.add('hidden');
+            showToast(`خطأ في الصوت: ${event.error}`, true);
+          };
+
+          recognition.onend = () => {
+            statusBox.classList.add('hidden');
+          };
+        }
+      }
+
+      function parseSpokenStockAI(spokenText) {
+        const text = spokenText.toLowerCase();
+
+        let qty = 1;
+        const numberMatches = text.match(/\d+/);
+        if (numberMatches) {
+          qty = parseInt(numberMatches[0], 10);
+        } else if (/جوج|زوج|إثنين|اثنين/i.test(text)) qty = 2;
+        else if (/تلاتة|ثلاثة|تلات/i.test(text)) qty = 3;
+        else if (/ربعة|أربعة|اربعة/i.test(text)) qty = 4;
+        else if (/خمسة|خمس/i.test(text)) qty = 5;
+        else if (/عشرة|عشر/i.test(text)) qty = 10;
+
+        let category = 'افشور';
+        if (/5d|9d|انكاسابل|إنكاسابل|incassable/i.test(text)) category = '5D';
+        else if (/زاج عادي|زجاج عادي|زاج|زجاج/i.test(text)) category = 'زاج عادي';
+        else if (/بوشيط|بوشيت|كفر|غطاء|pochette/i.test(text)) category = 'بوشيط';
+        else if (/باتري|بطارية|بيل|batterie/i.test(text)) category = 'باتري';
+        else if (/شارجور|شاحن|كابل|خيط|chargeur|cable/i.test(text)) category = 'شارجورات';
+        else if (/سماعات|ايربودز|سماعة|اكسسوار|accessoire|ecouteur/i.test(text)) category = 'اكسسوارات';
+        else if (/هاتف|تليفون|بورطابل|telephone/i.test(text)) category = 'هواتف';
+        else if (/اصلاح|كونكتور|كاميرا|نابا|كونيكتور/i.test(text)) category = 'اصلاح الهاتف';
+        else if (/افشور|شاشة|أفشور|afficheur|ecran/i.test(text)) category = 'افشور';
+
+        let priority = 'عادي';
+        if (/مستعجل|ضروري|سربينا|عاجل|دغيا/i.test(text)) priority = 'مستعجل بزاف';
+        else if (/كليان|زبون|خاص بالكليان/i.test(text)) priority = 'طلب زبون';
+
+        let cleanedName = spokenText
+          .replace(/خاصنا|قيد|لينا|بغيت|سجل|جيبلنا|شري|ديال|سلعة/gi, '')
+          .replace(/\b(1|2|3|4|5|6|7|8|9|10)\b/g, '')
+          .replace(/جوج|زوج|تلاتة|ربعة|خمسة|عشرة/gi, '')
+          .replace(/مستعجل|ضروري|دغيا|سربينا|طلب زبون/gi, '')
+          .trim();
+
+        if (!cleanedName || cleanedName.length < 2) cleanedName = spokenText;
+
+        const inputName = document.getElementById('input-stock-name');
+        const inputQty = document.getElementById('input-stock-qty');
+        const inputCat = document.getElementById('input-stock-category');
+        const inputPriority = document.getElementById('input-stock-priority');
+
+        if (inputName) inputName.value = cleanedName;
+        if (inputQty) inputQty.value = qty;
+        if (inputCat) inputCat.value = category;
+        if (inputPriority) inputPriority.value = priority;
+
+        const stockForm = document.getElementById('stock-form');
+        if (stockForm) {
+          const submitEvent = new Event('submit', { cancelable: true });
+          stockForm.dispatchEvent(submitEvent);
+        }
+      }
+
+
+      function setupNewFeaturesModals() {
+        // 1. Send Sale to Stock Modal
+        const modalSendStock = document.getElementById("modal-send-sale-to-stock");
+        const formSendStock = document.getElementById("form-send-sale-to-stock");
+        const closeSendStockBtn = document.getElementById("btn-close-send-stock-modal");
+        const cancelSendStockBtn = document.getElementById("btn-cancel-send-stock");
+        const catSelect = document.getElementById("send-stock-category");
+
+        function hideSendStockModal() {
+          if (modalSendStock) modalSendStock.classList.add("hidden");
+          state.activeSendToStockSale = null;
+        }
+
+        if (closeSendStockBtn) closeSendStockBtn.addEventListener("click", hideSendStockModal);
+        if (cancelSendStockBtn) cancelSendStockBtn.addEventListener("click", hideSendStockModal);
+
+        if (catSelect) {
+          catSelect.addEventListener("change", () => {
+            highlightStockPill(catSelect.value);
+          });
+        }
+
+        document.querySelectorAll("#send-stock-pills-container .stock-pill-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const cat = btn.getAttribute("data-cat");
+            if (catSelect) catSelect.value = cat;
+            highlightStockPill(cat);
+          });
+        });
+
+        if (formSendStock) {
+          formSendStock.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = (document.getElementById("send-stock-name")?.value || "").trim();
+            const cat = catSelect?.value || "افشور";
+            const qty = Math.max(1, parseInt(document.getElementById("send-stock-qty")?.value || 1, 10));
+            const priority = document.getElementById("send-stock-priority")?.value || "عادي";
+
+            if (!name) {
+              showToast("يرجى كتابة اسم السلعة المطلوبة!", true);
+              return;
+            }
+
+            const newStockItem = {
+              id: "STK-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1000),
+              name: name,
+              category: cat,
+              qty: qty,
+              priority: priority,
+              addedBy: state.activeUser || "المحل",
+              date: new Date().toISOString(),
+              status: "pending"
+            };
+
+            state.stockNeeds.unshift(newStockItem);
+            saveLocalState();
+            if (state.syncToCloud) state.syncToCloud();
+
+            playCashSound();
+            showToast(`تم إرسال "${name}" إلى السلعة لي خاصا فـ فرع (${cat}) بنجاح! 📦`);
+            hideSendStockModal();
+            renderStockSection();
+          });
+        }
+
+        // 2. Manager Edit Sale Modal
+        const modalEditSale = document.getElementById("modal-edit-sale");
+        const formEditSale = document.getElementById("form-edit-sale");
+        const closeEditSaleBtn = document.getElementById("btn-close-edit-sale-modal");
+        const cancelEditSaleBtn = document.getElementById("btn-cancel-edit-sale");
+        const editSalePriceInp = document.getElementById("edit-sale-unit-price");
+        const editSaleQtyInp = document.getElementById("edit-sale-qty");
+        const editSaleTotalSpan = document.getElementById("edit-sale-calc-total");
+
+        function hideEditSaleModal() {
+          if (modalEditSale) modalEditSale.classList.add("hidden");
+          state.activeEditingSale = null;
+        }
+
+        if (closeEditSaleBtn) closeEditSaleBtn.addEventListener("click", hideEditSaleModal);
+        if (cancelEditSaleBtn) cancelEditSaleBtn.addEventListener("click", hideEditSaleModal);
+
+        function updateEditSaleCalc() {
+          const p = parseFloat(editSalePriceInp?.value || 0);
+          const q = parseInt(editSaleQtyInp?.value || 1, 10);
+          const t = Math.max(0, p * q);
+          if (editSaleTotalSpan) editSaleTotalSpan.textContent = `${t.toFixed(0)} DH`;
+        }
+
+        if (editSalePriceInp) editSalePriceInp.addEventListener("input", updateEditSaleCalc);
+        if (editSaleQtyInp) editSaleQtyInp.addEventListener("input", updateEditSaleCalc);
+
+        if (formEditSale) {
+          formEditSale.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!state.isManager) {
+              showToast("تعديل المبيعات متاح للمدير فقط!", true);
+              return;
+            }
+
+            const saleId = document.getElementById("edit-sale-id")?.value;
+            const name = (document.getElementById("edit-sale-name")?.value || "").trim();
+            const unitPrice = parseFloat(editSalePriceInp?.value || 0);
+            const qty = Math.max(1, parseInt(editSaleQtyInp?.value || 1, 10));
+            const seller = document.getElementById("edit-sale-seller")?.value || "نورالدين";
+
+            if (!name) {
+              showToast("يرجى كتابة اسم السلعة!", true);
+              return;
+            }
+
+            const sale = state.sales.find(s => s.id === saleId);
+            if (sale) {
+              sale.name = name;
+              sale.unitPrice = unitPrice;
+              sale.qty = qty;
+              sale.totalPrice = unitPrice * qty;
+              sale.seller = seller;
+
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+
+              playCashSound();
+              showToast(`تم تعديل وحفظ عملية البيع "${name}" بنجاح! ✏️`);
+              hideEditSaleModal();
+              renderAll();
+            }
+          });
+        }
+
+        // 3. Manager Edit Stock Modal
+        const modalEditStock = document.getElementById("modal-edit-stock");
+        const formEditStock = document.getElementById("form-edit-stock");
+        const closeEditStockBtn = document.getElementById("btn-close-edit-stock-modal");
+        const cancelEditStockBtn = document.getElementById("btn-cancel-edit-stock");
+
+        function hideEditStockModal() {
+          if (modalEditStock) modalEditStock.classList.add("hidden");
+          state.activeEditingStock = null;
+        }
+
+        if (closeEditStockBtn) closeEditStockBtn.addEventListener("click", hideEditStockModal);
+        if (cancelEditStockBtn) cancelEditStockBtn.addEventListener("click", hideEditStockModal);
+
+        if (formEditStock) {
+          formEditStock.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!state.isManager) {
+              showToast("تعديل السلع متاح للمدير فقط!", true);
+              return;
+            }
+
+            const stockId = document.getElementById("edit-stock-id")?.value;
+            const name = (document.getElementById("edit-stock-name")?.value || "").trim();
+            const cat = document.getElementById("edit-stock-cat")?.value || "افشور";
+            const qty = Math.max(1, parseInt(document.getElementById("edit-stock-qty")?.value || 1, 10));
+            const priority = document.getElementById("edit-stock-priority")?.value || "عادي";
+            const addedBy = document.getElementById("edit-stock-addedby")?.value || "نورالدين";
+
+            if (!name) {
+              showToast("يرجى كتابة اسم السلعة!", true);
+              return;
+            }
+
+            const item = state.stockNeeds.find(i => i.id === stockId);
+            if (item) {
+              item.name = name;
+              item.category = cat;
+              item.qty = qty;
+              item.priority = priority;
+              item.addedBy = addedBy;
+
+              saveLocalState();
+              if (state.syncToCloud) state.syncToCloud();
+
+              playCashSound();
+              showToast(`تم تعديل السلعة لي خاصا "${name}" بنجاح! ✏️`);
+              hideEditStockModal();
+              renderStockSection();
+            }
+          });
+        }
+
+        // 4. Manager Edit Customer Credit Item Modal
+        const modalEditCredit = document.getElementById("modal-edit-credit-item");
+        const formEditCredit = document.getElementById("form-edit-credit-item");
+        const closeEditCreditBtn = document.getElementById("btn-close-edit-credit-modal");
+        const cancelEditCreditBtn = document.getElementById("btn-cancel-edit-credit");
+        const editCreditTotalInp = document.getElementById("edit-credit-item-total");
+        const editCreditPaidInp = document.getElementById("edit-credit-item-paid");
+        const editCreditRemSpan = document.getElementById("edit-credit-item-calc-rem");
+
+        function hideEditCreditModal() {
+          if (modalEditCredit) modalEditCredit.classList.add("hidden");
+          state.activeEditingCreditCust = null;
+          state.activeEditingCreditItem = null;
+        }
+
+        if (closeEditCreditBtn) closeEditCreditBtn.addEventListener("click", hideEditCreditModal);
+        if (cancelEditCreditBtn) cancelEditCreditBtn.addEventListener("click", hideEditCreditModal);
+
+        function updateEditCreditCalc() {
+          const tot = Math.max(0, parseFloat(editCreditTotalInp?.value || 0));
+          const paid = Math.max(0, parseFloat(editCreditPaidInp?.value || 0));
+          const rem = Math.max(0, tot - paid);
+          if (editCreditRemSpan) editCreditRemSpan.textContent = `${rem.toFixed(0)} DH`;
+        }
+
+        if (editCreditTotalInp) editCreditTotalInp.addEventListener("input", updateEditCreditCalc);
+        if (editCreditPaidInp) editCreditPaidInp.addEventListener("input", updateEditCreditCalc);
+
+        if (formEditCredit) {
+          formEditCredit.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!state.isManager) {
+              showToast("تعديل الكريدي متاح للمدير فقط!", true);
+              return;
+            }
+
+            const custId = document.getElementById("edit-credit-cust-id")?.value;
+            const itemId = document.getElementById("edit-credit-item-id")?.value;
+            const name = (document.getElementById("edit-credit-item-name")?.value || "").trim();
+            const total = Math.max(0, parseFloat(editCreditTotalInp?.value || 0));
+            const paid = Math.max(0, parseFloat(editCreditPaidInp?.value || 0));
+            const remaining = Math.max(0, total - paid);
+
+            if (!name) {
+              showToast("يرجى كتابة اسم السلعة!", true);
+              return;
+            }
+
+            const cust = state.creditCustomers.find(c => c.id === custId);
+            if (cust && Array.isArray(cust.items)) {
+              const item = cust.items.find(it => it.id === itemId);
+              if (item) {
+                item.name = name;
+                item.total = total;
+                item.paid = paid;
+                item.remaining = remaining;
+                item.status = remaining <= 0 ? "settled" : "pending";
+
+                updateCustomerRecordTotals(cust);
+                saveLocalState();
+                if (state.syncToCloud) state.syncToCloud();
+
+                playCashSound();
+                showToast(`تم تعديل سلعة الكريدي "${name}" بنجاح! ✏️`);
+                hideEditCreditModal();
+                renderCreditSection();
+              }
+            }
+          });
+        }
+      }
+
       function init() {
-        loadLocalState();
+        migrateAndLoadData();
         setupRealtimeSync();
         setupMusicPlayer();
         setupVoiceStockAI();
@@ -2200,7 +4600,9 @@
         setupPageNavigation();
         setupSaleForm();
         setupStockSection();
+        setupCreditSection();
         setupManagerSpace();
+        setupNewFeaturesModals();
         updateUserHeader();
         renderAll();
 
